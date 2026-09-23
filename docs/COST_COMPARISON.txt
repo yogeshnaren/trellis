@@ -1,0 +1,58 @@
+GPT-5.4 estimated cost (unchanged estimate from July write-up)
+Per query (example token mix with caching):
+(88×$2.50)+(1,045×$0.25)+(83×$15)=$0.001726
+≈ $0.00173 / query
+At 30,000 queries/day ≈ $51.79 / day
+Without prompt caching (all input at full rate): ≈ $122.33 / day
+
+========================================================================
+Measured DeepSeek-V4-Flash agent costs (Fireworks bake-off JSONL)
+All figures: concurrency 1, repeats 3, arm=agent, current SYSTEM_PROMPT
+unless a row names an older artifact.
+
+------------------------------------------------------------------------
+A) Live regression set — 16 Q × 3 = 48 runs
+   Artifact: benchmark/results/raw_bakeoff_20260814T090713Z.jsonl
+   SQL Eq / E2E: 48/48 = 100%
+   Mean $/query:  $0.000080
+   Med input tok: 1651 | Med output tok: 98
+   P50 / P90 / mean latency: 1.92s / 4.00s / 2.31s
+   At 30,000 queries/day ≈ 30,000 × $0.000080 = $2.40 / day
+
+B) Original ten gold questions — 10 Q × 3 = 30 runs (re-score)
+   Artifact: benchmark/results/raw_bakeoff_20260814T091105Z.jsonl
+   SQL Eq / E2E: 18/30 = 60%
+   Mean $/query:  $0.000123
+   Med input tok: 1651 | Med output tok: 78
+   P50 / P90 / mean latency: 2.09s / 4.34s / 2.18s
+   At 30,000 queries/day ≈ $3.69 / day
+
+C) Combined 26 Q × 3 = 78 runs
+   Metrics: benchmark/results/full_eval_metrics_deepseek.json
+   SQL Eq / E2E: 66/78 = 84.6%
+   Mean $/query:  ≈ $0.000097
+   At 30,000 queries/day ≈ $2.91 / day
+
+D) Mid-August live baseline (pre–48/48 prompt; for delta only)
+   Artifact: benchmark/results/raw_bakeoff_20260814T081255Z.jsonl
+   SQL Eq / E2E: 39/48 = 81.2%
+   Mean $/query:  ≈ $0.000076
+   Med input tok: 1550
+
+------------------------------------------------------------------------
+Comparison table (approx.)
+
+Model / scenario                         $/query      $/day @ 30k
+---------------------------------------  -----------  -------------
+DeepSeek Live 48/48 (A)                  $0.000080    $2.40
+DeepSeek Dev re-score (B)                $0.000123    $3.69
+DeepSeek combined (C)                 $0.000097    $2.91
+July example DeepSeek (older prompt)  $0.000065    $1.95
+GPT-5.4 estimate w/ caching             $0.001726   $51.79
+GPT-5.4 without caching                 $0.004078  $122.33
+
+Live DeepSeek remains ~20–25× cheaper than the GPT-5.4-with-caching estimate
+at 30k queries/day, even with the larger August system prompt (~1651 med input
+tokens vs the smaller July example).
+
+Repair rate on A/B/C: 0%. LLM calls/query: 1.0 (single-call success path).

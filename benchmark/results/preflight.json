@@ -1,0 +1,54 @@
+[
+  {
+    "mode": "configured",
+    "conforms": true,
+    "text": "{\n\"response_type\": \"query\",\n\"sql\": \"SELECT 1;\",\n\"message\": null\n}",
+    "input_tokens": 193,
+    "cached_tokens": 192,
+    "output_tokens": 56,
+    "latency_ms": 669.5316160039511,
+    "retry_ms": 0.0,
+    "model": "accounts/fireworks/models/gpt-oss-120b",
+    "cost_usd": 3.663e-05,
+    "reasoning_content": "We need to output json_object. response_type \"query\", sql \"SELECT 1;\" message null."
+  },
+  {
+    "mode": "medium-control",
+    "conforms": true,
+    "text": "{\n\"response_type\": \"query\",\n\"sql\": \"SELECT 1;\",\n\"message\": null\n}",
+    "input_tokens": 193,
+    "cached_tokens": 192,
+    "output_tokens": 121,
+    "latency_ms": 797.3598770040553,
+    "retry_ms": 0.0,
+    "model": "accounts/fireworks/models/gpt-oss-120b",
+    "cost_usd": 7.562999999999999e-05,
+    "reasoning_content": "The user asks: \"Return SQLite SQL that selects the integer 1.\" We need to respond in the specified JSON format. The response_type likely \"query\". sql field should contain the SQL string. message can be null. So produce JSON with response_type \"query\", sql \"SELECT 1;\", message null. Ensure matches schema: response_type enum, sql string or null, message string or null. Provide as JSON object."
+  },
+  {
+    "mode": "configured",
+    "conforms": true,
+    "text": "{\"response_type\": \"query\", \"sql\": \"SELECT 1;\", \"message\": null}",
+    "input_tokens": 167,
+    "cached_tokens": 166,
+    "output_tokens": 22,
+    "latency_ms": 351.4854410022963,
+    "retry_ms": 0.0,
+    "model": "accounts/fireworks/models/deepseek-v4-flash-0731",
+    "cost_usd": 1.5902e-05,
+    "reasoning_content": ""
+  },
+  {
+    "mode": "configured",
+    "conforms": true,
+    "text": "\n{\n\"sql\": \"SELECT 1;\"\n,\n\"response_type\": \"clarify\"\n,\n\"message\": \"Here is the SQL that selects the integer 1:\\n\\n```sql\\nSELECT 1;\\n```\"\n}",
+    "input_tokens": 137,
+    "cached_tokens": 136,
+    "output_tokens": 54,
+    "latency_ms": 1529.818612994859,
+    "retry_ms": 0.0,
+    "model": "accounts/fireworks/models/minimax-m3",
+    "cost_usd": 7.325999999999999e-05,
+    "reasoning_content": ""
+  }
+]

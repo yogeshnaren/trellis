@@ -1,0 +1,284 @@
+﻿$uv run cli
+
+╭─────────────────────────────────────────────── Fireworks Text-to-SQL ───────────────────────────────────────────────╮
+│ Model: accounts/fireworks/models/deepseek-v4-flash                                                                  │
+│ Database: data/Chinook.db                                                                                           │
+│ Tables: 11                                                                                                          │
+│ Shared remaining: $5.8343                                                                                           │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+sql> List all albums by the artist 'AC/DC'.
+╭─────────────────────────────────────────────────── Generated SQL ───────────────────────────────────────────────────╮
+│ SELECT Album.Title FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId WHERE Artist.Name = 'AC/DC';          │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Title                                 ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ For Those About To Rock We Salute You │
+│ Let There Be Rock                     │
+└───────────────────────────────────────┘
+0.77s · 951 in (950 cached) / 32 out · $0.000036 · $5.8343 shared budget remaining
+sql> How many albums are by artist AC/DC.
+╭─────────────────────────────────────────────────── Generated SQL ───────────────────────────────────────────────────╮
+│ SELECT COUNT(*) FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId WHERE Artist.Name = 'AC/DC';             │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━┓
+┃ COUNT(*) ┃
+┡━━━━━━━━━━┩
+│ 2        │
+└──────────┘
+1.77s · 1002 in (950 cached) / 32 out · $0.000043 · $5.8342 shared budget remaining
+sql> Which album by AC/DC have longer name
+╭─────────────────────────────────────────────────── Generated SQL ───────────────────────────────────────────────────╮
+│ SELECT Album.Title FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId WHERE Artist.Name = 'AC/DC' ORDER BY  │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Title                                 ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ For Those About To Rock We Salute You │
+└───────────────────────────────────────┘
+1.35s · 1052 in (1001 cached) / 46 out · $0.000048 · $5.8342 shared budget remaining
+sql> What are the names and email addresses of customers from India? 
+╭─────────────────────────────────────────────────── Generated SQL ───────────────────────────────────────────────────╮
+│ SELECT FirstName, LastName, Email FROM Customer WHERE Country = 'India';                                            │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ FirstName ┃ LastName   ┃ Email                    ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Manoj     │ Pareek     │ manoj.pareek@rediff.com  │
+│ Puja      │ Srivastava │ puja_srivastava@yahoo.in │
+└───────────┴────────────┴──────────────────────────┘
+0.89s · 1119 in (1051 cached) / 22 out · $0.000045 · $5.8341 shared budget remaining
+sql> What are the names and email addresses of customers from Brazil whose names starts with Edua.   
+╭─────────────────────────────────────────────────── Generated SQL ───────────────────────────────────────────────────╮
+│ SELECT FirstName, LastName, Email FROM Customer WHERE Country = 'Brazil' AND FirstName LIKE 'Edua%';                │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ FirstName ┃ LastName ┃ Email                    ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Eduardo   │ Martins  │ eduardo@woodstock.com.br │
+└───────────┴──────────┴──────────────────────────┘
+0.91s · 1168 in (1118 cached) / 32 out · $0.000047 · $5.8341 shared budget remaining
+sql> Do you have their phone numbers?         
+╭─────────────────────────────────────────────────── Generated SQL ───────────────────────────────────────────────────╮
+│ SELECT FirstName, LastName, Phone FROM Customer WHERE Country = 'Brazil' AND FirstName LIKE 'Edua%';                │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓
+┃ FirstName ┃ LastName ┃ Phone              ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━┩
+│ Eduardo   │ Martins  │ +55 (11) 3033-5446 │
+└─────────────┴───────────────────┘
+
+╭─────────────────────────────────────── Fireworks Text-to-SQL ───────────────────────────────────────╮
+│ Model: accounts/fireworks/models/deepseek-v4-flash                                                  │
+│ Database: data/Chinook.db                                                                           │
+│ Tables: 11                                                                                          │
+│ Shared remaining: $5.8180                                                                           │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Question:> Give me artists names starting with ac
+╭─────────────────────────────────────────── Generated SQL ───────────────────────────────────────────╮
+│ SELECT Name FROM Artist WHERE Name LIKE 'ac%'                                                       │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Name                                                                                  ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ AC/DC                                                                                 │
+│ Accept                                                                                │
+│ Academy of St. Martin in the Fields & Sir Neville Marriner                            │
+│ Academy of St. Martin in the Fields Chamber Ensemble & Sir Neville Marriner           │
+│ Academy of St. Martin in the Fields, John Birch, Sir Neville Marriner & Sylvia McNair │
+│ Academy of St. Martin in the Fields, Sir Neville Marriner & William Bennett           │
+│ Academy of St. Martin in the Fields, Sir Neville Marriner & Thurston Dart             │
+└───────────────────────────────────────────────────────────────────────────────────────┘
+0.84s · 947 in (0 cached) / 17 out · $0.000137 · $5.8179 shared budget remaining
+Question:> i dont like them
+╭─────────────────────────────────────────── Generated SQL ───────────────────────────────────────────╮
+│ SELECT Name FROM Artist WHERE Name NOT LIKE 'ac%'                                                   │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Name                        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Aerosmith                   │
+│ Alanis Morissette           │
+│ Alice In Chains             │
+│ Antônio Carlos Jobim        │
+│ Apocalyptica                │
+│ Audioslave                  │
+│ BackBeat                    │
+│ Billy Cobham                │
+│ Black Label Society         │
+│ Black Sabbath               │
+│ Body Count                  │
+│ Bruce Dickinson             │
+│ Buddy Guy                   │
+│ Caetano Veloso              │
+│ Chico Buarque               │
+│ Chico Science & Nação Zumbi │
+│ Cidade Negra                │
+│ Cláudio Zoli                │
+│ Various Artists             │
+│ Led Zeppelin                │
+└─────────────────────────────┘
+0.90s · 977 in (946 cached) / 18 out · $0.000036 · $5.8178 shared budget remaining · showing 20 of at 
+least 200
+Question:> give me all artists whose name starts with P?
+╭─────────────────────────────────────────────────── Generated SQL ───────────────────────────────────────────────────╮
+│ SELECT Name FROM Artist WHERE Name LIKE 'P%'                                                                        │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Name                                          ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Pedro Luís & A Parede                         │
+│ Page & Plant                                  │
+│ Passengers                                    │
+│ Paul D'Ianno                                  │
+│ Pearl Jam                                     │
+│ Peter Tosh                                    │
+│ Pink Floyd                                    │
+│ Planet Hemp                                   │
+│ Pedro Luís E A Parede                         │
+│ Philharmonia Orchestra & Sir Neville Marriner │
+│ Philip Glass Ensemble                         │
+└───────────────────────────────────────────────┘
+0.54s · 1016 in (976 cached) / 17 out · $0.000038 · $5.8178 shared budget remaining
+Question:> Most popular artist?
+╭─────────────────────────────────────────────────── Generated SQL ───────────────────────────────────────────────────╮
+│ SELECT a.Name FROM Artist a JOIN Album al ON a.ArtistId = al.ArtistId JOIN Track t ON al.AlbumId = t.AlbumId JOIN I │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━━━┓
+┃ Name        ┃
+┡━━━━━━━━━━━━━┩
+│ Iron Maiden │
+└─────────────┘
+1.33s · 1046 in (1015 cached) / 71 out · $0.000053 · $5.8177 shared budget remaining
+Question:> how is he the top artist?
+╭─────────────────────────────────────────────────── Generated SQL ───────────────────────────────────────────────────╮
+│ SELECT a.Name, SUM(il.Quantity) AS total_tracks_sold FROM Artist a JOIN Album al ON a.ArtistId = al.ArtistId JOIN T │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Name        ┃ total_tracks_sold ┃
+┡━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ Iron Maiden │ 140               │
+└─────────────┴───────────────────┘
+1.04s · 1133 in (1045 cached) / 83 out · $0.000065 · $5.8177 shared budget remaining
+Question:> ^C
+
+Goodbye.
+
+(base) yogesh@yogesh-verisim:~/Personal/Beta-Project$ uv run cli
+╭──────────────────────────────────────────── Fireworks Text-to-SQL ────────────────────────────────────────────╮
+│ Model: accounts/fireworks/models/deepseek-v4-flash                                                            │
+│ Database: data/Chinook.db                                                                                     │
+│ Tables: 11                                                                                                    │
+│ Shared remaining: $5.8172                                                                                     │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Question:> 
+Question:> 
+Question:> /schema
+SQLite schema:
+- Album(AlbumId INTEGER, Title NVARCHAR(160), ArtistId INTEGER)
+- Artist(ArtistId INTEGER, Name NVARCHAR(120))
+- Customer(CustomerId INTEGER, FirstName NVARCHAR(40), LastName NVARCHAR(20), Company NVARCHAR(80), Address 
+NVARCHAR(70), City NVARCHAR(40), State NVARCHAR(40), Country NVARCHAR(40), PostalCode NVARCHAR(10), Phone 
+NVARCHAR(24), Fax NVARCHAR(24), Email NVARCHAR(60), SupportRepId INTEGER)
+- Employee(EmployeeId INTEGER, LastName NVARCHAR(20), FirstName NVARCHAR(20), Title NVARCHAR(30), ReportsTo 
+INTEGER, BirthDate DATETIME, HireDate DATETIME, Address NVARCHAR(70), City NVARCHAR(40), State NVARCHAR(40), 
+Country NVARCHAR(40), PostalCode NVARCHAR(10), Phone NVARCHAR(24), Fax NVARCHAR(24), Email NVARCHAR(60))
+- Genre(GenreId INTEGER, Name NVARCHAR(120))
+  sample Name: 'Alternative', 'Alternative & Punk', 'Blues', 'Bossa Nova', 'Classical'
+- Invoice(InvoiceId INTEGER, CustomerId INTEGER, InvoiceDate DATETIME, BillingAddress NVARCHAR(70), BillingCity 
+NVARCHAR(40), BillingState NVARCHAR(40), BillingCountry NVARCHAR(40), BillingPostalCode NVARCHAR(10), Total 
+NUMERIC(10,2))
+- InvoiceLine(InvoiceLineId INTEGER, InvoiceId INTEGER, TrackId INTEGER, UnitPrice NUMERIC(10,2), Quantity 
+INTEGER)
+- MediaType(MediaTypeId INTEGER, Name NVARCHAR(120))
+  sample Name: 'AAC audio file', 'MPEG audio file', 'Protected AAC audio file', 'Protected MPEG-4 video file', 
+'Purchased AAC audio file'
+- Playlist(PlaylistId INTEGER, Name NVARCHAR(120))
+- PlaylistTrack(PlaylistId INTEGER, TrackId INTEGER)
+- Track(TrackId INTEGER, Name NVARCHAR(200), AlbumId INTEGER, MediaTypeId INTEGER, GenreId INTEGER, Composer 
+NVARCHAR(220), Milliseconds INTEGER, Bytes INTEGER, UnitPrice NUMERIC(10,2))
+Foreign keys: Album.ArtistId -> Artist.ArtistId; Customer.SupportRepId -> Employee.EmployeeId; Employee.ReportsTo
+-> Employee.EmployeeId; Invoice.CustomerId -> Customer.CustomerId; InvoiceLine.InvoiceId -> Invoice.InvoiceId; 
+InvoiceLine.TrackId -> Track.TrackId; PlaylistTrack.PlaylistId -> Playlist.PlaylistId; PlaylistTrack.TrackId -> 
+Track.TrackId; Track.AlbumId -> Album.AlbumId; Track.GenreId -> Genre.GenreId; Track.MediaTypeId -> 
+MediaType.MediaTypeId
+Question:> 
+Question:> 
+Question:> 
+Question:> 
+Question:> /last
+No SQL generated yet.
+Question:> 
+Question:> 
+Question:> 
+Question:> name all the artists whose name starts with A
+╭───────────────────────────────────────────────── Generated SQL ─────────────────────────────────────────────────╮
+│ SELECT Name FROM Artist WHERE Name LIKE 'A%'                                                                    │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Name                                                                                  ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ AC/DC                                                                                 │
+│ Accept                                                                                │
+│ Aerosmith                                                                             │
+│ Alanis Morissette                                                                     │
+│ Alice In Chains                                                                       │
+│ Antônio Carlos Jobim                                                                  │
+│ Apocalyptica                                                                          │
+│ Audioslave                                                                            │
+│ Azymuth                                                                               │
+│ A Cor Do Som                                                                          │
+│ Aquaman                                                                               │
+│ Aerosmith & Sierra Leone's Refugee Allstars                                           │
+│ Avril Lavigne                                                                         │
+│ Aisha Duo                                                                             │
+│ Aaron Goldberg                                                                        │
+│ Alberto Turco & Nova Schola Gregoriana                                                │
+│ Anne-Sophie Mutter, Herbert Von Karajan & Wiener Philharmoniker                       │
+│ Academy of St. Martin in the Fields & Sir Neville Marriner                            │
+│ Academy of St. Martin in the Fields Chamber Ensemble & Sir Neville Marriner           │
+│ Academy of St. Martin in the Fields, John Birch, Sir Neville Marriner & Sylvia McNair │
+└───────────────────────────────────────────────────────────────────────────────────────┘
+0.97s · 949 in (0 cached) / 19 out · $0.000138 · $5.8171 shared budget remaining · showing 20 of at least 26
+Question:> 
+Question:> 
+Question:> /last
+SELECT Name FROM Artist WHERE Name LIKE 'A%'
+Question:> give me list of artsts whose name starts with A
+╭───────────────────────────────────────────────── Generated SQL ─────────────────────────────────────────────────╮
+│ SELECT Name FROM Artist WHERE Name LIKE 'A%'                                                                    │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Name                                                                                  ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ AC/DC                                                                                 │
+│ Accept                                                                                │
+│ Aerosmith                                                                             │
+│ Alanis Morissette                                                                     │
+│ Alice In Chains                                                                       │
+│ Antônio Carlos Jobim                                                                  │
+│ Apocalyptica                                                                          │
+│ Audioslave                                                                            │
+│ Azymuth                                                                               │
+│ A Cor Do Som                                                                          │
+│ Aquaman                                                                               │
+│ Aerosmith & Sierra Leone's Refugee Allstars                                           │
+│ Avril Lavigne                                                                         │
+│ Aisha Duo                                                                             │
+│ Aaron Goldberg                                                                        │
+│ Alberto Turco & Nova Schola Gregoriana                                                │
+│ Anne-Sophie Mutter, Herbert Von Karajan & Wiener Philharmoniker                       │
+│ Academy of St. Martin in the Fields & Sir Neville Marriner                            │
+│ Academy of St. Martin in the Fields Chamber Ensemble & Sir Neville Marriner           │
+│ Academy of St. Martin in the Fields, John Birch, Sir Neville Marriner & Sylvia McNair │
+└───────────────────────────────────────────────────────────────────────────────────────┘
+0.72s · 986 in (948 cached) / 17 out · $0.000037 · $5.8170 shared budget remaining · showing 20 of at least 26
+Question:> 
+Question:> 
+Question:> /last
+SELECT Name FROM Artist WHERE Name LIKE 'A%'
+Question:> 
+Question:> 
+Question:> exit
+$ uvx --with-editable . mypy src benchmark
+Success: no issues found in 15 source files

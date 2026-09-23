@@ -1,0 +1,252 @@
+{
+  "meta": {
+    "title": "Live eval failure catalog",
+    "questions_file": "live_eval_questions.json",
+    "model": "accounts/fireworks/models/deepseek-v4-flash",
+    "arm": "agent",
+    "concurrency": 1,
+    "repeats": 3,
+    "artifact": "benchmark/results/raw_bakeoff_20260814T081255Z.jsonl",
+    "baseline": "benchmark/results/raw_bakeoff_20260813T190020Z.jsonl",
+    "generated_at": "2026-08-14T08:35:00Z",
+    "scoring_note": "SQL Eq uses execution equivalence with optional evaluation_contract. E2E Acc = no agent error AND response_type=query AND rows present AND sql_equivalent.",
+    "headline": {
+      "sql_eq_pct": 81.2,
+      "e2e_acc_pct": 81.2,
+      "pass_runs": 39,
+      "fail_runs": 9,
+      "total_runs": 48,
+      "fail_questions": 3,
+      "total_questions": 16
+    }
+  },
+  "taxonomy": [
+    {
+      "id": "measure_projection",
+      "name": "Missing measure projection",
+      "description": "The question ranks by, thresholds, or compares a measure (count, sum, growth, etc.), but the generated SELECT returns only entity labels and omits that measure. Gold expects both the label and the measure column."
+    },
+    {
+      "id": "ordering_mismatch",
+      "name": "Ordering / ranking mismatch",
+      "description": "Row identity (as a bag of entity names) matches gold, but ORDER BY does not follow the ranking measure (or gold's secondary key). Strict or bag_within_ties comparison still fails when projected columns differ or score columns are absent."
+    },
+    {
+      "id": "date_grain_mismatch",
+      "name": "Date grain mismatch",
+      "description": "Temporal grouping uses a different grain than gold (e.g. strftime('%m') month-of-year vs strftime('%Y-%m') year-month), so keys and MoM windows are not equivalent under default evaluation."
+    },
+    {
+      "id": "result_shape_incomplete",
+      "name": "Incomplete result shape",
+      "description": "Generated result is missing one or more columns that gold projects (beyond the primary entity label), so column alignment falls back to positional compare or fails required shape."
+    },
+    {
+      "id": "numeric_precision",
+      "name": "Numeric precision / rounding",
+      "description": "Growth or ratio values are mathematically close but not rounded the same way as gold (e.g. ROUND(..., 2) vs raw float), so exact execution equality fails even when intent is correct."
+    }
+  ],
+  "current_failures": [
+    {
+      "question_id": "live_011",
+      "question": "Which playlists contain tracks from more than 5 different artists?",
+      "tier": 2,
+      "join_complexity": "L3",
+      "tagged_failure_modes": ["JN", "GA"],
+      "evaluation_contract": {
+        "order_policy": "strict",
+        "tie_policy": "bag_within_ties"
+      },
+      "runs_failed": 3,
+      "runs_total": 3,
+      "sql_equivalent": false,
+      "e2e_success": false,
+      "error_category": null,
+      "eval_reason": "Result sets differ",
+      "categories": ["measure_projection", "ordering_mismatch", "result_shape_incomplete"],
+      "primary_category": "measure_projection",
+      "severity": "medium",
+      "summary": "Generation finds the correct playlist set (12 rows; Name bag matches gold) but projects only Name, omits ArtistCount, and orders by Name instead of ArtistCount DESC.",
+      "description": "Gold returns (Name, ArtistCount) ordered by ArtistCount DESC, Name ASC, filtered with HAVING ArtistCount > 5. The model joins Playlist→PlaylistTrack→Track→Album→Artist correctly and applies the same HAVING threshold, but SELECT lists only p.Name and ORDER BY p.Name. Because ArtistCount is absent, columns cannot align by name and the evaluator compares mismatched shapes. Entity-level answers are semantically right; schema/ranking projection is wrong.",
+      "evidence": {
+        "gold_columns": ["Name", "ArtistCount"],
+        "pred_columns": ["Name"],
+        "gold_row_count": 12,
+        "pred_row_count": 12,
+        "name_bag_equal": true,
+        "name_order_equal": false,
+        "gold_sql": "SELECT p.Name, COUNT(DISTINCT ar.ArtistId) as ArtistCount FROM Playlist p JOIN PlaylistTrack pt ON p.PlaylistId = pt.PlaylistId JOIN Track t ON pt.TrackId = t.TrackId JOIN Album al ON t.AlbumId = al.AlbumId JOIN Artist ar ON al.ArtistId = ar.ArtistId GROUP BY p.PlaylistId, p.Name HAVING ArtistCount > 5 ORDER BY ArtistCount DESC, p.Name ASC",
+        "predicted_sql": "SELECT p.Name FROM Playlist p JOIN PlaylistTrack pt ON p.PlaylistId = pt.PlaylistId JOIN Track t ON pt.TrackId = t.TrackId JOIN Album a ON t.AlbumId = a.AlbumId JOIN Artist ar ON a.ArtistId = ar.ArtistId GROUP BY p.PlaylistId, p.Name HAVING COUNT(DISTINCT ar.ArtistId) > 5 ORDER BY p.Name;",
+        "gold_sample": [
+          {"Name": "Music", "ArtistCount": 198},
+          {"Name": "Music", "ArtistCount": 198},
+          {"Name": "90’s Music", "ArtistCount": 109}
+        ],
+        "pred_sample": [
+          {"Name": "90’s Music"},
+          {"Name": "Brazilian Music"},
+          {"Name": "Classical"}
+        ]
+      },
+      "likely_root_cause": "Measure-projection prompt was under-followed for a threshold question phrased as 'which playlists'; the model treated it as names-only.",
+      "suggested_fix_direction": [
+        "Strengthen prompt example: HAVING / threshold questions must project the compared measure unless names-only is explicit.",
+        "Optional evaluation_contract.required_columns: [\"Name\", \"ArtistCount\"] to fail closed with a clearer reason.",
+        "Prefer ORDER BY measure DESC for ranked/threshold list questions."
+      ],
+      "delta_vs_baseline": {
+        "prior_sql_eq_passes": 1,
+        "final_sql_eq_passes": 0,
+        "note": "Regressed vs prior partial pass: prior sometimes projected artist_count; final consistently names-only."
+      }
+    },
+    {
+      "question_id": "live_014",
+      "question": "What is the month-over-month revenue growth rate for 2021?",
+      "tier": 3,
+      "join_complexity": "L4",
+      "tagged_failure_modes": ["NL", "DT", "GA"],
+      "evaluation_contract": null,
+      "runs_failed": 3,
+      "runs_total": 3,
+      "sql_equivalent": false,
+      "e2e_success": false,
+      "error_category": null,
+      "eval_reason": "Result sets differ",
+      "categories": ["date_grain_mismatch", "result_shape_incomplete", "numeric_precision"],
+      "primary_category": "date_grain_mismatch",
+      "severity": "high",
+      "summary": "Model computes MoM growth for 2021 months but uses month-of-year keys (%m), omits Revenue, and does not ROUND growth like gold's year-month (%Y-%m) series.",
+      "description": "Gold buckets InvoiceDate as year-month ('2021-01'…'2021-12'), projects Month, Revenue, and rounded GrowthRate via LAG over that ordered series. The prediction filters 2021 correctly and uses LAG for MoM percent change, but (1) groups with strftime('%m') producing '01'..'12', (2) drops Revenue from the final SELECT, and (3) returns unrounded floats (e.g. 5.555… vs 5.56). Prompt preference for '%m' on month-within-year breakdowns over-fired for a YoY-month MoM question that needs '%Y-%m'.",
+      "evidence": {
+        "gold_columns": ["Month", "Revenue", "GrowthRate"],
+        "pred_columns": ["month", "growth_rate_pct"],
+        "gold_row_count": 12,
+        "pred_row_count": 12,
+        "name_bag_equal": false,
+        "gold_sql_excerpt": "WITH monthly AS (SELECT strftime('%Y-%m', InvoiceDate) as Month, SUM(Total) as Revenue FROM Invoice WHERE strftime('%Y', InvoiceDate) = '2021' GROUP BY Month) SELECT Month, Revenue, CASE … ROUND(((Revenue - LAG(...)) * 100.0 / LAG(...)), 2) END AS GrowthRate …",
+        "predicted_sql": "WITH monthly_revenue AS ( SELECT strftime('%m', i.InvoiceDate) AS month, SUM(i.Total) AS revenue FROM Invoice i WHERE strftime('%Y', i.InvoiceDate) = '2021' GROUP BY month ), prev_month AS ( SELECT month, revenue, LAG(revenue) OVER (ORDER BY month) AS prev_revenue FROM monthly_revenue ) SELECT month, CASE WHEN prev_revenue IS NULL OR prev_revenue = 0 THEN NULL ELSE ((revenue - prev_revenue) / prev_revenue) * 100 END AS growth_rate_pct FROM prev_month ORDER BY month;",
+        "gold_sample": [
+          {"Month": "2021-01", "Revenue": 35.64, "GrowthRate": null},
+          {"Month": "2021-02", "Revenue": 37.62, "GrowthRate": 5.56},
+          {"Month": "2021-03", "Revenue": 37.62, "GrowthRate": 0.0}
+        ],
+        "pred_sample": [
+          {"month": "01", "growth_rate_pct": null},
+          {"month": "02", "growth_rate_pct": 5.5555555555555465},
+          {"month": "03", "growth_rate_pct": 0.0}
+        ]
+      },
+      "likely_root_cause": "Prompt rule preferring strftime('%m') for month-within-year conflicts with MoM series that need contiguous year-month keys; measure projection for Revenue also skipped.",
+      "suggested_fix_direction": [
+        "Clarify prompt: for month-over-month / time-series growth, use strftime('%Y-%m') (or full date grain), not '%m' alone.",
+        "Require projecting base measure (Revenue) alongside growth rate when the question asks for growth of revenue.",
+        "Optional date_grain / required_columns contract once gold shape is locked."
+      ],
+      "delta_vs_baseline": {
+        "prior_sql_eq_passes": 0,
+        "final_sql_eq_passes": 0,
+        "note": "Still failing; prior often returned no SQL / unsupported, final always returns executable but non-equivalent SQL."
+      }
+    },
+    {
+      "question_id": "live_016",
+      "question": "Which tracks appear in more playlists than the average track?",
+      "tier": 3,
+      "join_complexity": "L4",
+      "tagged_failure_modes": ["JN", "NL", "GA"],
+      "evaluation_contract": null,
+      "runs_failed": 3,
+      "runs_total": 3,
+      "sql_equivalent": false,
+      "e2e_success": false,
+      "error_category": null,
+      "eval_reason": "Result sets differ",
+      "categories": ["measure_projection", "ordering_mismatch", "result_shape_incomplete"],
+      "primary_category": "measure_projection",
+      "severity": "medium",
+      "summary": "Track Name set matches gold (1557 rows / 1481 distinct names), but SELECT omits PlaylistCount and ordering differs; evaluator rejects on shape.",
+      "description": "Gold builds per-track playlist counts with LEFT JOIN (including zero-playlist tracks in the average), then returns Name and PlaylistCount for tracks above the mean, ordered by PlaylistCount DESC. Predictions use HAVING COUNT(...) > (SELECT AVG(...)) and return only Name. Empirically the Name bag equals gold for both observed SQL variants (inner-only avg vs LEFT JOIN avg coincide on Chinook because every TrackId appears in PlaylistTrack with the same average 2.487…). Failure is therefore primarily projection/ranking shape, not wrong membership.",
+      "evidence": {
+        "gold_columns": ["Name", "PlaylistCount"],
+        "pred_columns": ["Name"],
+        "gold_row_count": 1557,
+        "pred_row_count": 1557,
+        "distinct_names_gold": 1481,
+        "distinct_names_pred": 1481,
+        "name_bag_equal": true,
+        "name_order_equal": false,
+        "avg_playlist_count_gold_style": 2.4878675421067658,
+        "avg_playlist_count_pred_inner_only": 2.4878675421067658,
+        "predicted_sql_variants": [
+          "SELECT t.Name FROM Track t JOIN PlaylistTrack pt ON t.TrackId = pt.TrackId GROUP BY t.TrackId, t.Name HAVING COUNT(pt.PlaylistId) > (SELECT AVG(playlist_count) FROM (SELECT COUNT(PlaylistId) AS playlist_count FROM PlaylistTrack GROUP BY TrackId)) ORDER BY COUNT(pt.PlaylistId) DESC, t.Name;",
+          "SELECT t.Name FROM Track t JOIN PlaylistTrack pt ON t.TrackId = pt.TrackId GROUP BY t.TrackId, t.Name HAVING COUNT(pt.PlaylistId) > (SELECT AVG(playlist_count) FROM (SELECT COUNT(pt2.PlaylistId) AS playlist_count FROM Track t2 LEFT JOIN PlaylistTrack pt2 ON t2.TrackId = pt2.TrackId GROUP BY t2.TrackId));"
+        ],
+        "gold_sample": [
+          {"Name": "Intoitus: Adorate Deum", "PlaylistCount": 5},
+          {"Name": "Miserere mei, Deus", "PlaylistCount": 5},
+          {"Name": "Aria Mit 30 Veränderungen, BWV 988 \"Goldberg Variations\": Aria", "PlaylistCount": 5}
+        ]
+      },
+      "likely_root_cause": "Same measure-projection miss as live_011: 'which tracks' answered as names-only despite comparison-to-average semantics.",
+      "suggested_fix_direction": [
+        "Require projecting the compared measure (PlaylistCount) for above-average / threshold questions.",
+        "evaluation_contract.required_columns: [\"Name\", \"PlaylistCount\"].",
+        "Optional bag_within_ties once measure is projected and ORDER BY PlaylistCount DESC."
+      ],
+      "delta_vs_baseline": {
+        "prior_sql_eq_passes": 0,
+        "final_sql_eq_passes": 0,
+        "note": "Still failing; membership appears correct, shape still wrong."
+      }
+    }
+  ],
+  "category_index": {
+    "measure_projection": ["live_011", "live_016"],
+    "ordering_mismatch": ["live_011", "live_016"],
+    "date_grain_mismatch": ["live_014"],
+    "result_shape_incomplete": ["live_011", "live_014", "live_016"],
+    "numeric_precision": ["live_014"]
+  },
+  "resolved_since_baseline": [
+    {
+      "question_id": "live_006",
+      "question": "What is the total revenue per month in 2021, and which month had the highest revenue?",
+      "prior_sql_eq_passes": 0,
+      "final_sql_eq_passes": 3,
+      "categories_resolved": ["date_grain_mismatch"],
+      "description": "Was failing on month key / ordering; fixed via date_grain=month contract, invoice year samples, and generation alignment."
+    },
+    {
+      "question_id": "live_009",
+      "question": "Which artists have tracks in the 'Jazz' genre but no tracks in the 'Rock' genre?",
+      "prior_sql_eq_passes": 1,
+      "final_sql_eq_passes": 3,
+      "categories_resolved": ["correlated_subquery_safety", "join_semantics"],
+      "description": "Prior intermittent wrong-result / safety issues; final consistently passes after is_safe correlated outer-ref fix and FK-oriented prompts."
+    },
+    {
+      "question_id": "live_010",
+      "question": "For each customer, list their top 3 genres by total spending",
+      "prior_sql_eq_passes": 0,
+      "final_sql_eq_passes": 3,
+      "categories_resolved": ["ordering_mismatch"],
+      "description": "Top-N tie ordering; fixed with bag_within_ties contract and deterministic secondary ORDER BY guidance for LIMIT/top-N."
+    },
+    {
+      "question_id": "live_013",
+      "question": "Which customers have purchased tracks from every genre that 'AC/DC' has tracks in?",
+      "prior_sql_eq_passes": 1,
+      "final_sql_eq_passes": 3,
+      "categories_resolved": ["correlated_subquery_safety"],
+      "description": "Prior often safety-rejected correlated EXISTS/NOT EXISTS; is_safe now resolves outer aliases across nested selects so queries execute and match."
+    }
+  ],
+  "notes": [
+    "Only 3 of 16 live questions remain failing on the final DeepSeek agent run (9 of 48 runs).",
+    "live_011 and live_016 look like near-misses: entity membership matches gold as a Name bag; they fail mainly because the measure column is not projected.",
+    "live_014 is a deeper semantic miss (date grain + shape + rounding), not just presentation.",
+    "This file does not claim generalization beyond live_eval_questions.json."
+  ]
+}

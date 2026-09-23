@@ -1,0 +1,6 @@
+{
+  "q_001": {
+    "sql": "<your generated SQL>",
+    "answer": "<human-readable result summary>"
+  }
+}
