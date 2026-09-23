@@ -165,6 +165,19 @@ def build_bird_report(records: list[dict[str, Any]], question_count: int) -> str
                 f"{p50:.2f} | {p90:.2f} | {repairs / len(rows):.1%} | "
                 f"${statistics.mean(costs) if costs else 0.0:.6f} |"
             )
+
+    lines.extend(["", "## Per-database accuracy", "", "| db_id | N | Exec Acc |", "|---|---:|---:|"])
+    by_db: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for record in records:
+        by_db[record["db_id"]].append(record)
+    for db_id, rows in sorted(
+        by_db.items(),
+        key=lambda kv: sum(bool(r.get("evaluation", {}).get("sql_equivalent")) for r in kv[1])
+        / len(kv[1]),
+    ):
+        correct = sum(bool(row.get("evaluation", {}).get("sql_equivalent")) for row in rows)
+        lines.append(f"| `{db_id}` | {len(rows)} | {correct / len(rows):.1%} |")
+
     lines.extend(["", "## Failure analysis"])
     failures = [r for r in records if not r.get("evaluation", {}).get("sql_equivalent")]
     if not failures:

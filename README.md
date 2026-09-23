@@ -33,14 +33,15 @@ Two independent evaluations, both live-measured against the current Fireworks ca
 | Benchmark | Exec accuracy | P50 | P90 | Repair rate | $/query |
 |---|---:|---:|---:|---:|---:|
 | Chinook dev set (10 questions, this project's own) | 60%¹ | 0.84s | 0.96s | 0% | $0.000502 |
-| [BIRD-SQL](https://bird-bench.github.io) Mini-Dev (60-question sample, public benchmark, never tuned against) | 50.0%² | 1.22s | 3.25s | 1.7% | $0.000471 |
+| [BIRD-SQL](https://bird-bench.github.io) Mini-Dev (full 500 questions, public benchmark, never tuned against) | 45.8%² | 1.53s | 4.97s | 2.0% | $0.000485 |
 
 ¹ Raw execution-equivalence score. Hand-inspecting all four misses found three are not
 generation errors — see [Known gaps](#known-gaps--what-id-tackle-next). ² Simple/moderate/
-challenging breakdown: 81.2% / 41.9% / 30.8% — see [Benchmarking against BIRD-SQL](#benchmarking-against-bird-sql).
+challenging breakdown: 62.2% / 40.0% / 36.3% — see [Benchmarking against BIRD-SQL](#benchmarking-against-bird-sql)
+and the full root-cause [postmortem](docs/POSTMORTEM.md).
 
-At $0.000471–$0.000502/query, 30,000 queries/day costs roughly **$14–15**. Both numbers were
-produced by `benchmark/run_bench.py` / `benchmark/run_bird.py` against the live API on
+At $0.000485–$0.000502/query, 30,000 queries/day costs roughly **$14.55–15.06**. Both numbers
+were produced by `benchmark/run_bench.py` / `benchmark/run_bird.py` against the live API on
 2026-09-22 — reproduce them with the commands in [Validation](#validation).
 
 ## Requirements
@@ -272,8 +273,9 @@ open benchmark/results/bird_report.md
 
 `--limit` randomly samples N questions (seeded, reproducible with `--seed`) so cost stays
 bounded — at the measured ~$0.0005/query, a 50-question sample costs a few cents. Drop `--limit`
-to run the full 500. Other flags: `--difficulty simple moderate challenging`, `--db <db_id>...`
-to target specific databases, `--models` for a multi-model comparison the same way
+to run the full 500 (~$0.25, a few minutes at `--concurrency 8`) — the result below is from a
+full run, not a sample. Other flags: `--difficulty simple moderate challenging`, `--db
+<db_id>...` to target specific databases, `--models` for a multi-model comparison the same way
 `run_bench.py` does.
 
 **What Trellis's agent adds over a schema-only baseline on BIRD:** BIRD questions include an
@@ -282,19 +284,27 @@ definitions) often required to get the SQL right, distinct from anything in the 
 `benchmark/bird.py` threads this into the question passed to the agent, the same way a
 production system would thread in domain context beyond raw DDL.
 
-**Current result** (60-question stratified sample, `deepseek-v4-flash-0731`, 2026-09-22):
+**Current result** (full 500-question set, `deepseek-v4-flash-0731`, 2026-09-22):
 
 | Difficulty | N | Exec accuracy |
 |---|---:|---:|
-| Simple | 16 | 81.2% |
-| Moderate | 31 | 41.9% |
-| Challenging | 13 | 30.8% |
-| **Overall** | **60** | **50.0%** |
+| Simple | 148 | 62.2% |
+| Moderate | 250 | 40.0% |
+| Challenging | 102 | 36.3% |
+| **Overall** | **500** | **45.8%** |
 
-This tracks the expected shape for a mid-tier open model with no BIRD-specific tuning — sharp
+Per-database accuracy ranges from 33.3% (`california_schools`) to 73.1% (`superhero`) — see
+`benchmark/results/bird_report.md` for the full per-database table. This tracks the expected
+shape for a mid-tier, non-SQL-specialized general chat model with no BIRD-specific tuning: sharp
 accuracy dropoff from simple to challenging, and meaningfully harder than Chinook's small,
 hand-picked dev set. **Not implemented:** BIRD's other two official metrics, soft-F1 and R-VES
 (reward-weighted execution efficiency) — execution accuracy only.
+
+**Full root-cause analysis and a prioritized roadmap to close the gap** — comparing this result
+against the live BIRD leaderboard and literature baselines, with concrete failure examples,
+per-issue fix proposals, and an honest accounting of which fixes are cheap prompt changes versus
+which require a real cost/latency product tradeoff — is in
+**[docs/POSTMORTEM.md](docs/POSTMORTEM.md)**.
 
 ## Known gaps & what I'd tackle next
 
@@ -318,8 +328,9 @@ src/                 agent, CLI, schema introspection, safety/validation, LLM cl
 benchmark/           bake-off harness, BIRD-SQL runner, execution-accuracy evaluator, reports
 scripts/             setup_chinook.sh, setup_bird_minidev.sh
 data/                Chinook.db + dev questions; data/bird/ (gitignored, fetched on demand)
-docs/                DECISIONS.md, AI_USAGE.md, PROMPT_ITERATIONS.md, COST_COMPARISON.txt,
-                     BUILD_PLAN.md (the original engineering spec), plus live-eval failure notes
+docs/                POSTMORTEM.md (BIRD-SQL root-cause analysis + roadmap to 80%), DECISIONS.md,
+                     AI_USAGE.md, PROMPT_ITERATIONS.md, COST_COMPARISON.txt, BUILD_PLAN.md
+                     (the original engineering spec), plus live-eval failure notes
 tests/               pytest suite (no live API calls — LLM calls are mocked)
 ```
 
