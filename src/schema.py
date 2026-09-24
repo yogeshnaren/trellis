@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+import io
 import re
 import sqlite3
 from functools import lru_cache
@@ -20,6 +22,66 @@ MAX_SAMPLED_COLUMNS_PER_TABLE = 10
 _DATE_LIKE = re.compile(r"^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}:\d{2})?$")
 _BARE_IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 QUOTED_SCHEMA_HEADER = "SQLite schema (names in backticks must be written with the backticks):"
+
+
+# Data-dictionary rendering (BIRD ships database_description/<table>.csv per database):
+# per-field character caps keep the prompt bounded (p90 of description+values is ~130 chars;
+# the longest is ~1,000).
+DICTIONARY_DESCRIPTION_CHARS = 160
+DICTIONARY_VALUES_CHARS = 280
+
+
+_FILLER = {"the", "a", "an", "of", "for", "in", "is", "s", "this", "that", "which", "to"}
+
+
+def _words(text: str) -> set[str]:
+    spaced = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", text)  # camelCase -> camel Case
+    return {w for w in re.findall(r"[a-z0-9]+", spaced.casefold()) if w not in _FILLER}
+
+
+def _restates_name(description: str, table: str, column: str) -> bool:
+    """True when a description only repeats the table/column name ("Name": "actor's name"),
+    so it adds tokens without information."""
+    return _words(description) <= _words(column) | _words(table)
+
+
+def _clip(text: str, limit: int) -> str:
+    text = " ".join(text.split())
+    return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
+
+
+@lru_cache(maxsize=32)
+def _dictionary(db_key: str) -> dict[str, dict[str, tuple[str, str]]]:
+    """table -> column -> (description, value notes), case-folded keys, from the
+    ``database_description/*.csv`` files next to the database. Empty if none exist."""
+    directory = Path(db_key).parent / "database_description"
+    if not directory.is_dir():
+        return {}
+    entries: dict[str, dict[str, tuple[str, str]]] = {}
+    for path in directory.glob("*.csv"):
+        raw = path.read_bytes()
+        for encoding in ("utf-8-sig", "cp1252", "latin-1"):
+            try:
+                text = raw.decode(encoding)
+                break
+            except UnicodeDecodeError:
+                continue
+        columns: dict[str, tuple[str, str]] = {}
+        for row in csv.DictReader(io.StringIO(text)):
+            fields = {(key or "").strip().casefold(): (value or "") for key, value in row.items()}
+            name = fields.get("original_column_name", "").strip()
+            if not name:
+                continue
+            description = " ".join(fields.get("column_description", "").split())
+            if description.casefold() in {name.casefold(), fields.get("column_name", "").strip().casefold()}:
+                description = ""
+            values = " ".join(fields.get("value_description", "").split())
+            if description and _restates_name(description, path.stem, name):
+                description = ""
+            if description or values:
+                columns[name.casefold()] = (description, values)
+        entries[path.stem.casefold()] = columns
+    return entries
 
 
 def _render_name(name: str, quote: bool) -> str:
@@ -127,7 +189,7 @@ def _foreign_key_edges(db_key: str) -> tuple[tuple[str, str, str, str], ...]:
 
 
 @lru_cache(maxsize=64)
-def _schema_text(db_key: str, quote: bool = False) -> str:
+def _schema_text(db_key: str, quote: bool = False, dictionary: bool = False) -> str:
     metadata = _metadata(db_key)
     connection = sqlite3.connect(f"file:{db_key}?mode=ro", uri=True)
 
@@ -144,6 +206,15 @@ def _schema_text(db_key: str, quote: bool = False) -> str:
         for table, columns in metadata.items():
             rendered = ", ".join(f"{q(name)} {kind}" for name, kind, _pk in columns)
             lines.append(f"- {q(table)}({rendered})")
+            notes = _dictionary(db_key).get(table.casefold(), {}) if dictionary else {}
+            for name, _kind, _pk in columns:
+                if name.casefold() not in notes:
+                    continue
+                description, values = notes[name.casefold()]
+                parts = [_clip(description, DICTIONARY_DESCRIPTION_CHARS)] if description else []
+                if values:
+                    parts.append("values: " + _clip(values, DICTIONARY_VALUES_CHARS))
+                lines.append(f"  about {q(name)}: {'; '.join(parts)}")
             # Skip primary keys: always unique, so sampling them is wasted work.
             candidates = [name for name, _kind, is_pk in columns if not is_pk]
             for column in candidates[:MAX_SAMPLED_COLUMNS_PER_TABLE]:
@@ -168,9 +239,19 @@ def _schema_text(db_key: str, quote: bool = False) -> str:
         connection.close()
 
 
-def get_schema(db_path: str | Path = DEFAULT_DB_PATH, *, quote_identifiers: bool = False) -> str:
-    """Return a compact schema string, cached by resolved database path and quoting."""
-    return _schema_text(_db_key(db_path), quote_identifiers)
+def get_schema(
+    db_path: str | Path = DEFAULT_DB_PATH,
+    *,
+    quote_identifiers: bool = False,
+    dictionary: bool = False,
+) -> str:
+    """Return a compact schema string, cached by resolved path, quoting, and dictionary use.
+
+    ``dictionary=True`` adds one ``about <column>: ...`` line per documented column from
+    BIRD's ``database_description`` CSVs (column meaning, value notes, "commonsense
+    evidence" formulas); databases without those files render exactly as before.
+    """
+    return _schema_text(_db_key(db_path), quote_identifiers, dictionary)
 
 
 def table_count(db_path: str | Path = DEFAULT_DB_PATH) -> int:

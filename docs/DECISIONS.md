@@ -420,3 +420,15 @@ re-evaluation at the Mini-Dev gate.
 **Protocol fix:** `analyze flips` now computes the §5.4 minimum mechanically: base 1.5, plus
 1 pt per +50% uncached-equivalent $/answer, plus 1 pt per +1s P50. It prints yes/no per
 metric and whether an audit is required, so the next decision isn't a judgement call.
+
+## 2026-09-24 — Phase 1 closed; dictionary CSVs not adopted
+**Dictionary CSVs** (`--dictionary`, BIRD `database_description` notes per column): the
+pilot on top of the accepted configuration gained +1.2 pts [−1.2, +4.4] on the stratified
+sample and 0 on randomly sampled rows that use value-noted columns. It added +32%
+uncached cost and +0.46s P50, which puts the required minimum at +2.61. That's not on
+course, so no full comparison was run (owner decision; plan §6.1). The flag remains for a
+later Mini-Dev gate check.
+
+**Phase 1 result:** accepted configuration `--prompt-profile benchmark --quote-identifiers
+--pipeline-repairs`. On `train_dev` it moved from 60.1% to 68.7% row-weighted and from
+58.5% to 69.3% macro, for $1.24 of the $2 cap (ledger figure).

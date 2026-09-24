@@ -442,11 +442,37 @@ of the extra calls) is flagged for re-evaluation once the Mini-Dev gate exercise
 `--prompt-profile benchmark --quote-identifiers --pipeline-repairs`: **68.7% row-weighted,
 69.3% database macro** on `train_dev` (baseline was 60.1% / 58.5%).
 2. ~~Full comparison #2~~ done and accepted (above).
-3. **Next: Phase 1 step 2, the dictionary CSVs**, tested cumulatively against the 1a+1b+1c
-   run.
-4. Phase 1 spend so far: **$1.16 of $2** (baseline $0.29, pilots $0.11 + $0.05, full #1
-   $0.28, full #2 $0.40). $0.84 remains, enough for one dictionary pilot plus one full
-   comparison at the measured rate.
+3. ~~Dictionary CSVs~~: piloted, **not adopted** (below).
+
+**Step 2, dictionary CSVs (2026-09-24): pilot NOT on course, full run skipped (owner
+decision).** `--dictionary` adds one `about <column>: …` line per documented column from
+BIRD's `database_description` CSVs:
+- column meaning, value notes, and "commonsense evidence" formulas;
+- per-field caps;
+- descriptions that only restate the table/column name are dropped.
+
+It adds +53% prompt characters on `train_dev`. Pilot vs the accepted run, run
+`bird_raw_20260924T212220Z`:
+
+| Subset | Rows | Accepted → +dictionary | Δ (95% CI) |
+|---|---:|---|---|
+| Stratified (unbiased) | 80 | 71.9% → 73.1% | +1.2 [−1.2, +4.4]; 2 fixes, 1 regression |
+| Targeted: random rows whose gold uses a column with value notes | 34 | 85.3% → 85.3% | 0 |
+| Cost / latency | | uncached $/answer +32%; P50 1.02s → 1.48s | **required minimum +2.61** |
+
+Not on course for the required minimum, so no full comparison (§6.1). The most likely
+reason: BIRD's per-question evidence already carries most of what these dictionaries say
+for `train_dev`'s databases. The flag stays available for a Mini-Dev gate check, where the
+postmortem's `california_schools` / `rtype` "unuseful" case lives.
+
+**Phase 1 closed (2026-09-24).**
+- Accepted configuration: `--prompt-profile benchmark --quote-identifiers
+  --pipeline-repairs`.
+- **`train_dev`: 60.1% → 68.7% row-weighted, 58.5% → 69.3% macro.**
+- Spend: **$1.24 of $2** per the ledger, with $0.76 unspent.
+- Not adopted: identifier quoting alone as a separate change (folded into 1b+1c), the
+  dictionary CSVs, and the wide-table and value-index steps (never reached: they were
+  gated on residual value-matching failures).
 
 ### 6.3 Phase 3: reasoning and diversity, incrementally (single-digit dollars)
 

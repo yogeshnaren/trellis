@@ -145,7 +145,11 @@ async def benchmark(args: argparse.Namespace) -> Path:
                 result = await agent.ask(
                     with_evidence(question.question, question.evidence),
                     ConversationContext(
-                        get_schema(db_path, quote_identifiers=args.quote_identifiers),
+                        get_schema(
+                            db_path,
+                            quote_identifiers=args.quote_identifiers,
+                            dictionary=args.dictionary,
+                        ),
                         profile=args.prompt_profile,
                     ),
                 )
@@ -247,7 +251,11 @@ def run_metadata(
     template = PROMPT_PROFILES[args.prompt_profile]
     prompts = {
         db_id: _sha16(
-            template.format(schema=get_schema(path, quote_identifiers=args.quote_identifiers))
+            template.format(
+                schema=get_schema(
+                    path, quote_identifiers=args.quote_identifiers, dictionary=args.dictionary
+                )
+            )
         )
         for db_id, path in db_paths.items()
     }
@@ -256,6 +264,7 @@ def run_metadata(
         "prompt_profile": args.prompt_profile,
         "quote_identifiers": args.quote_identifiers,
         "pipeline_repairs": args.pipeline_repairs,
+        "dictionary": args.dictionary,
         "temperature": args.temperature,
         "max_tokens": args.max_tokens,
         "reasoning_effort": args.reasoning_effort,
@@ -408,6 +417,11 @@ def parse_args() -> argparse.Namespace:
         "--quote-identifiers",
         action="store_true",
         help="Render names SQLite can't read bare (e.g. `T-BIL`) backticked in the schema.",
+    )
+    parser.add_argument(
+        "--dictionary",
+        action="store_true",
+        help="Add BIRD database_description CSV notes (meaning, values, formulas) per column.",
     )
     parser.add_argument(
         "--pipeline-repairs",
