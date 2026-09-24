@@ -409,3 +409,28 @@ def test_full_comparison_requires_two_repeats_and_same_expected_rows(tmp_path: P
     old, new, questions = _two_row_runs(tmp_path, full)
     report = flips_report(old, new, questions, tmp_path, iterations=100)
     assert "full comparison, coverage verified" in report and "| Row-weighted | +50.00 |" in report
+
+
+def test_run_metadata_ignores_result_files_when_hashing_code(tmp_path: Path) -> None:
+    import argparse
+
+    from benchmark.run_bird import run_metadata, select_questions
+
+    args = argparse.Namespace(
+        questions=Path("data/bird/splits/train_dev.json"),
+        db_dir=Path("data/bird/train/train_databases"),
+        difficulty=None, db=["movie"], limit=2, per_db=None, ids=None, seed=0,
+        models=["m"], temperature=0.0, max_tokens=400, reasoning_effort=None, repeats=1,
+    )
+    if not args.questions.exists():
+        import pytest
+
+        pytest.skip("BIRD train splits not downloaded")
+    before = run_metadata(args, select_questions(args))["code_state_sha256_16"]
+    stray = Path("benchmark/results/bird_raw_TEST_UNTRACKED.jsonl")
+    stray.write_text('{"a": 1}\n')
+    try:
+        after = run_metadata(args, select_questions(args))["code_state_sha256_16"]
+    finally:
+        stray.unlink()
+    assert before == after

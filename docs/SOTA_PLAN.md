@@ -325,6 +325,32 @@ calls, drop to one full comparison rather than raise the cap mid-phase.
 **Not done:** automatic column trimming or `COUNT(DISTINCT)` rewriting. Those wait for
 measured precision.
 
+### Phase 1 log
+
+**Baseline (2026-09-24):** run `bird_raw_20260924T005317Z` at commit `5a69af6` (clean),
+current configuration, `train_dev` × 2 repeats, complete.
+
+| Measure | Value |
+|---|---:|
+| Official EX, row-weighted | **60.1%** |
+| Official EX, database macro | **58.5%** |
+| Per database | sales_in_weather 41.2% · restaurant 58.1% · soccer_2016 65.1% · movie 69.6% |
+| On the 72 BIRD-Verified same-input rows: original gold vs corrected gold | 68.1% vs **77.8%** (10 wrong→right, 3 right→wrong) |
+| Oracle output-format ceiling (repeat 0; not a gain) | 68.5% (34 extra-column, 7 `COUNT(DISTINCT)`, 1 `ROUND`) |
+| Failure buckets (repeat 0, 200 rows) | values-differ 79 · extra-columns 54 · row-count 34 · empty 13 · pipeline 12 · missing-columns 5 · gold-exec-error 3 |
+| Cost | **$0.000293/query** (**48.7% prompt-cache hits** from database-ordered runs; 40% under the estimate). Run total $0.29 of the $2 Phase 1 cap. The ledger ceiling was set to $2.28 (prior spend + cap), so the cap is enforced automatically. |
+| Latency | Not valid for this run: synchronous scoring on the event loop inflated it (P90 14.9s). Scoring now runs in a worker thread. |
+
+**Harness fixes found by this run:**
+- Code-state hashing included the run's own result file under `benchmark/`, so every run
+  looked dirty and could never be compared. It now hashes Python sources only. This run's
+  sidecar was corrected, with the change recorded inside it.
+- Scoring moved off the event loop.
+- The report title now names the question file.
+
+**Next:** pilots for 1a (benchmark prompt profile) and 1b (identifier quoting), each
+≈ $0.03 at the measured rate, compared with `analyze flips --pilot` against this baseline.
+
 ### 6.3 Phase 3: reasoning and diversity, incrementally (single-digit dollars)
 
 - **3a. Reasoning on, JSON format unchanged.** Set `--reasoning-effort low`, then `high`,

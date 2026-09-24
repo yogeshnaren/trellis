@@ -43,7 +43,7 @@ from benchmark.bird import (
     load_questions,
     with_evidence,
 )
-from benchmark.evaluate import BIRD_OFFICIAL_TIMEOUT_S, score_bird
+from benchmark.evaluate import BIRD_OFFICIAL_TIMEOUT_S, BirdScore, score_bird
 from src.agent import Agent
 from src.conversation import ConversationContext
 from src.costs import MODEL_DEEPSEEK, get_shared_budget
@@ -52,6 +52,22 @@ from src.prompts import SYSTEM_PROMPT
 from src.schema import get_schema
 
 DIFFICULTIES = ("simple", "moderate", "challenging", "unknown")
+
+
+def _score(
+    db_path: Path, question: BirdQuestion, generated_sql: str | None, delivered: bool
+) -> BirdScore:
+    """One execution of gold and generated SQL feeds every metric (thread-safe: own conn).
+
+    Only SQL the agent actually delivered counts officially; a rejected query is no answer.
+    """
+    conn = connect_readonly(db_path, timeout_seconds=BIRD_OFFICIAL_TIMEOUT_S)
+    try:
+        return score_bird(
+            conn, str(question.question_id), question.gold_sql, generated_sql, delivered=delivered
+        )
+    finally:
+        conn.close()
 
 
 def select_questions(args: argparse.Namespace) -> list[BirdQuestion]:
@@ -140,23 +156,16 @@ async def benchmark(args: argparse.Namespace) -> Path:
                 repeat=repeat,
                 concurrency=args.concurrency,
             )
-            eval_conn = connect_readonly(db_path, timeout_seconds=BIRD_OFFICIAL_TIMEOUT_S)
-            try:
-                # One execution of gold and generated SQL feeds every metric. Only SQL the
-                # agent actually delivered counts officially; a rejected query is no answer.
-                score = score_bird(
-                    eval_conn,
-                    str(question.question_id),
-                    question.gold_sql,
-                    result.sql,
-                    delivered=result.error is None,
-                )
-                record["evaluation"] = asdict(score.evaluation)
-                record["official_ex"] = score.official_ex
-                record["result_signature"] = score.signature
-                record["result_row_count"] = score.row_count
-            finally:
-                eval_conn.close()
+            # Scoring can take up to 30s per query on large databases; run it in a worker
+            # thread so it never stalls the event loop (and other in-flight LLM calls, whose
+            # measured latency would otherwise include the stall).
+            score = await asyncio.to_thread(
+                _score, db_path, question, result.sql, result.error is None
+            )
+            record["evaluation"] = asdict(score.evaluation)
+            record["official_ex"] = score.official_ex
+            record["result_signature"] = score.signature
+            record["result_row_count"] = score.row_count
             records.append(record)
 
     jobs = [
@@ -199,7 +208,7 @@ async def benchmark(args: argparse.Namespace) -> Path:
     output.with_name(f"bird_meta_{timestamp}.json").write_text(
         json.dumps(meta, indent=1) + "\n"
     )
-    Path(args.report).write_text(build_bird_report(records, len(questions)))
+    Path(args.report).write_text(build_bird_report(records, len(questions), args.questions))
     return output
 
 
@@ -215,7 +224,7 @@ def run_metadata(
     Pins *contents*, not paths: the question file, every database scored against, the
     effective system prompt per database (template + rendered schema, so a ``schema.py``
     change shows up), the generation configuration, and the code state including
-    uncommitted edits and untracked files under ``src/`` and ``benchmark/``.
+    uncommitted edits and untracked ``.py`` files directly under ``src/`` and ``benchmark/``.
     """
 
     def git(*command: str) -> str:
@@ -239,8 +248,11 @@ def run_metadata(
         "reasoning_effort": args.reasoning_effort,
         "max_repairs": 1,
     }
-    untracked = git("ls-files", "--others", "--exclude-standard", "--", "src", "benchmark")
-    code_state = git("diff", "HEAD", "--", "src", "benchmark") + "".join(
+    # Python sources only: result files under benchmark/results/ (including the raw file
+    # this run just wrote) are outputs, not code, and must not make a clean tree look dirty.
+    sources = ("src/*.py", "benchmark/*.py")
+    untracked = git("ls-files", "--others", "--exclude-standard", "--", *sources)
+    code_state = git("diff", "HEAD", "--", *sources) + "".join(
         Path(name).read_text(errors="replace") for name in sorted(untracked.split()) if name
     )
     return {
@@ -275,13 +287,18 @@ def is_correct(record: dict[str, Any]) -> bool:
     return bool(record.get("evaluation", {}).get("sql_equivalent"))
 
 
-def build_bird_report(records: list[dict[str, Any]], question_count: int) -> str:
+def build_bird_report(
+    records: list[dict[str, Any]],
+    question_count: int,
+    questions_path: Path = DEFAULT_QUESTIONS,
+) -> str:
     lines = [
-        "# BIRD-SQL Mini-Dev Report",
+        f"# BIRD-SQL Report: `{Path(questions_path).name}`",
         "",
         (
-            f"Local execution-accuracy (EX) run against {question_count} Mini-Dev questions "
-            "(public dev-labels), using the same schema-grounded agent as the Chinook bake-off. "
+            f"Local execution-accuracy (EX) run against {question_count} questions from "
+            f"`{questions_path}` (public labels), using the same schema-grounded agent as the "
+            "Chinook bake-off. "
             "**Not an official BIRD-SQL leaderboard submission** — the leaderboard scores a "
             "held-out test set through its own process; this is a comparable local proxy. "
             "Exec Acc is BIRD's official EX rule (`set(pred) == set(gold)`, "

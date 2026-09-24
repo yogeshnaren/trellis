@@ -1,0 +1,5012 @@
+[
+ {
+  "row_index": 0,
+  "question_id": 730,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 1,
+  "question_id": 731,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 2,
+  "question_id": 732,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 3,
+  "question_id": 733,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 4,
+  "question_id": 734,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 5,
+  "question_id": 735,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 6,
+  "question_id": 736,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 7,
+  "question_id": 737,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 8,
+  "question_id": 738,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 9,
+  "question_id": 739,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 10,
+  "question_id": 740,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 11,
+  "question_id": 741,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": "count-without-distinct"
+ },
+ {
+  "row_index": 12,
+  "question_id": 742,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 13,
+  "question_id": 743,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 14,
+  "question_id": 744,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 15,
+  "question_id": 745,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 16,
+  "question_id": 746,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 17,
+  "question_id": 747,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 18,
+  "question_id": 748,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 19,
+  "question_id": 749,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 20,
+  "question_id": 750,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 21,
+  "question_id": 751,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 22,
+  "question_id": 752,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-safety-rejected",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 23,
+  "question_id": 753,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 24,
+  "question_id": 754,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 25,
+  "question_id": 755,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 26,
+  "question_id": 756,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 27,
+  "question_id": 757,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 28,
+  "question_id": 758,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 29,
+  "question_id": 759,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 30,
+  "question_id": 760,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 31,
+  "question_id": 761,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 32,
+  "question_id": 762,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 33,
+  "question_id": 763,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 34,
+  "question_id": 764,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 35,
+  "question_id": 765,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 36,
+  "question_id": 766,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 37,
+  "question_id": 767,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-safety-rejected",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 38,
+  "question_id": 768,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 39,
+  "question_id": 769,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 40,
+  "question_id": 770,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 41,
+  "question_id": 771,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 42,
+  "question_id": 772,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 43,
+  "question_id": 773,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 44,
+  "question_id": 774,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 45,
+  "question_id": 775,
+  "db_id": "movie",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 46,
+  "question_id": 1670,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 47,
+  "question_id": 1671,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 48,
+  "question_id": 1672,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 49,
+  "question_id": 1673,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 50,
+  "question_id": 1674,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 51,
+  "question_id": 1675,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 52,
+  "question_id": 1676,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 53,
+  "question_id": 1677,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 54,
+  "question_id": 1678,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 55,
+  "question_id": 1679,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 56,
+  "question_id": 1680,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 57,
+  "question_id": 1681,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 58,
+  "question_id": 1682,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 59,
+  "question_id": 1683,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 60,
+  "question_id": 1684,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 61,
+  "question_id": 1685,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 62,
+  "question_id": 1686,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 63,
+  "question_id": 1687,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 64,
+  "question_id": 1688,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 65,
+  "question_id": 1689,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "missing-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 66,
+  "question_id": 1690,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 67,
+  "question_id": 1691,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 68,
+  "question_id": 1692,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 69,
+  "question_id": 1693,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 70,
+  "question_id": 1694,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 71,
+  "question_id": 1695,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 72,
+  "question_id": 1696,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 73,
+  "question_id": 1697,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 74,
+  "question_id": 1698,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 75,
+  "question_id": 1699,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 76,
+  "question_id": 1700,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 77,
+  "question_id": 1701,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 78,
+  "question_id": 1702,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 79,
+  "question_id": 1703,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 80,
+  "question_id": 1704,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 81,
+  "question_id": 1705,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 82,
+  "question_id": 1706,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 83,
+  "question_id": 1707,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 84,
+  "question_id": 1708,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 85,
+  "question_id": 1709,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 86,
+  "question_id": 1710,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 87,
+  "question_id": 1711,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 88,
+  "question_id": 1712,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": false,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 89,
+  "question_id": 1713,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 90,
+  "question_id": 1714,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 91,
+  "question_id": 1715,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "missing-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 92,
+  "question_id": 1716,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 93,
+  "question_id": 1717,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 94,
+  "question_id": 1718,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 95,
+  "question_id": 1719,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 96,
+  "question_id": 1720,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 97,
+  "question_id": 1721,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 98,
+  "question_id": 1722,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 99,
+  "question_id": 1723,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 100,
+  "question_id": 1724,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 101,
+  "question_id": 1725,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 102,
+  "question_id": 1726,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 103,
+  "question_id": 1727,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 104,
+  "question_id": 1728,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 105,
+  "question_id": 1729,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 106,
+  "question_id": 1730,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 107,
+  "question_id": 1731,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 108,
+  "question_id": 1732,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 109,
+  "question_id": 1733,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 110,
+  "question_id": 1734,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 111,
+  "question_id": 1735,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 112,
+  "question_id": 1736,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 113,
+  "question_id": 1737,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 114,
+  "question_id": 1738,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 115,
+  "question_id": 1739,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 116,
+  "question_id": 1740,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": false,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 117,
+  "question_id": 1741,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 118,
+  "question_id": 1742,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 119,
+  "question_id": 1743,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": "count-without-distinct"
+ },
+ {
+  "row_index": 120,
+  "question_id": 1744,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 121,
+  "question_id": 1745,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 122,
+  "question_id": 1746,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 123,
+  "question_id": 1747,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 124,
+  "question_id": 1748,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "answered-unsupported",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 125,
+  "question_id": 1749,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 126,
+  "question_id": 1750,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 127,
+  "question_id": 1751,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 128,
+  "question_id": 1752,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 129,
+  "question_id": 1753,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 130,
+  "question_id": 1754,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 131,
+  "question_id": 1755,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 132,
+  "question_id": 1756,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 133,
+  "question_id": 1757,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 134,
+  "question_id": 1758,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 135,
+  "question_id": 1759,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 136,
+  "question_id": 1760,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 137,
+  "question_id": 1761,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 138,
+  "question_id": 1762,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 139,
+  "question_id": 1763,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 140,
+  "question_id": 1764,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 141,
+  "question_id": 1765,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 142,
+  "question_id": 1766,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 143,
+  "question_id": 1767,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 144,
+  "question_id": 1768,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 145,
+  "question_id": 1769,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 146,
+  "question_id": 1770,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 147,
+  "question_id": 1771,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 148,
+  "question_id": 1772,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 149,
+  "question_id": 1773,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 150,
+  "question_id": 1774,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 151,
+  "question_id": 1775,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 152,
+  "question_id": 1776,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 153,
+  "question_id": 1777,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 154,
+  "question_id": 1778,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 155,
+  "question_id": 1779,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 156,
+  "question_id": 1780,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 157,
+  "question_id": 1781,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 158,
+  "question_id": 1782,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": "count-without-distinct"
+ },
+ {
+  "row_index": 159,
+  "question_id": 1783,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 160,
+  "question_id": 1784,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 161,
+  "question_id": 1785,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 162,
+  "question_id": 1786,
+  "db_id": "restaurant",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 163,
+  "question_id": 1787,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 164,
+  "question_id": 1788,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 165,
+  "question_id": 1789,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 166,
+  "question_id": 1790,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 167,
+  "question_id": 1791,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 168,
+  "question_id": 1792,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 169,
+  "question_id": 1793,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 170,
+  "question_id": 1794,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 171,
+  "question_id": 1795,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 172,
+  "question_id": 1796,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 173,
+  "question_id": 1797,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 174,
+  "question_id": 1798,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 175,
+  "question_id": 1799,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 176,
+  "question_id": 1800,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 177,
+  "question_id": 1801,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 178,
+  "question_id": 1802,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 179,
+  "question_id": 1803,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 180,
+  "question_id": 1804,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 181,
+  "question_id": 1805,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 182,
+  "question_id": 1806,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 183,
+  "question_id": 1807,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 184,
+  "question_id": 1808,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 185,
+  "question_id": 1809,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 186,
+  "question_id": 1810,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 187,
+  "question_id": 1811,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 188,
+  "question_id": 1812,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 189,
+  "question_id": 1813,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 190,
+  "question_id": 1814,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 191,
+  "question_id": 1815,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 192,
+  "question_id": 1816,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 193,
+  "question_id": 1817,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 194,
+  "question_id": 1818,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 195,
+  "question_id": 1819,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 196,
+  "question_id": 1820,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 197,
+  "question_id": 1821,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 198,
+  "question_id": 1822,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 199,
+  "question_id": 1823,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 200,
+  "question_id": 1824,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 201,
+  "question_id": 1825,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 202,
+  "question_id": 1826,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 203,
+  "question_id": 1827,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 204,
+  "question_id": 1828,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 205,
+  "question_id": 1829,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 206,
+  "question_id": 1830,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 207,
+  "question_id": 1831,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 208,
+  "question_id": 1832,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 209,
+  "question_id": 1833,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 210,
+  "question_id": 1834,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 211,
+  "question_id": 1835,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 212,
+  "question_id": 1836,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 213,
+  "question_id": 1837,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 214,
+  "question_id": 1838,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 215,
+  "question_id": 1839,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 216,
+  "question_id": 1840,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 217,
+  "question_id": 1841,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 218,
+  "question_id": 1842,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 219,
+  "question_id": 1843,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 220,
+  "question_id": 1844,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 221,
+  "question_id": 1845,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 222,
+  "question_id": 1846,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 223,
+  "question_id": 1847,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 224,
+  "question_id": 1848,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 225,
+  "question_id": 1849,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 226,
+  "question_id": 1850,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 227,
+  "question_id": 1851,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 228,
+  "question_id": 1852,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 229,
+  "question_id": 1853,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "missing-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 230,
+  "question_id": 1854,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 231,
+  "question_id": 1855,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": "count-without-distinct"
+ },
+ {
+  "row_index": 232,
+  "question_id": 1856,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 233,
+  "question_id": 1857,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 234,
+  "question_id": 1858,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 235,
+  "question_id": 1859,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 236,
+  "question_id": 1860,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 237,
+  "question_id": 1861,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 238,
+  "question_id": 1862,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 239,
+  "question_id": 1863,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 240,
+  "question_id": 1864,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 241,
+  "question_id": 1865,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 242,
+  "question_id": 1866,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 243,
+  "question_id": 1867,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 244,
+  "question_id": 1868,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 245,
+  "question_id": 1869,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 246,
+  "question_id": 1870,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 247,
+  "question_id": 1871,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 248,
+  "question_id": 1872,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 249,
+  "question_id": 1873,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 250,
+  "question_id": 1874,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 251,
+  "question_id": 1875,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 252,
+  "question_id": 1876,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 253,
+  "question_id": 1877,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 254,
+  "question_id": 1878,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 255,
+  "question_id": 1879,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 256,
+  "question_id": 1880,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 257,
+  "question_id": 1881,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 258,
+  "question_id": 1882,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 259,
+  "question_id": 1883,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 260,
+  "question_id": 1884,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 261,
+  "question_id": 1885,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 262,
+  "question_id": 1886,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 263,
+  "question_id": 1887,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 264,
+  "question_id": 1888,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 265,
+  "question_id": 1889,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 266,
+  "question_id": 1890,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 267,
+  "question_id": 1891,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 268,
+  "question_id": 1892,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 269,
+  "question_id": 1893,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 270,
+  "question_id": 1894,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 271,
+  "question_id": 1895,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 272,
+  "question_id": 1896,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 273,
+  "question_id": 1897,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 274,
+  "question_id": 1898,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 275,
+  "question_id": 1899,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 276,
+  "question_id": 1900,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 277,
+  "question_id": 1901,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": "count-without-distinct"
+ },
+ {
+  "row_index": 278,
+  "question_id": 1902,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 279,
+  "question_id": 1903,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 280,
+  "question_id": 1904,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 281,
+  "question_id": 1905,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 282,
+  "question_id": 1906,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 283,
+  "question_id": 1907,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 284,
+  "question_id": 1908,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 285,
+  "question_id": 1909,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 286,
+  "question_id": 1910,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 287,
+  "question_id": 1911,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 288,
+  "question_id": 1912,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 289,
+  "question_id": 1913,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 290,
+  "question_id": 1914,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 291,
+  "question_id": 1915,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "count-without-distinct"
+ },
+ {
+  "row_index": 292,
+  "question_id": 1916,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 293,
+  "question_id": 1917,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 294,
+  "question_id": 1918,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "missing-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 295,
+  "question_id": 1919,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 296,
+  "question_id": 1920,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 297,
+  "question_id": 1921,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 298,
+  "question_id": 1922,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 299,
+  "question_id": 1923,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 300,
+  "question_id": 1924,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 301,
+  "question_id": 1925,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 302,
+  "question_id": 1926,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 303,
+  "question_id": 1927,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 304,
+  "question_id": 1928,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 305,
+  "question_id": 1929,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 306,
+  "question_id": 1930,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 307,
+  "question_id": 1931,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 308,
+  "question_id": 1932,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 309,
+  "question_id": 1933,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 310,
+  "question_id": 1934,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 311,
+  "question_id": 1935,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 312,
+  "question_id": 1936,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 313,
+  "question_id": 1937,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "missing-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 314,
+  "question_id": 1938,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 315,
+  "question_id": 1939,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 316,
+  "question_id": 1940,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 317,
+  "question_id": 1941,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 318,
+  "question_id": 1942,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 319,
+  "question_id": 1943,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 320,
+  "question_id": 1944,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 321,
+  "question_id": 1945,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 322,
+  "question_id": 1946,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 323,
+  "question_id": 1947,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 324,
+  "question_id": 1948,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 325,
+  "question_id": 1949,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 326,
+  "question_id": 1950,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 327,
+  "question_id": 1951,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 328,
+  "question_id": 1952,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 329,
+  "question_id": 1953,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 330,
+  "question_id": 1954,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 331,
+  "question_id": 1955,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 332,
+  "question_id": 1956,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 333,
+  "question_id": 1957,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 334,
+  "question_id": 1958,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 335,
+  "question_id": 1959,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 336,
+  "question_id": 1960,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 337,
+  "question_id": 1961,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 338,
+  "question_id": 1962,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 339,
+  "question_id": 1963,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 340,
+  "question_id": 1964,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 341,
+  "question_id": 1965,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 342,
+  "question_id": 1966,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 343,
+  "question_id": 1967,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 344,
+  "question_id": 1968,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 345,
+  "question_id": 1969,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 346,
+  "question_id": 1970,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 347,
+  "question_id": 1971,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 348,
+  "question_id": 1972,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 349,
+  "question_id": 1973,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 350,
+  "question_id": 1974,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 351,
+  "question_id": 1975,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 352,
+  "question_id": 1976,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 353,
+  "question_id": 1977,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 354,
+  "question_id": 1978,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 355,
+  "question_id": 1979,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 356,
+  "question_id": 1980,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 357,
+  "question_id": 1981,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 358,
+  "question_id": 1982,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 359,
+  "question_id": 1983,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 360,
+  "question_id": 1984,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 361,
+  "question_id": 1985,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 362,
+  "question_id": 1986,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 363,
+  "question_id": 1987,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 364,
+  "question_id": 1988,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 365,
+  "question_id": 1989,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 366,
+  "question_id": 1990,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 367,
+  "question_id": 1991,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 368,
+  "question_id": 1992,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 369,
+  "question_id": 1993,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 370,
+  "question_id": 1994,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 371,
+  "question_id": 1995,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 372,
+  "question_id": 1996,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 373,
+  "question_id": 1997,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": false,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 374,
+  "question_id": 1998,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 375,
+  "question_id": 1999,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 376,
+  "question_id": 2000,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 377,
+  "question_id": 2001,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 378,
+  "question_id": 2002,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 379,
+  "question_id": 2003,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 380,
+  "question_id": 2004,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 381,
+  "question_id": 2005,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 382,
+  "question_id": 2006,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 383,
+  "question_id": 2007,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 384,
+  "question_id": 2008,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 385,
+  "question_id": 2009,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 386,
+  "question_id": 2010,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 387,
+  "question_id": 2011,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 388,
+  "question_id": 2012,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 389,
+  "question_id": 2013,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 390,
+  "question_id": 2014,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 391,
+  "question_id": 2015,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 392,
+  "question_id": 2016,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 393,
+  "question_id": 2017,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": "count-without-distinct"
+ },
+ {
+  "row_index": 394,
+  "question_id": 2018,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 395,
+  "question_id": 2019,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 396,
+  "question_id": 2020,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 397,
+  "question_id": 2021,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 398,
+  "question_id": 2022,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 399,
+  "question_id": 2023,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 400,
+  "question_id": 2024,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 401,
+  "question_id": 2025,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 402,
+  "question_id": 2026,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 403,
+  "question_id": 2027,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 404,
+  "question_id": 2028,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 405,
+  "question_id": 2029,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 406,
+  "question_id": 2030,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 407,
+  "question_id": 2031,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 408,
+  "question_id": 2032,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 409,
+  "question_id": 2033,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 410,
+  "question_id": 2034,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 411,
+  "question_id": 2035,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 412,
+  "question_id": 2036,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 413,
+  "question_id": 2037,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 414,
+  "question_id": 2038,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 415,
+  "question_id": 2039,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 416,
+  "question_id": 2040,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": false,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 417,
+  "question_id": 2041,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 418,
+  "question_id": 2042,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 419,
+  "question_id": 2043,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 420,
+  "question_id": 2044,
+  "db_id": "soccer_2016",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 421,
+  "question_id": 8137,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 422,
+  "question_id": 8138,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 423,
+  "question_id": 8139,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 424,
+  "question_id": 8140,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 425,
+  "question_id": 8141,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 426,
+  "question_id": 8142,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 427,
+  "question_id": 8143,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 428,
+  "question_id": 8144,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 429,
+  "question_id": 8145,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 430,
+  "question_id": 8146,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 431,
+  "question_id": 8147,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 432,
+  "question_id": 8148,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 433,
+  "question_id": 8149,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 434,
+  "question_id": 8150,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 435,
+  "question_id": 8151,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "gold-exec-error",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 436,
+  "question_id": 8152,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 437,
+  "question_id": 8153,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "gold-exec-error",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 438,
+  "question_id": 8154,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "gold-exec-error",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 439,
+  "question_id": 8155,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 440,
+  "question_id": 8156,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-repair-exhausted",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 441,
+  "question_id": 8157,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 442,
+  "question_id": 8158,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 443,
+  "question_id": 8159,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 444,
+  "question_id": 8160,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 445,
+  "question_id": 8161,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 446,
+  "question_id": 8162,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 447,
+  "question_id": 8163,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 448,
+  "question_id": 8164,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 449,
+  "question_id": 8165,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 450,
+  "question_id": 8166,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 451,
+  "question_id": 8167,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 452,
+  "question_id": 8168,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 453,
+  "question_id": 8169,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 454,
+  "question_id": 8170,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-repair-exhausted",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 455,
+  "question_id": 8171,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 456,
+  "question_id": 8172,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 457,
+  "question_id": 8173,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 458,
+  "question_id": 8174,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 459,
+  "question_id": 8175,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 460,
+  "question_id": 8176,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": "strip-round"
+ },
+ {
+  "row_index": 461,
+  "question_id": 8177,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 462,
+  "question_id": 8178,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 463,
+  "question_id": 8179,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 464,
+  "question_id": 8180,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 465,
+  "question_id": 8181,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 466,
+  "question_id": 8182,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 467,
+  "question_id": 8183,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-repair-exhausted",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 468,
+  "question_id": 8184,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": true,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 469,
+  "question_id": 8185,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 470,
+  "question_id": 8186,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 471,
+  "question_id": 8187,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-repair-exhausted",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 472,
+  "question_id": 8188,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-safety-rejected",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 473,
+  "question_id": 8189,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 474,
+  "question_id": 8190,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-repair-exhausted",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 475,
+  "question_id": 8191,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-repair-exhausted",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 476,
+  "question_id": 8192,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 477,
+  "question_id": 8193,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "row-count-differs",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 478,
+  "question_id": 8194,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 479,
+  "question_id": 8195,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": "drop-extra-columns"
+ },
+ {
+  "row_index": 480,
+  "question_id": 8196,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 481,
+  "question_id": 8197,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 482,
+  "question_id": 8198,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 483,
+  "question_id": 8199,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 484,
+  "question_id": 8200,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 485,
+  "question_id": 8201,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 486,
+  "question_id": 8202,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 487,
+  "question_id": 8203,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-repair-exhausted",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 488,
+  "question_id": 8204,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 489,
+  "question_id": 8205,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 490,
+  "question_id": 8206,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "pipeline-repair-exhausted",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 491,
+  "question_id": 8207,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 492,
+  "question_id": 8208,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 493,
+  "question_id": 8209,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "extra-columns",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 494,
+  "question_id": 8210,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 495,
+  "question_id": 8211,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 496,
+  "question_id": 8212,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "empty-result",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 497,
+  "question_id": 8213,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": true,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 498,
+  "question_id": 8214,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 499,
+  "question_id": 8215,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": false,
+  "official_ex_corrected": null,
+  "bucket": "values-differ",
+  "contract_fix_oracle": null
+ },
+ {
+  "row_index": 500,
+  "question_id": 8216,
+  "db_id": "sales_in_weather",
+  "difficulty": "unknown",
+  "official_ex": true,
+  "official_ex_corrected": null,
+  "bucket": "correct",
+  "contract_fix_oracle": null
+ }
+]
