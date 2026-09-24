@@ -119,3 +119,32 @@ def test_validate_and_execute(conn: sqlite3.Connection) -> None:
 def test_sqlite_authorizer_denies_writes(conn: sqlite3.Connection) -> None:
     with pytest.raises(sqlite3.DatabaseError):
         conn.execute("DELETE FROM Artist")
+
+
+def test_execute_candidate_needs_no_gold_and_keeps_safety() -> None:
+    from src.db import execute_candidate
+
+    conn = connect_readonly()
+    try:
+        full = execute_candidate(conn, "SELECT TrackId FROM Track")
+        assert full.ok and full.row_count > 200  # no product row cap
+        reordered = execute_candidate(conn, "SELECT TrackId FROM Track ORDER BY TrackId DESC")
+        assert reordered.signature == full.signature
+        rejected = execute_candidate(conn, "DELETE FROM Track")
+        assert not rejected.ok and rejected.error and rejected.error.startswith("safety-rejected")
+        assert rejected.signature is None
+        broken = execute_candidate(conn, "SELECT Nope FROM Track")
+        assert not broken.ok and broken.signature is None
+    finally:
+        conn.close()
+
+
+def test_score_bird_keeps_candidate_signature_when_gold_fails() -> None:
+    from benchmark.evaluate import score_bird
+
+    conn = connect_readonly()
+    try:
+        score = score_bird(conn, "q", "SELECT Nope FROM Track", "SELECT 1", delivered=True)
+        assert score.signature is not None and not score.official_ex
+    finally:
+        conn.close()

@@ -87,6 +87,7 @@ async def complete(
     max_tokens: int = 400,
     budget: BudgetGuard | None = None,
     request_options: dict[str, Any] | None = None,
+    temperature: float = 0.0,
 ) -> LLMResult:
     """Complete once, retrying transient failures while preserving hard budget reserve."""
     guard = budget or get_shared_budget(float(os.getenv("FIREWORKS_BUDGET_USD", "6.00")))
@@ -111,7 +112,7 @@ async def complete(
                     messages=messages,
                     response_format=response_format,
                     max_tokens=max_tokens,
-                    temperature=0,
+                    temperature=temperature,
                     **options,
                 )
                 break

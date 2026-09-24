@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
 import sqlite3
 import time
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -282,3 +284,51 @@ def execute(
     rows = cursor.fetchmany(limit + 1)
     truncated = len(rows) > limit
     return columns, [tuple(row) for row in rows[:limit]], truncated
+
+
+def result_signature(rows: list[tuple[Any, ...]]) -> str:
+    """Order- and duplicate-insensitive fingerprint of a full result set.
+
+    Equal signatures mean equal results under BIRD's official ``set(rows)`` comparison, so
+    this is the key for clustering candidates by execution result.
+    """
+    canonical = sorted(repr(row) for row in set(rows))
+    return hashlib.sha256("\n".join(canonical).encode()).hexdigest()[:16]
+
+
+@dataclass(frozen=True)
+class CandidateResult:
+    """One candidate query's full execution outcome, independent of any gold answer."""
+
+    sql: str
+    error: str | None
+    columns: list[str]
+    rows: list[tuple[Any, ...]]
+    signature: str | None
+
+    @property
+    def ok(self) -> bool:
+        return self.error is None
+
+    @property
+    def row_count(self) -> int:
+        return len(self.rows)
+
+
+def execute_candidate(
+    conn: sqlite3.Connection, sql: str, *, db_path: str | Path = DEFAULT_DB_PATH
+) -> CandidateResult:
+    """Safety-check then fully execute one candidate, with no row cap and no gold query.
+
+    This is the executor for multi-candidate generation, cascades, and hidden-test runs:
+    the AST safety layer gates every candidate exactly as it gates the agent's own SQL, and
+    the connection's read-only/authorizer/timeout defenses still apply underneath.
+    """
+    safe, reason = is_safe(sql, db_path=db_path)
+    if not safe:
+        return CandidateResult(sql, f"safety-rejected: {reason}", [], [], None)
+    try:
+        columns, rows, _ = execute(conn, sql, limit=None)
+    except sqlite3.Error as exc:
+        return CandidateResult(sql, f"execute-failed: {exc}", [], [], None)
+    return CandidateResult(sql, None, columns, rows, result_signature(rows))

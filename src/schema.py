@@ -81,6 +81,42 @@ def _sample_column(
 
 
 @lru_cache(maxsize=32)
+def _foreign_key_edges(db_key: str) -> tuple[tuple[str, str, str, str], ...]:
+    """Return sorted, de-duplicated (table, column, parent_table, parent_column) edges.
+
+    SQLite leaves the parent column NULL for ``REFERENCES parent`` without a column list,
+    meaning the parent's primary key; resolve it (by PK position for composite keys) instead
+    of rendering ``parent.None``. Parent tables matched case-insensitively, as SQLite does.
+    """
+    metadata = _metadata(db_key)
+    tables = {name.casefold(): name for name in metadata}
+    connection = sqlite3.connect(f"file:{db_key}?mode=ro", uri=True)
+    try:
+        edges: set[tuple[str, str, str, str]] = set()
+        for table in metadata:
+            rows = connection.execute(f'PRAGMA foreign_key_list("{table}")').fetchall()
+            for row in rows:
+                parent, column, parent_column, seq = str(row[2]), str(row[3]), row[4], row[1]
+                parent = tables.get(parent.casefold(), parent)
+                if parent_column is None:
+                    pk = [
+                        str(info[1])
+                        for info in sorted(
+                            connection.execute(f'PRAGMA table_info("{parent}")').fetchall(),
+                            key=lambda info: info[5],
+                        )
+                        if info[5]
+                    ]
+                    if seq >= len(pk):
+                        continue  # dangling reference; nothing trustworthy to show
+                    parent_column = pk[seq]
+                edges.add((table, column, parent, str(parent_column)))
+        return tuple(sorted(edges))
+    finally:
+        connection.close()
+
+
+@lru_cache(maxsize=32)
 def _schema_text(db_key: str) -> str:
     metadata = _metadata(db_key)
     connection = sqlite3.connect(f"file:{db_key}?mode=ro", uri=True)
@@ -99,12 +135,12 @@ def _schema_text(db_key: str) -> str:
                 label = f"sample {column}" if kind == "cardinality" else f"sample {column} year"
                 lines.append(f"  {label}: {', '.join(examples)}")
 
-        foreign_keys: list[str] = []
-        for table in metadata:
-            for row in connection.execute(f'PRAGMA foreign_key_list("{table}")'):
-                foreign_keys.append(f"{table}.{row[3]} -> {row[2]}.{row[4]}")
+        foreign_keys = _foreign_key_edges(db_key)
         if foreign_keys:
-            lines.append("Foreign keys: " + "; ".join(sorted(foreign_keys)))
+            lines.append(
+                "Foreign keys: "
+                + "; ".join(f"{src}.{col} -> {dst}.{ref}" for src, col, dst, ref in foreign_keys)
+            )
         return "\n".join(lines)
     finally:
         connection.close()
@@ -118,3 +154,10 @@ def get_schema(db_path: str | Path = DEFAULT_DB_PATH) -> str:
 def table_count(db_path: str | Path = DEFAULT_DB_PATH) -> int:
     """Return the number of user tables."""
     return len(_metadata(_db_key(db_path)))
+
+
+def get_foreign_keys(
+    db_path: str | Path = DEFAULT_DB_PATH,
+) -> tuple[tuple[str, str, str, str], ...]:
+    """Return resolved foreign-key edges as rendered in the schema block."""
+    return _foreign_key_edges(_db_key(db_path))

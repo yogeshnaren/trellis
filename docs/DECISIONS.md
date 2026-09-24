@@ -236,3 +236,132 @@ a capability regression — recorded here rather than silently re-quoting the st
 100% figure. Doing that now, after seeing which questions fail, would be exactly the
 teaching-to-the-test mistake called out and reverted in the 2026-07-13 entry above — left as-is
 and disclosed instead.
+
+## 2026-09-23 — Jev (TypeSafe AI) approved as a decision layer for the BIRD path
+**Decision:** TypeSafe AI's Jev "System One" decision model (`typesafe/jev-1.13`, called through
+OpenRouter's alpha Decisions API with the team's OpenRouter key in `OPENROUTER_API_KEY`) may be
+used in the BIRD benchmark and the BIRD test submission. **Scope:** decisions only. These are
+the cascade escalate-or-ship gate, evidence and output-contract checks, the answerability
+guardrail, schema-relevance scoring, and a selection tie-break. Jev never generates or executes
+SQL. **Why:** these decisions need calibrated probabilities at low latency and cost, which is
+what Jev is built for. The accuracy ceiling still comes from the generators and the selector.
+**Conditions:**
+- Each Jev decision is adopted only if it beats the agreement-only and small-LLM-judge
+  baselines in the offline R5-J bake-off, checked per difficulty tier
+  (`docs/SOTA_PLAN.md` §5-J).
+- Thresholds are fitted per returned model version.
+- Any Jev failure falls back to the agreement-only rule.
+- Spend goes through the shared `BudgetGuard` ledger.
+
+**Not decided:** Jev on production databases. Question, schema and sample values leave
+Fireworks, so this needs a separate data review. Until then the `product` profile stays
+Jev-free.
+
+## 2026-09-23 — BIRD measurement protocol (SOTA plan v2)
+**Decision:** BIRD's official EX (`set(pred) == set(gold)`, 30s timeout) is the headline BIRD
+metric, and only SQL the agent delivered counts. The unit is the dataset **row**: all 500
+Mini-Dev rows, including the duplicated question ids 137/138. Gold and prediction each
+execute once (`score_bird`). Every run writes a meta sidecar with the dataset and prompt
+hashes and the git commit.
+
+**Splits:**
+- Iteration happens on `train_dev` (4 train databases, 501 rows), because BIRD test uses
+  unseen databases. It becomes a development set through use, so reports are per database
+  plus a macro average.
+- `train_lockbox` (7 more train databases across 7 domains, 974 rows; widened after the
+  third review) and Mini-Dev are infrequent gates: at most 4 looks, 3 repeats each. Neither
+  is used to choose between variants.
+- Untouched dev (1,036 rows) is reported separately, on BIRD dev's own databases.
+
+**Why:**
+- The local evaluator disagreed with BIRD's on 30/500 rows.
+- The earlier 498-row count dropped the duplicate rows.
+- Tuning on Mini-Dev's own 11 databases can't show generalisation.
+- 5 of Mini-Dev's 11 databases differ in content from BIRD dev's copies, which changes 23
+  Mini-Dev and 60 dev gold results.
+- Two identical T=0 runs flipped 6/60 answers, so decisions use repeats and paired McNemar
+  flips by difficulty and by database.
+
+**Also fixed:** `schema.py` rendered implicit foreign-key targets as `parent.None` (4 of 105
+edges across two BIRD databases). They now resolve to the parent primary key, with a test
+that every rendered edge resolves. Chinook's schema text is unchanged.
+
+## 2026-09-23 — Cross-process spend ledger; candidate-only execution
+**Problem (found by review, reproduced):** `BudgetGuard` read `.spend.json` once at start-up
+and overwrote it on every settle. When three processes ran concurrently, the ledger recorded
+$0.04 of $0.12 actually spent, and two processes crashed on a shared temp-file name. The
+"hard cap" held only within one process. OpenRouter/Jev and Fireworks batch charges had no
+path into it at all.
+
+**Decision:**
+- Every ledger read-modify-write holds an `fcntl` exclusive lock.
+- Reservations live in the ledger, so every process sees all of them.
+- Spend is tracked per source (`fireworks`, `fireworks-batch`, `openrouter`, `unsettled`).
+- A reservation whose process died, or that is more than an hour old, is charged as spent,
+  because its call may have been billed.
+- `reserve_usd`/`settle(source=…)`/`record_charge` cover non-token-priced spend.
+- `cost_usd(batch=True)` applies Fireworks' 50% batch rate.
+- Version-1 ledgers migrate in place. Unix-only (`fcntl`), as is this project's toolchain.
+
+**Also:** `src/db.py:execute_candidate` safety-checks and fully executes a candidate and
+returns its result signature with no gold query involved. That is the executor for
+cascades and hidden-test runs. `score_bird` now runs the candidate before gold, so a gold
+timeout no longer loses the candidate's signature.
+
+**Follow-up (third review, reproduced):**
+- **Bug:** settling a reservation that had already been charged as stale added its actual
+  cost on top, and settling again added it once more. $0.10 of real spend was recorded as
+  $0.40. That would have overstated spend and halted experiments early.
+- **Fix:** stale charges are remembered per token. A late settle replaces the stale charge
+  with the actual cost, moving it from `unsettled` to its real source. Repeat settles are
+  no-ops, via settled tokens remembered for 7 days.
+- Reservations now carry their own `ttl_s`, so an hours-long batch job isn't charged as
+  abandoned after the default hour.
+- Batch pricing (`cost_usd(batch=True)`) is supported, but there is **no batch submission
+  path yet**, so batch savings are not counted in any plan estimate.
+
+## 2026-09-23 — SQLite spend ledger; content-pinned runs; two-metric acceptance
+**Ledger:** two double-counting cases survived the JSON fix (fourth review, reproduced):
+- a settle with an unknown cost finalised the estimate, so a later real cost couldn't
+  correct it ($0.20 kept instead of $0.10);
+- settled keys expired after 7 days, after which a repeat settle charged again.
+
+Making keys durable in a JSON file that is rewritten on every call would grow without bound,
+so the ledger is now **SQLite** (`benchmark/results/.spend.sqlite`, stdlib):
+- an append-only charge journal (spend = its sum) and open reservation rows;
+- settlement keys that never expire, and caller-supplied keys (e.g. a batch job id) so a
+  different process can settle after a restart;
+- every operation in a `BEGIN IMMEDIATE` transaction, so processes serialize on SQLite's
+  lock;
+- unknown outcomes and stale reservations book *provisional* charges that a real cost later
+  reverses.
+
+The legacy JSON ledger was imported once as an opening balance ($0.2817), and the original
+file was kept as `.spend.json.migrated`.
+
+**Run pinning:** run metadata now hashes content, not paths:
+- each database file (cached by size and mtime);
+- the effective system prompt per database (template + rendered schema);
+- the generation config;
+- the code state (diff + untracked files under `src/` and `benchmark/`).
+
+`analyze flips` refuses to compare runs that differ in anything but the declared `--allow`
+variable.
+
+**Acceptance:**
+- A change must clear its declared minimum on both the row-weighted Δ *and* the
+  database-macro Δ, because one `train_dev` database is 258 of 501 rows.
+- CIs come from a bootstrap that resamples questions within each database, with each
+  question's repeats kept together.
+- Borderline results trigger an audit of the deciding flips against gold.
+- The lockbox gets 2 looks, not 4.
+- Train splits have no difficulty labels, so per-tier checks use a gold-SQL complexity band.
+
+**Follow-up (fifth review, reproduced):** a budget-stopped variant with one result, compared
+with a complete 2-question × 2-repeat baseline, scored +100 pts with a CI of [100, 100].
+- Runs now record `expected_rows`, `expected_repeats`, and `complete`.
+- `analyze flips` accepts only full comparisons: complete runs, identical expected rows, and
+  exactly 2 repeats per question. Partial overlap needs an explicit `--pilot`, and the
+  report is then labelled not acceptance evidence.
+- Phase 1 full runs are cumulative, each against the last accepted configuration, so the
+  combination is what gets validated.

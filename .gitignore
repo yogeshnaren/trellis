@@ -6,4 +6,6 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 benchmark/results/.spend.json
+benchmark/results/.spend.json.migrated
+benchmark/results/.spend.sqlite*
 data/bird/

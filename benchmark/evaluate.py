@@ -13,7 +13,7 @@ from typing import Any, Literal
 
 from sqlglot import exp, parse_one
 
-from src.db import connect_readonly, execute
+from src.db import connect_readonly, execute, result_signature
 
 OrderPolicy = Literal["strict", "bag"]
 TiePolicy = Literal["ordered", "bag_within_ties"]
@@ -199,7 +199,21 @@ def evaluate_sql(
         return Evaluation(
             question_id, False, f"Execution failed: {exc}", sql_equivalent=False
         )
+    return compare_result_sets(
+        question_id, gold_sql, gold_columns, gold_rows, actual_columns, actual_rows, resolved
+    )
 
+
+def compare_result_sets(
+    question_id: str,
+    gold_sql: str,
+    gold_columns: list[str],
+    gold_rows: list[tuple[Any, ...]],
+    actual_columns: list[str],
+    actual_rows: list[tuple[Any, ...]],
+    resolved: EvaluationContract | None = None,
+) -> Evaluation:
+    """The local contract-aware comparison, on already-executed result sets."""
     if resolved and resolved.required_columns:
         required = {name.casefold() for name in resolved.required_columns}
         actual_names = {name.casefold() for name in actual_columns}
@@ -239,6 +253,71 @@ def evaluate_sql(
         warning,
         sql_equivalent=matches,
     )
+
+
+BIRD_OFFICIAL_TIMEOUT_S = 30.0
+
+
+@dataclass
+class BirdScore:
+    evaluation: Evaluation
+    official_ex: bool
+    signature: str | None
+    row_count: int | None
+
+
+def score_bird(
+    conn: sqlite3.Connection,
+    question_id: str,
+    gold_sql: str,
+    generated_sql: str | None,
+    *,
+    delivered: bool,
+) -> BirdScore:
+    """Execute generated and gold SQL once each and derive every metric from those rows.
+
+    The generated SQL runs *first*, so its full-result signature exists even when the gold
+    query fails or times out. ``official_ex`` counts only SQL the agent delivered (a
+    rejected or failed query is no answer); the local ``evaluation`` keeps its historical
+    definition (any generated SQL).
+    """
+    if not generated_sql:
+        missing = Evaluation(question_id, False, "No generated SQL", sql_equivalent=False)
+        return BirdScore(missing, False, None, None)
+    try:
+        actual_columns, actual_rows, _ = execute(conn, generated_sql, limit=None)
+    except sqlite3.Error as exc:
+        failed = Evaluation(question_id, False, f"Execution failed: {exc}")
+        return BirdScore(failed, False, None, None)
+    signature, row_count = result_signature(actual_rows), len(actual_rows)
+    try:
+        gold_columns, gold_rows, _ = execute(conn, gold_sql, limit=None)
+    except sqlite3.Error as exc:
+        failed = Evaluation(question_id, False, f"Gold execution failed: {exc}")
+        return BirdScore(failed, False, signature, row_count)
+    evaluation = compare_result_sets(
+        question_id, gold_sql, gold_columns, gold_rows, actual_columns, actual_rows
+    )
+    official = delivered and set(actual_rows) == set(gold_rows)
+    return BirdScore(evaluation, official, signature, row_count)
+
+
+def official_ex(conn: sqlite3.Connection, gold_sql: str, actual_sql: str | None) -> bool:
+    """BIRD's official execution-accuracy rule: ``set(predicted) == set(gold)``.
+
+    Mirrors ``evaluation_ex.py`` from bird-bench/mini_dev: row order, duplicate rows, and
+    column names are ignored, but column *positions* and exact values (no float rounding)
+    matter, and any execution error scores 0. Deliberately independent of
+    ``evaluate_sql``'s contract-aware comparison, which stays the Chinook-suite metric.
+    """
+    if not actual_sql:
+        return False
+    try:
+        _, gold_rows, _ = execute(conn, gold_sql, limit=None)
+        _, actual_rows, _ = execute(conn, actual_sql, limit=None)
+    except sqlite3.Error:
+        return False
+    return set(actual_rows) == set(gold_rows)
 
 
 def evaluate_file(

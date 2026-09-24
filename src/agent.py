@@ -76,6 +76,9 @@ class Agent:
         db_path: str | Path = DEFAULT_DB_PATH,
         max_repairs: int = 1,
         complete_fn: CompleteFn = complete,
+        max_tokens: int = 400,
+        temperature: float = 0.0,
+        request_options: dict[str, Any] | None = None,
     ):
         self.model = model
         self.conn = conn
@@ -83,6 +86,9 @@ class Agent:
         self.db_path = db_path
         self.max_repairs = max_repairs
         self.complete_fn = complete_fn
+        self.max_tokens = max_tokens
+        self.temperature = temperature
+        self.request_options = request_options
 
     async def ask(self, question: str, ctx: ConversationContext) -> AgentResult:
         started = time.perf_counter()
@@ -96,8 +102,10 @@ class Agent:
                     messages,
                     self.model,
                     response_format=SQL_SCHEMA,
-                    max_tokens=400,
+                    max_tokens=self.max_tokens,
                     budget=self.budget,
+                    request_options=self.request_options,
+                    temperature=self.temperature,
                 )
                 result.llm_calls.append(llm_result)
                 result.t_llm_ms += llm_result.latency_ms

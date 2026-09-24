@@ -49,7 +49,7 @@ def test_agent_repairs_invalid_sql(tmp_path: Path) -> None:
             agent = Agent(
                 MODEL_GPT_OSS,
                 conn,
-                BudgetGuard(1.0, tmp_path / "spend.json"),
+                BudgetGuard(1.0, tmp_path / "spend.sqlite"),
                 complete_fn=fake_complete,
             )
             ctx = ConversationContext(get_schema())
@@ -80,7 +80,7 @@ def test_structured_output_failure(tmp_path: Path) -> None:
             result = await Agent(
                 MODEL_GPT_OSS,
                 conn,
-                BudgetGuard(1.0, tmp_path / "spend.json"),
+                BudgetGuard(1.0, tmp_path / "spend.sqlite"),
                 complete_fn=fake_complete,
             ).ask("one", ConversationContext(get_schema()))
             assert result.error_category == "structured-output-failed"
@@ -119,7 +119,7 @@ def test_non_query_response_never_reaches_sql_pipeline(
             result = await Agent(
                 MODEL_GPT_OSS,
                 conn,
-                BudgetGuard(1.0, tmp_path / f"{response_type}-spend.json"),
+                BudgetGuard(1.0, tmp_path / f"{response_type}-spend.sqlite"),
                 complete_fn=fake_complete,
             ).ask("How is the weather?", ctx)
             assert result.ok
