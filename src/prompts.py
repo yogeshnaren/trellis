@@ -125,3 +125,16 @@ BENCHMARK_SYSTEM_PROMPT = (
     SYSTEM_PROMPT[:_PROJECTION_START] + BENCHMARK_PROJECTION + SYSTEM_PROMPT[_PROJECTION_END:]
 )
 PROMPT_PROFILES = {"product": SYSTEM_PROMPT, "benchmark": BENCHMARK_SYSTEM_PROMPT}
+
+
+# Benchmark-mode pipeline repairs (Agent(pipeline_repairs=True)); generic by design.
+REFUSAL_RETRY_PROMPT = """This question is answerable from the supplied schema: the needed
+tables, columns, or values exist even if they are not among the sample values shown. Return
+response_type "query" with your best read-only SQLite query and set message to null."""
+
+EMPTY_RESULT_PROMPT = """The query ran but returned no rows.
+Query: {sql}
+If the question implies that matching rows exist, check value spelling, case, and format
+against the schema samples, date and number formats, and the join conditions, then return a
+corrected read-only SQLite query. If an empty result is genuinely correct, return the same
+query unchanged."""

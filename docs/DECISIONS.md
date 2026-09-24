@@ -385,3 +385,38 @@ This follows the plan-v2.4 acceptance rule, with the minimum declared before the
 all unquoted special-character column names, and "unsupported" refusals rose from 2 to 6.
 Identifier quoting (1b, `--quote-identifiers`, implemented) plus pipeline repairs (1c) are
 tested next as one cumulative change against this accepted run.
+
+## 2026-09-24 — Phase 1: identifier quoting + pipeline repairs accepted (borderline, by audit)
+**Decision (owner):** BIRD runs add `--quote-identifiers --pipeline-repairs` on top of the
+benchmark profile. Pipeline repairs are:
+- one "did you mean" repair for unknown-identifier or parse rejects (forbidden SQL still
+  never retries);
+- one refusal retry;
+- one guarded empty-result retry, which replaces the answer only if the new query is safe,
+  valid, and returns rows;
+- a size-scaled execution timeout.
+
+All are off by default, so the product CLI is unchanged.
+
+**Evidence** (full comparison vs the accepted 1a run, `train_dev` 501 × 2):
+- database-macro Δ +3.90 [+1.13, +7.05] passes;
+- row-weighted Δ +1.60 [+0.20, +2.99] misses the cost-adjusted minimum of +1.63 by
+  0.03 pts;
+- errors 22 → 3; safety rejections 14 → 0; refusals 6 → 0;
+- movie +15.2 (7 fixes, 0 regressions).
+
+**The required audit:**
+- The 5 regressions all fall on questions whose prompt and pipeline path this change didn't
+  touch, so they are noise.
+- The fixes trace to quoting (5), refusal retry (2), identifier repair (1), and empty
+  retry (1).
+- Uncached-equivalent cost rose +6.4%; the measured +43% reflected provider cache hits
+  falling from 46% to 23%.
+
+Accepted as a *borderline accept*, not a clean pass. Accuracy is now 68.7% row-weighted and
+69.3% macro, from a 60.1% / 58.5% baseline. The empty-result retry is flagged for
+re-evaluation at the Mini-Dev gate.
+
+**Protocol fix:** `analyze flips` now computes the §5.4 minimum mechanically: base 1.5, plus
+1 pt per +50% uncached-equivalent $/answer, plus 1 pt per +1s P50. It prints yes/no per
+metric and whether an audit is required, so the next decision isn't a judgement call.

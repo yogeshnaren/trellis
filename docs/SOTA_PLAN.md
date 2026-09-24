@@ -392,13 +392,61 @@ Full-mode `analyze flips`, coverage verified; report in
 **Accepted configuration going forward:** `--prompt-profile benchmark`. The product/CLI
 profile is unchanged.
 
-**Next:**
-1. Build the 1c pilot (repair unknown-identifier rejects with a "did you mean" hint; one
-   repair turn for empty results; no "unsupported" in benchmark mode; timeout scaled to
-   database size).
-2. Full comparison #2: **(1a) + 1b + 1c vs the accepted 1a run**, cumulative. The 1a run
-   above serves as its control, so no new baseline spend.
-3. Phase 1 spend so far: **$0.68 of $2** (baseline $0.29, pilots $0.11, full #1 $0.28).
+**1c built (2026-09-24):** `--pipeline-repairs`, off by default.
+- Unknown-identifier/parse rejects get one repair with "did you mean" names from the schema;
+  forbidden SQL never retries.
+- One refusal retry ("this is answerable").
+- One guarded empty-result retry: it replaces the answer only if the new query is safe,
+  valid, and returns rows.
+- 10s execution timeout for databases over 100MB.
+
+**Pilot, 1a + 1b + 1c vs the 1a run:** stratified +5.0 [+1.2, +9.4], 0 regressions;
+targeted 1a-failures 44.3% → 61.4%.
+
+**Full comparison #2 (run `bird_raw_20260924T175733Z` vs the 1a run): BORDERLINE →
+ACCEPTED by owner decision (2026-09-24), on the strength of the required audit.** Report in `benchmark/results/flips_train_dev_1a_vs_1abc.md`.
+
+| Criterion | Result |
+|---|---|
+| Database-macro Δ | **+3.90** [+1.13, +7.05] ✅ |
+| Row-weighted Δ | **+1.60** [+0.20, +2.99]. Its lower bound is within 1 pt of 0, so the audit is required |
+| Cost | Measured $/query +43%, but provider cache hits fell 46% → 23% between runs. **At uncached prices: +6.4%**, with 7% more calls. The cost-adjusted minimum is ≈ +1.63, so row-weighted misses by 0.03 |
+| Pipeline failures | errors 22 → 3; safety-rejected 14 → **0**; unsupported 6 → **0** |
+| By database | movie **+15.2** (7 fixes, 0 regressions); restaurant 0.0; sales_in_weather 0.0; soccer_2016 +0.4 |
+
+**Audit:**
+- All 5 regressions are on questions whose prompt and pipeline path were unchanged from 1a:
+  databases without special names, where the repairs didn't fire or kept the original. They
+  are run-to-run noise.
+- Causal fixes: quoting 5 (`movie` safety-rejects), refusal retry 2, identifier repair 1,
+  empty-result retry 1 (it fired often, which is most of the extra calls).
+
+**Protocol gap exposed and closed:** the cost term in §5.4 compared *measured* $/query,
+which is dominated by provider cache state, not by the change. From now on
+`analyze flips` computes the required minimum mechanically as **base 1.5 + 1 pt per +50%
+*uncached-equivalent* $/answer + 1 pt per +1s P50**, and prints yes/no per metric plus
+whether an audit is required. The regenerated reports show this decision's facts: minimum
++1.63; row-weighted "no" (+1.60); macro "yes"; audit required.
+
+**Decision (owner, 2026-09-24): accept 1a + 1b + 1c.** Reasons:
+- The macro metric clears the bar.
+- The row-weighted gain misses the minimum by 0.03 pts.
+- The required audit attributes every fix to a specific mechanism and every regression to
+  noise on questions the change didn't touch.
+- The real cost is +6.4%.
+
+It is recorded as a borderline accept, not a clean pass. The empty-result retry (1 fix; most
+of the extra calls) is flagged for re-evaluation once the Mini-Dev gate exercises it.
+
+**Accepted configuration going forward:**
+`--prompt-profile benchmark --quote-identifiers --pipeline-repairs`: **68.7% row-weighted,
+69.3% database macro** on `train_dev` (baseline was 60.1% / 58.5%).
+2. ~~Full comparison #2~~ done and accepted (above).
+3. **Next: Phase 1 step 2, the dictionary CSVs**, tested cumulatively against the 1a+1b+1c
+   run.
+4. Phase 1 spend so far: **$1.16 of $2** (baseline $0.29, pilots $0.11 + $0.05, full #1
+   $0.28, full #2 $0.40). $0.84 remains, enough for one dictionary pilot plus one full
+   comparison at the measured rate.
 
 ### 6.3 Phase 3: reasoning and diversity, incrementally (single-digit dollars)
 

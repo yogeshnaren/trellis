@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import difflib
 import hashlib
+import re
 import sqlite3
 import time
 from dataclasses import dataclass
@@ -12,7 +14,7 @@ from typing import Any
 from sqlglot import exp, parse
 from sqlglot.errors import ParseError
 
-from src.schema import DEFAULT_DB_PATH, get_identifier_allowlist
+from src.schema import DEFAULT_DB_PATH, get_identifier_allowlist, get_table_columns
 
 FORBIDDEN_NODES = (
     exp.Alter,
@@ -332,3 +334,63 @@ def execute_candidate(
     except sqlite3.Error as exc:
         return CandidateResult(sql, f"execute-failed: {exc}", [], [], None)
     return CandidateResult(sql, None, columns, rows, result_signature(rows))
+
+
+# Databases above this size get a longer execution budget (BIRD's largest are 0.4-0.6GB and
+# legitimately need more than the interactive 2s ceiling).
+LARGE_DATABASE_BYTES = 100 * 1024 * 1024
+LARGE_DATABASE_TIMEOUT_S = 10.0
+
+
+def timeout_for_database(db_path: str | Path, default: float = 2.0) -> float:
+    """Execution timeout scaled to database size (see LARGE_DATABASE_BYTES)."""
+    return LARGE_DATABASE_TIMEOUT_S if Path(db_path).stat().st_size > LARGE_DATABASE_BYTES else default
+
+
+RECOVERABLE_SAFETY_PREFIXES = ("Unknown column", "Unknown table", "SQL parse failed")
+
+
+def is_recoverable_rejection(reason: str) -> bool:
+    """Unknown identifiers and parse failures are repairable mistakes (often an unquoted
+    ``T-BIL``); forbidden operations, multiple statements, and non-SELECTs never are."""
+    return reason.startswith(RECOVERABLE_SAFETY_PREFIXES)
+
+
+def identifier_hint(reason: str, db_path: str | Path = DEFAULT_DB_PATH) -> str:
+    """Suggest real schema names for an unknown-identifier rejection."""
+    token = reason.split(":", 1)[-1].strip().split(".")[-1].strip("`\"'[] ").casefold()
+    names = [
+        (table, column)
+        for table, columns in get_table_columns(db_path).items()
+        for column in [table, *columns]
+    ]
+    lowered = {name.casefold(): (table, name) for table, name in names}
+    # A bare prefix of a punctuated name (``T`` from an unquoted ``T-BIL``, ``Character``
+    # from ``Character Name``) is the most likely intent, so those candidates rank first.
+    matches = [
+        key
+        for key in lowered
+        if token and key.startswith(token) and len(key) > len(token) and not key[len(token)].isalnum()
+    ]
+    matches += [
+        key
+        for key in (difflib.get_close_matches(token, list(lowered), n=5, cutoff=0.6) if token else [])
+        if key not in matches
+    ]
+    matches += [
+        key
+        for key in lowered
+        if token and len(token) >= 3 and token in key.replace("_", " ").split()
+        and key not in matches
+    ][:5]
+    rendered = []
+    for key in matches[:6]:
+        table, name = lowered[key]
+        quoted = name if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name) else f"`{name}`"
+        rendered.append(quoted if name == table else f"{quoted} (in {table})")
+    suggestion = f" Did you mean: {', '.join(rendered)}?" if rendered else ""
+    return (
+        suggestion
+        + " Names containing spaces or punctuation must be written in backticks exactly as"
+        " in the schema."
+    )

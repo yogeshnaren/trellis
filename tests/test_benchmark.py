@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from benchmark.evaluate import evaluate_sql, evaluate_task_success
 from benchmark.report import build_report
 from benchmark.run_bench import arm_matrix, extract_baseline_sql
@@ -421,7 +423,7 @@ def test_run_metadata_ignores_result_files_when_hashing_code(tmp_path: Path) -> 
         db_dir=Path("data/bird/train/train_databases"),
         difficulty=None, db=["movie"], limit=2, per_db=None, ids=None, seed=0,
         models=["m"], temperature=0.0, max_tokens=400, reasoning_effort=None, repeats=1,
-        prompt_profile="product", quote_identifiers=False,
+        prompt_profile="product", quote_identifiers=False, pipeline_repairs=False,
     )
     if not args.questions.exists():
         import pytest
@@ -435,3 +437,12 @@ def test_run_metadata_ignores_result_files_when_hashing_code(tmp_path: Path) -> 
     finally:
         stray.unlink()
     assert before == after
+
+
+def test_required_gain_uses_uncached_cost_and_latency() -> None:
+    from benchmark.analyze import required_gain
+
+    # (measured $, uncached $, P50 s): measured cost is ignored; +10% uncached cost adds
+    # 0.2 pts, +0.5s P50 adds 0.5 pts, and improvements never lower the bar.
+    assert required_gain(1.5, (1.0, 1.0, 1.0), (9.9, 1.1, 1.5)) == pytest.approx(2.2)
+    assert required_gain(1.5, (1.0, 1.0, 2.0), (0.1, 0.9, 1.0)) == pytest.approx(1.5)

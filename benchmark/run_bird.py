@@ -47,7 +47,7 @@ from benchmark.evaluate import BIRD_OFFICIAL_TIMEOUT_S, BirdScore, score_bird
 from src.agent import Agent
 from src.conversation import ConversationContext
 from src.costs import MODEL_DEEPSEEK, get_shared_budget
-from src.db import connect_readonly
+from src.db import connect_readonly, timeout_for_database
 from src.prompts import PROMPT_PROFILES
 from src.schema import get_schema
 
@@ -123,7 +123,10 @@ async def benchmark(args: argparse.Namespace) -> Path:
             if stop.is_set():
                 return
             db_path = db_path_for(question.db_id, db_dir=args.db_dir)
-            conn = connect_readonly(db_path)
+            conn = connect_readonly(
+                db_path,
+                timeout_seconds=timeout_for_database(db_path) if args.pipeline_repairs else 2.0,
+            )
             try:
                 agent = Agent(
                     model,
@@ -137,6 +140,7 @@ async def benchmark(args: argparse.Namespace) -> Path:
                         if args.reasoning_effort
                         else None
                     ),
+                    pipeline_repairs=args.pipeline_repairs,
                 )
                 result = await agent.ask(
                     with_evidence(question.question, question.evidence),
@@ -251,6 +255,7 @@ def run_metadata(
         "models": args.models,
         "prompt_profile": args.prompt_profile,
         "quote_identifiers": args.quote_identifiers,
+        "pipeline_repairs": args.pipeline_repairs,
         "temperature": args.temperature,
         "max_tokens": args.max_tokens,
         "reasoning_effort": args.reasoning_effort,
@@ -403,6 +408,12 @@ def parse_args() -> argparse.Namespace:
         "--quote-identifiers",
         action="store_true",
         help="Render names SQLite can't read bare (e.g. `T-BIL`) backticked in the schema.",
+    )
+    parser.add_argument(
+        "--pipeline-repairs",
+        action="store_true",
+        help="Benchmark-mode repairs: did-you-mean for unknown identifiers, one refusal "
+        "retry, one guarded empty-result retry, size-scaled execution timeout.",
     )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--max-tokens", type=int, default=400)

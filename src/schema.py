@@ -183,3 +183,11 @@ def get_foreign_keys(
 ) -> tuple[tuple[str, str, str, str], ...]:
     """Return resolved foreign-key edges as rendered in the schema block."""
     return _foreign_key_edges(_db_key(db_path))
+
+
+def get_table_columns(db_path: str | Path = DEFAULT_DB_PATH) -> dict[str, list[str]]:
+    """Original-case table -> column names (for "did you mean" repair hints)."""
+    return {
+        table: [name for name, _kind, _pk in columns]
+        for table, columns in _metadata(_db_key(db_path)).items()
+    }

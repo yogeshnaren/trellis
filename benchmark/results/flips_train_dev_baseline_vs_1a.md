@@ -17,7 +17,14 @@
 | Row-weighted | +6.99 | [+4.49, +9.78] |
 | Database macro | +6.91 | [+3.03, +10.98] |
 
-Adopt only if **both** point estimates meet the change's declared minimum and both intervals exclude 0; subgroup tables below are for investigating regressions.
+| Run | $/answer measured | $/answer uncached-equivalent | P50 (s) |
+|---|---:|---:|---:|
+| old | 0.000293 | 0.000511 | 1.13 |
+| new | 0.000278 | 0.000467 | 1.22 |
+
+**Required minimum: +1.58 pts** (base +1.50, plus 1 pt per +50% uncached cost and per +1s P50). Meets it: row-weighted **yes**, macro **yes** (point estimate ≥ minimum and CI lower bound > 0).
+No borderline audit required.
+Subgroup tables below are for investigating regressions, not for voting.
 
 | Database | N | Old | New | Δ pts | Regressions | Fixes | McNemar p |
 |---|---:|---:|---:|---:|---:|---:|---:|

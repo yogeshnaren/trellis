@@ -38,6 +38,7 @@ from benchmark.bird import (
     load_questions,
 )
 from benchmark.evaluate import BIRD_OFFICIAL_TIMEOUT_S
+from src.costs import cost_usd
 from src.db import connect_readonly, execute
 
 DIFFICULTIES = ("simple", "moderate", "challenging")
@@ -429,6 +430,36 @@ def _flip_rows(
 
 
 FULL_COMPARISON_REPEATS = 2
+# Acceptance minimum (docs/SOTA_PLAN.md §5.4): base gain, plus 1 pt per +50% cost and per
+# +1s P50. Cost is compared at *uncached-equivalent* prices: measured $/query moves with the
+# provider's prompt-cache state (46% vs 23% hits across two identical-prefix runs), which is
+# not a property of the change under test.
+DEFAULT_MIN_GAIN_PTS = 1.5
+
+
+def cost_latency(runs: dict[int, list[dict[str, Any]]]) -> tuple[float, float, float]:
+    """(measured $/answer, uncached-equivalent $/answer, P50 seconds) over all repeats."""
+    records = [record for rows in runs.values() for record in rows]
+    calls = [call for record in records for call in record.get("llm_calls", [])]
+    measured = sum(float(call["cost_usd"]) for call in calls) / len(records)
+    uncached = (
+        sum(
+            cost_usd(call["model"], int(call["input_tokens"]), 0, int(call["output_tokens"]))
+            for call in calls
+        )
+        / len(records)
+    )
+    latencies = sorted(float(record.get("t_total_ms", 0.0)) for record in records)
+    return measured, uncached, latencies[len(latencies) // 2] / 1_000
+
+
+def required_gain(
+    base_min: float, old: tuple[float, float, float], new: tuple[float, float, float]
+) -> float:
+    """Declared minimum gain in points, raised for added (uncached) cost and P50 latency."""
+    cost_increase = max(0.0, new[1] / old[1] - 1.0) if old[1] else 0.0
+    latency_increase = max(0.0, new[2] - old[2])
+    return base_min + cost_increase / 0.5 + latency_increase
 
 
 def check_full_comparison(
@@ -481,6 +512,7 @@ def flips_report(
     allow: set[str] | None = None,
     force: bool = False,
     pilot: bool = False,
+    min_gain: float = DEFAULT_MIN_GAIN_PTS,
     iterations: int = 2_000,
     seed: int = 0,
 ) -> str:
@@ -518,6 +550,9 @@ def flips_report(
     row_delta = sum(now[r] - was[r] for r in shared) / len(shared)
     macro_delta = sum(sum(v) / len(v) for v in per_db.values()) / len(per_db)
     row_ci, macro_ci = _bootstrap(per_db, iterations, seed)
+    old_cost = cost_latency({r: old[r] for r in shared})
+    new_cost = cost_latency({r: new[r] for r in shared})
+    minimum = required_gain(min_gain, old_cost, new_cost)
     repeats = (
         max(len(runs) for runs in old.values()),
         max(len(runs) for runs in new.values()),
@@ -559,10 +594,24 @@ def flips_report(
             f"[{macro_ci[0] * 100:+.2f}, {macro_ci[1] * 100:+.2f}] |"
         ),
         "",
+        "| Run | $/answer measured | $/answer uncached-equivalent | P50 (s) |",
+        "|---|---:|---:|---:|",
+        f"| old | {old_cost[0]:.6f} | {old_cost[1]:.6f} | {old_cost[2]:.2f} |",
+        f"| new | {new_cost[0]:.6f} | {new_cost[1]:.6f} | {new_cost[2]:.2f} |",
+        "",
         (
-            "Adopt only if **both** point estimates meet the change's declared minimum and "
-            "both intervals exclude 0; subgroup tables below are for investigating regressions."
+            f"**Required minimum: {minimum:+.2f} pts** (base {min_gain:+.2f}, plus 1 pt per "
+            "+50% uncached cost and per +1s P50). Meets it: row-weighted "
+            f"**{'yes' if row_delta * 100 >= minimum and row_ci[0] > 0 else 'no'}**, "
+            f"macro **{'yes' if macro_delta * 100 >= minimum and macro_ci[0] > 0 else 'no'}**"
+            " (point estimate ≥ minimum and CI lower bound > 0)."
         ),
+        (
+            "Audit required: a CI lower bound is within 1 pt of 0."
+            if min(row_ci[0], macro_ci[0]) * 100 < 1.0
+            else "No borderline audit required."
+        ),
+        "Subgroup tables below are for investigating regressions, not for voting.",
         "",
         header.format("Database"),
         rule,
@@ -629,6 +678,12 @@ def main() -> None:
     )
     flips_cmd.add_argument("--force", action="store_true", help="Compare despite differences.")
     flips_cmd.add_argument(
+        "--min-gain",
+        type=float,
+        default=DEFAULT_MIN_GAIN_PTS,
+        help="Declared base minimum gain in points, before cost/latency adjustment.",
+    )
+    flips_cmd.add_argument(
         "--pilot",
         action="store_true",
         help="Allow partial overlap / unequal repeats; the report is labeled non-acceptance.",
@@ -653,6 +708,7 @@ def main() -> None:
                 allow=set(args.allow),
                 force=args.force,
                 pilot=args.pilot,
+                min_gain=args.min_gain,
             )
         )
 
