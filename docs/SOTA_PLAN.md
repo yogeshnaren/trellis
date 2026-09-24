@@ -474,6 +474,40 @@ postmortem's `california_schools` / `rtype` "unuseful" case lives.
   dictionary CSVs, and the wide-table and value-index steps (never reached: they were
   gated on residual value-matching failures).
 
+### Gate log
+
+**Mini-Dev gate 1 of 4 (2026-09-24): Phase 1 checkpoint.** Run `bird_raw_20260924T232302Z`:
+the accepted configuration (`--prompt-profile benchmark --quote-identifiers
+--pipeline-repairs`), all 500 rows × 3 repeats, complete, clean commit `285272c`. Cost
+$0.31 ($0.000205/answer measured, $0.000491 uncached-equivalent); P50 0.97s, P90 4.47s.
+
+| Difficulty | N | Official EX (mean of 3) | Corrected labels (Arcwise) | 2026-09-23 baseline: official / corrected |
+|---|---:|---:|---:|---|
+| Simple | 148 | **76.1%** | 77.7% | 66.2% / 66.2% |
+| Moderate | 250 | **54.0%** | 55.5% | 42.8% / 47.6% |
+| Challenging | 102 | **48.0%** | 46.4% | 32.4% / 32.4% |
+| **Overall** | 500 | **59.3%** | **60.2%** | 47.6% / 50.0% |
+
+- **Every database improved.** student_club +24.4, european_football_2 +20.9, superhero
+  +16.7, financial +12.5, thrombosis +12.0, california_schools +10.0, codebase_community
+  +8.8, formula_1 +7.6, debit_card +5.5, card_games +4.4, toxicology +3.3. Database macro
+  58.3% (was 46.8%).
+- **The Phase 1 gain carried over from `train_dev`:** +11.7 pts on Mini-Dev vs +8.6 on
+  `train_dev`. Caveat: the baseline was a single repeat on older code (before the
+  foreign-key fix), so this is a descriptive before/after, not a paired acceptance test.
+- It landed inside v1's projected Tier-B range (57–61%) and below the oracle output-format
+  ceiling (61.8%).
+- **Flagged repairs, re-evaluated here:**
+  - The empty-result retry fired on 5.9% of answers and replaced 13; 5 became correct.
+    The 76 it kept empty were all wrong anyway, so it can't regress. It cost 4.7% of the
+    run. **Keep.**
+  - The refusal retry: 17 refusals became queries, 7 of them correct. **Keep.**
+- Remaining pipeline errors: 15 repair-exhausted, 3 safety-rejected, 1 structured-output
+  failure (out of 1,500).
+- Not run at this gate, to save cost: `train_lockbox` (its 2 looks are kept for the
+  midpoint and final configurations), untouched dev, and the `--dictionary` Mini-Dev
+  check.
+
 ### 6.3 Phase 3: reasoning and diversity, incrementally (single-digit dollars)
 
 - **3a. Reasoning on, JSON format unchanged.** Set `--reasoning-effort low`, then `high`,
