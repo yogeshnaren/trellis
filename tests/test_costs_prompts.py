@@ -216,3 +216,21 @@ def test_long_ttl_reservation_is_not_charged_early(tmp_path: Path) -> None:
 def test_batch_pricing_is_half_of_serverless() -> None:
     serverless = cost_usd(MODEL_GPT_OSS, 1_000, 200, 500)
     assert cost_usd(MODEL_GPT_OSS, 1_000, 200, 500, batch=True) == pytest.approx(serverless / 2)
+
+
+def test_benchmark_profile_swaps_only_the_presentation_rules() -> None:
+    from src.prompts import BENCHMARK_SYSTEM_PROMPT, PROMPT_PROFILES
+
+    assert PROMPT_PROFILES["product"] is SYSTEM_PROMPT  # the CLI path is untouched
+    for product_rule in (
+        "both the entity label and that measure",
+        "FirstName || ' ' || LastName",
+        "Round user-facing percentages",
+        "deterministic secondary order",
+    ):
+        assert product_rule in SYSTEM_PROMPT and product_rule not in BENCHMARK_SYSTEM_PROMPT
+    assert "Return exactly the fields the question asks for" in BENCHMARK_SYSTEM_PROMPT
+    head, tail = SYSTEM_PROMPT.split("Projection and ranking:")
+    assert BENCHMARK_SYSTEM_PROMPT.startswith(head)
+    assert BENCHMARK_SYSTEM_PROMPT.endswith(tail[tail.index("Temporal keys:"):])
+    assert "{schema}" in BENCHMARK_SYSTEM_PROMPT

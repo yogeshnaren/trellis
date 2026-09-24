@@ -94,3 +94,34 @@ supplied schema. Set message to null."""
 def baseline_prompt(question: str) -> str:
     """Return the naive one-line raw-prompt control (no schema, no safety, no repair)."""
     return f"Convert this question to SQL:\n{question}"
+
+
+# Presentation profiles. The "Projection and ranking" rules above were tuned for Chinook's
+# human-facing answers (labels next to measures, "First Last" names, 2-dp rounding, tie-
+# breaker ordering). They are product preferences, not correctness rules, and they conflict
+# with benchmark gold answers that return exactly the fields asked for. The benchmark profile
+# replaces only that section; every other rule is shared text.
+BENCHMARK_PROJECTION = """Projection and ordering:
+- Return exactly the fields the question asks for, in the order it asks for them, and
+  nothing else: no extra measure, label, identifier, or helper columns; never SELECT *.
+- When the question or hint names several fields (for example a first name and a last
+  name), return each as its own column. Combine fields into one value only when the question
+  asks for a single combined value.
+- Return a measure only when the question asks for it. For "which X has the highest Y",
+  return X; add Y only if the question also asks for its value.
+- Return identifier columns (ids, codes, numbers) when the question asks for them;
+  otherwise return the field the question names.
+- Do not round, format, or concatenate results unless the question asks for a precision,
+  format, or combined value.
+- Use ORDER BY only when the question ranks, sorts, or asks for top/bottom items, and LIMIT
+  only for a requested number of items or a single superlative. Never add tie-breaker
+  columns to the output.
+
+"""
+
+_PROJECTION_START = SYSTEM_PROMPT.index("Projection and ranking:")
+_PROJECTION_END = SYSTEM_PROMPT.index("Temporal keys:")
+BENCHMARK_SYSTEM_PROMPT = (
+    SYSTEM_PROMPT[:_PROJECTION_START] + BENCHMARK_PROJECTION + SYSTEM_PROMPT[_PROJECTION_END:]
+)
+PROMPT_PROFILES = {"product": SYSTEM_PROMPT, "benchmark": BENCHMARK_SYSTEM_PROMPT}

@@ -421,6 +421,7 @@ def test_run_metadata_ignores_result_files_when_hashing_code(tmp_path: Path) -> 
         db_dir=Path("data/bird/train/train_databases"),
         difficulty=None, db=["movie"], limit=2, per_db=None, ids=None, seed=0,
         models=["m"], temperature=0.0, max_tokens=400, reasoning_effort=None, repeats=1,
+        prompt_profile="product", quote_identifiers=False,
     )
     if not args.questions.exists():
         import pytest

@@ -48,7 +48,7 @@ from src.agent import Agent
 from src.conversation import ConversationContext
 from src.costs import MODEL_DEEPSEEK, get_shared_budget
 from src.db import connect_readonly
-from src.prompts import SYSTEM_PROMPT
+from src.prompts import PROMPT_PROFILES
 from src.schema import get_schema
 
 DIFFICULTIES = ("simple", "moderate", "challenging", "unknown")
@@ -140,7 +140,10 @@ async def benchmark(args: argparse.Namespace) -> Path:
                 )
                 result = await agent.ask(
                     with_evidence(question.question, question.evidence),
-                    ConversationContext(get_schema(db_path)),
+                    ConversationContext(
+                        get_schema(db_path, quote_identifiers=args.quote_identifiers),
+                        profile=args.prompt_profile,
+                    ),
                 )
             finally:
                 conn.close()
@@ -237,12 +240,17 @@ def run_metadata(
 
     db_ids = sorted({question.db_id for question in questions})
     db_paths = {db_id: db_path_for(db_id, db_dir=args.db_dir) for db_id in db_ids}
+    template = PROMPT_PROFILES[args.prompt_profile]
     prompts = {
-        db_id: _sha16(SYSTEM_PROMPT.format(schema=get_schema(path)))
+        db_id: _sha16(
+            template.format(schema=get_schema(path, quote_identifiers=args.quote_identifiers))
+        )
         for db_id, path in db_paths.items()
     }
     config = {
         "models": args.models,
+        "prompt_profile": args.prompt_profile,
+        "quote_identifiers": args.quote_identifiers,
         "temperature": args.temperature,
         "max_tokens": args.max_tokens,
         "reasoning_effort": args.reasoning_effort,
@@ -385,6 +393,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=0, help="Sampling seed for --limit/--per-db.")
     parser.add_argument("--questions", type=Path, default=DEFAULT_QUESTIONS)
     parser.add_argument("--db-dir", type=Path, default=DEFAULT_DB_DIR)
+    parser.add_argument(
+        "--prompt-profile",
+        choices=("product", "benchmark"),
+        default="product",
+        help="Presentation rules: product (Chinook CLI) or benchmark (exact requested fields).",
+    )
+    parser.add_argument(
+        "--quote-identifiers",
+        action="store_true",
+        help="Render names SQLite can't read bare (e.g. `T-BIL`) backticked in the schema.",
+    )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--max-tokens", type=int, default=400)
     parser.add_argument(

@@ -18,6 +18,16 @@ MAX_SAMPLE_VALUES = 5
 # budget cares about; skip sampling on very wide tables to bound prompt-build latency.
 MAX_SAMPLED_COLUMNS_PER_TABLE = 10
 _DATE_LIKE = re.compile(r"^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}:\d{2})?$")
+_BARE_IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+QUOTED_SCHEMA_HEADER = "SQLite schema (names in backticks must be written with the backticks):"
+
+
+def _render_name(name: str, quote: bool) -> str:
+    """Backtick names SQLite can't read bare (``T-BIL``, ``aCL IgM``) when quoting is on,
+    so the safe spelling is what the model sees and copies."""
+    if not quote or _BARE_IDENTIFIER.match(name):
+        return name
+    return "`" + name.replace("`", "``") + "`"
 
 
 def _db_key(db_path: str | Path) -> str:
@@ -116,15 +126,24 @@ def _foreign_key_edges(db_key: str) -> tuple[tuple[str, str, str, str], ...]:
         connection.close()
 
 
-@lru_cache(maxsize=32)
-def _schema_text(db_key: str) -> str:
+@lru_cache(maxsize=64)
+def _schema_text(db_key: str, quote: bool = False) -> str:
     metadata = _metadata(db_key)
     connection = sqlite3.connect(f"file:{db_key}?mode=ro", uri=True)
+
+    def q(name: str) -> str:
+        return _render_name(name, quote)
+
     try:
-        lines = ["SQLite schema:"]
+        needs_quoting = quote and any(
+            not _BARE_IDENTIFIER.match(name)
+            for table, columns in metadata.items()
+            for name in (table, *(column for column, _kind, _pk in columns))
+        )
+        lines = [QUOTED_SCHEMA_HEADER if needs_quoting else "SQLite schema:"]
         for table, columns in metadata.items():
-            rendered = ", ".join(f"{name} {kind}" for name, kind, _pk in columns)
-            lines.append(f"- {table}({rendered})")
+            rendered = ", ".join(f"{q(name)} {kind}" for name, kind, _pk in columns)
+            lines.append(f"- {q(table)}({rendered})")
             # Skip primary keys: always unique, so sampling them is wasted work.
             candidates = [name for name, _kind, is_pk in columns if not is_pk]
             for column in candidates[:MAX_SAMPLED_COLUMNS_PER_TABLE]:
@@ -132,23 +151,26 @@ def _schema_text(db_key: str) -> str:
                 if sampled is None:
                     continue
                 kind, examples = sampled
-                label = f"sample {column}" if kind == "cardinality" else f"sample {column} year"
+                label = f"sample {q(column)}" + ("" if kind == "cardinality" else " year")
                 lines.append(f"  {label}: {', '.join(examples)}")
 
         foreign_keys = _foreign_key_edges(db_key)
         if foreign_keys:
             lines.append(
                 "Foreign keys: "
-                + "; ".join(f"{src}.{col} -> {dst}.{ref}" for src, col, dst, ref in foreign_keys)
+                + "; ".join(
+                    f"{q(src)}.{q(col)} -> {q(dst)}.{q(ref)}"
+                    for src, col, dst, ref in foreign_keys
+                )
             )
         return "\n".join(lines)
     finally:
         connection.close()
 
 
-def get_schema(db_path: str | Path = DEFAULT_DB_PATH) -> str:
-    """Return a compact schema string, cached by resolved database path."""
-    return _schema_text(_db_key(db_path))
+def get_schema(db_path: str | Path = DEFAULT_DB_PATH, *, quote_identifiers: bool = False) -> str:
+    """Return a compact schema string, cached by resolved database path and quoting."""
+    return _schema_text(_db_key(db_path), quote_identifiers)
 
 
 def table_count(db_path: str | Path = DEFAULT_DB_PATH) -> int:

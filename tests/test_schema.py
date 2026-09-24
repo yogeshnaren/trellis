@@ -63,3 +63,19 @@ def test_every_rendered_foreign_key_resolves_on_real_databases() -> None:
     for db_path in databases:
         if db_path.exists():
             _assert_edges_resolve(db_path)
+
+
+def test_quote_identifiers_backticks_only_unsafe_names(tmp_path: Path) -> None:
+    db_path = tmp_path / "lab.sqlite"
+    conn = sqlite3.connect(db_path)
+    conn.executescript(
+        'CREATE TABLE lab (id INTEGER PRIMARY KEY, "T-BIL" REAL, "aCL IgM" REAL, ok TEXT);'
+    )
+    conn.close()
+    plain = get_schema(db_path)
+    quoted = get_schema(db_path, quote_identifiers=True)
+    assert "T-BIL REAL" in plain and "`T-BIL` REAL" not in plain
+    assert "`T-BIL` REAL" in quoted and "`aCL IgM` REAL" in quoted and "ok TEXT" in quoted
+    assert quoted.startswith("SQLite schema (names in backticks")
+    # Databases with only bare names (Chinook) render identically either way.
+    assert get_schema() == get_schema(quote_identifiers=True)

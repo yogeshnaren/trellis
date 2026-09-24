@@ -365,3 +365,23 @@ with a complete 2-question × 2-repeat baseline, scored +100 pts with a CI of [1
   report is then labelled not acceptance evidence.
 - Phase 1 full runs are cumulative, each against the last accepted configuration, so the
   combination is what gets validated.
+
+## 2026-09-24 — Phase 1: benchmark prompt profile accepted
+**Decision:** BIRD runs use `--prompt-profile benchmark`. It replaces only the Chinook-era
+"Projection and ranking" rules (label-plus-measure outputs, `First || ' ' || Last` names,
+2-dp rounding, tie-breaker ordering) with "return exactly the fields asked for". The
+product/CLI profile (`SYSTEM_PROMPT`) is byte-identical to before.
+
+**Evidence:** full comparison on `train_dev` (501 questions × 2 repeats, both runs
+complete):
+- row-weighted Δ +6.99 pts [95% CI +4.49, +9.78];
+- database-macro Δ +6.91 [+3.03, +10.98];
+- no large single-database loss (movie flat; the other three +4.8 to +11.5);
+- no cost increase.
+
+This follows the plan-v2.4 acceptance rule, with the minimum declared before the run.
+
+**Known side effect, targeted next:** safety rejections rose from 7 to 14 per 1,002 answers,
+all unquoted special-character column names, and "unsupported" refusals rose from 2 to 6.
+Identifier quoting (1b, `--quote-identifiers`, implemented) plus pipeline repairs (1c) are
+tested next as one cumulative change against this accepted run.

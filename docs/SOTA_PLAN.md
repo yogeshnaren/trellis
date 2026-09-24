@@ -348,8 +348,57 @@ current configuration, `train_dev` × 2 repeats, complete.
 - Scoring moved off the event loop.
 - The report title now names the question file.
 
-**Next:** pilots for 1a (benchmark prompt profile) and 1b (identifier quoting), each
-≈ $0.03 at the measured rate, compared with `analyze flips --pilot` against this baseline.
+**Pilots (2026-09-24):** both runs used the same 80-row stratified sample (`--per-db 20
+--seed 1`) plus targeted rows, 2 repeats each, and were compared with the baseline on the
+same rows. Cost: $0.11 for both. Both came in cheaper per query than the baseline
+($0.00024 vs $0.00029), with no extra tokens.
+
+| Pilot | Subset | Rows | Baseline → pilot | Δ (95% CI) | Verdict |
+|---|---|---:|---|---|---|
+| **1a** benchmark prompt profile (`--prompt-profile benchmark`) | stratified (unbiased) | 80 | 60.6% → **68.1%** | **+7.5 [+2.5, +13.8]** (row = macro: 20 per DB) | **On course → full comparison #1** |
+| 1a | targeted: baseline shape failures (biased upward) | 51 | 0% → 56.9% | +56.9 | Confirms the mechanism |
+| 1b identifier quoting (`--quote-identifiers`) | stratified | 80 | 60.6% → 61.9% | +1.2 [−2.5, +6.2] | Not on course for +1.5 here |
+| 1b | targeted: `movie` special-name rows | 14 new | 71.4% → 71.4% | 0 | `train_dev` barely exercises it |
+
+- 1a has one partial regression (1 of 2 repeats), on `movie`. That repeat wrote
+  `c.Character Name` unquoted, which is exactly the failure 1b prevents. So it's noise for
+  1a and evidence for 1b.
+- 1b's real target (`T-BIL`, `aCL IgM`) lives in Mini-Dev's `thrombosis_prediction`, and
+  only `movie` in `train_dev` has special names. Per the §6.1 selection rule it doesn't earn
+  its own full run. It is **bundled with 1c** (unknown-identifier repair, empty-result
+  review) as one low-risk mechanical change for full comparison #2.
+
+**Full comparison #1 (2026-09-24): 1a ACCEPTED.** Run `bird_raw_20260924T170715Z`
+(baseline + `--prompt-profile benchmark`, `train_dev` × 2, complete) vs the baseline.
+Full-mode `analyze flips`, coverage verified; report in
+`benchmark/results/flips_train_dev_baseline_vs_1a.md`.
+
+| Criterion | Result |
+|---|---|
+| Row-weighted Δ | **+6.99** [+4.49, +9.78] ✅ (60.1% → 67.1%) |
+| Database-macro Δ | **+6.91** [+3.03, +10.98] ✅ |
+| Borderline audit needed? | No: both lower bounds are far from 0 |
+| Large single-database collapse? | None. movie +0.0 (4 fixes, 4 regressions); restaurant +11.5; sales_in_weather +11.2; soccer_2016 +4.8 |
+| By complexity band | low +6.8, medium +8.5, high +2.0 |
+| Cost / latency | No increase; run total $0.28 |
+
+**Audit of the consistent regressions** (read anyway, since they point at the next step):
+- **All 4 on `movie`:** SQL that wrote `c.Character Name` / `m.Release Date` unquoted, which
+  was then safety-rejected. Under 1a, safety rejections rose from 7 to 14 over 1,002
+  answers, and "unsupported" refusals from 2 to 6 (e.g. #8179). Those are exactly 1b's and
+  1c's targets.
+- The remaining regressions (#1784, #2019, #8175) are ordinary semantic variance.
+
+**Accepted configuration going forward:** `--prompt-profile benchmark`. The product/CLI
+profile is unchanged.
+
+**Next:**
+1. Build the 1c pilot (repair unknown-identifier rejects with a "did you mean" hint; one
+   repair turn for empty results; no "unsupported" in benchmark mode; timeout scaled to
+   database size).
+2. Full comparison #2: **(1a) + 1b + 1c vs the accepted 1a run**, cumulative. The 1a run
+   above serves as its control, so no new baseline spend.
+3. Phase 1 spend so far: **$0.68 of $2** (baseline $0.29, pilots $0.11, full #1 $0.28).
 
 ### 6.3 Phase 3: reasoning and diversity, incrementally (single-digit dollars)
 
