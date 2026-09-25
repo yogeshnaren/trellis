@@ -651,6 +651,66 @@ def flips_report(
     return "\n".join(lines) + "\n"
 
 
+def _majority_correct(sample: list[dict[str, Any]]) -> bool:
+    """Majority vote over delivered answers by full-result signature (ties: earliest wins)."""
+    votes: dict[str, list[dict[str, Any]]] = {}
+    for record in sample:
+        signature = record.get("result_signature")
+        if record.get("error") is None and signature:
+            votes.setdefault(signature, []).append(record)
+    if not votes:
+        return False
+    winner = max(votes.values(), key=len)  # dict order = first appearance, so ties -> earliest
+    return bool(winner[0].get("official_ex"))
+
+
+def sample_curves(
+    runs: dict[int, list[dict[str, Any]]], max_k: int
+) -> dict[int, tuple[float, float]]:
+    """k -> (oracle pass@k, majority@k), each averaged over all k-subsets of a question's
+    samples, so the result doesn't depend on sample order."""
+    curves: dict[int, tuple[float, float]] = {}
+    for k in range(1, max_k + 1):
+        passes, majorities = [], []
+        for samples in runs.values():
+            subsets = list(itertools.combinations(samples, k))
+            passes.append(
+                sum(any(r.get("official_ex") for r in subset) for subset in subsets)
+                / len(subsets)
+            )
+            majorities.append(sum(_majority_correct(list(subset)) for subset in subsets) / len(subsets))
+        curves[k] = (sum(passes) / len(passes), sum(majorities) / len(majorities))
+    return curves
+
+
+def samples_report(raw_path: Path, questions: list[BirdQuestion]) -> str:
+    """Oracle pass@k vs majority@k from a run whose repeats are independent samples
+    (temperature > 0): the Phase 4 bottleneck test. A large pass@k − majority@k gap means
+    selection is the bottleneck; a low pass@k means generation is."""
+    runs = load_runs(raw_path, questions)
+    max_k = min(len(samples) for samples in runs.values())
+    by_row = {question.row_index: question for question in questions}
+    lines = [
+        f"# Sample curves: `{raw_path.name}`",
+        "",
+        f"{len(runs)} questions × {max_k} samples; averaged over all k-subsets.",
+        "",
+        "| k | Oracle pass@k | Majority@k | Gap (selection headroom) |",
+        "|---:|---:|---:|---:|",
+    ]
+    for k, (passes, majority) in sample_curves(runs, max_k).items():
+        lines.append(f"| {k} | {passes:.1%} | {majority:.1%} | {(passes - majority) * 100:+.1f} pts |")
+    lines += ["", f"| Database | N | pass@1 | pass@{max_k} | majority@{max_k} |", "|---|---:|---:|---:|---:|"]
+    for db_id in sorted({by_row[r].db_id for r in runs}):
+        subset = {r: v for r, v in runs.items() if by_row[r].db_id == db_id}
+        curve = sample_curves(subset, max_k)
+        lines.append(
+            f"| `{db_id}` | {len(subset)} | {curve[1][0]:.1%} | {curve[max_k][0]:.1%} | "
+            f"{curve[max_k][1]:.1%} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
 def load_corrected_gold(path: Path) -> dict[int, str]:
     """Corrected gold SQL keyed by question id (e.g. Arcwise-Plat-SQL)."""
     return {int(item["question_id"]): item["SQL"] for item in json.loads(path.read_text())}
@@ -688,9 +748,16 @@ def main() -> None:
         action="store_true",
         help="Allow partial overlap / unequal repeats; the report is labeled non-acceptance.",
     )
+    samples_cmd = commands.add_parser(
+        "samples", help="Oracle pass@k vs majority@k from a multi-sample run"
+    )
+    samples_cmd.add_argument("raw", type=Path)
     args = parser.parse_args()
 
     questions = load_questions(args.questions)
+    if args.command == "samples":
+        print(samples_report(args.raw, questions))
+        return
     if args.command == "rescore":
         corrected = load_corrected_gold(args.corrected_gold) if args.corrected_gold else None
         results = rescore(args.raw, questions, args.db_dir, corrected)

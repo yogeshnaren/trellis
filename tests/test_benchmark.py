@@ -447,3 +447,22 @@ def test_required_gain_uses_uncached_cost_and_latency() -> None:
     # 0.2 pts, +0.5s P50 adds 0.5 pts, and improvements never lower the bar.
     assert required_gain(1.5, (1.0, 1.0, 1.0), (9.9, 1.1, 1.5)) == pytest.approx(2.2)
     assert required_gain(1.5, (1.0, 1.0, 2.0), (0.1, 0.9, 1.0)) == pytest.approx(1.5)
+
+
+def test_sample_curves_pass_and_majority() -> None:
+    from benchmark.analyze import sample_curves
+
+    def rec(sig: str, ok: bool) -> dict[str, object]:
+        return {"error": None, "result_signature": sig, "official_ex": ok}
+
+    runs = {
+        # 1 of 3 samples right, but the wrong answer is the majority.
+        0: [rec("x", False), rec("x", False), rec("y", True)],
+        # Majority right.
+        1: [rec("y", True), rec("y", True), rec("z", False)],
+    }
+    curves = sample_curves(runs, 3)
+    assert curves[1][0] == pytest.approx((1 / 3 + 2 / 3) / 2)
+    assert curves[3] == pytest.approx((1.0, 0.5))  # pass@3 = 100%, majority@3 = 50%
+    # With k=2 on question 0: subsets {x,x}->x wrong, {x,y}->tie->earliest x wrong (x2).
+    assert curves[2][1] == pytest.approx((0 + 1) / 2)

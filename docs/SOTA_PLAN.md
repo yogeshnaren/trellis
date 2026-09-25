@@ -559,6 +559,59 @@ $0.31 ($0.000205/answer measured, $0.000491 uncached-equivalent); P50 0.97s, P90
   2. oracle pass@K vs majority vote at K = 2, 4 from the fast path, which is the Phase 4
      bottleneck test.
 
+**3-models and 3-samples pilots (2026-09-25, run by a delegated agent under a $1.50 ledger
+cap; batch spend $0.51).** Same 100 stratified `train_dev` rows (25 per database) × 2,
+compared with the accepted run on the same rows.
+
+| Model (non-reasoning unless noted) | Δ (95% CI) | Uncached $/answer | P50 | Required min | Verdict |
+|---|---|---:|---:|---:|---|
+| `deepseek-v4p1-flash` | **+3.5** [−1.5, +8.5] | $0.00059 (+41%) | 1.56s | +2.71 | **On course (point estimate ≥ minimum) → qualifies for a full comparison** |
+| `deepseek-v4-pro-0813` | −0.5 [−4.0, +3.0] | $0.00243 (+479%) | 3.78s | +13.69 | Not adopted: 6× the cost for nothing |
+| `gpt-oss-120b` (reasoning `low`, its minimum) | −0.5 [−4.0, +3.0] | $0.00035 (−16%) | 0.85s | +1.50 | Not adopted |
+| `glm-5p3-flash` (thinking-only; rejects `none`) | **−13.5** [−21.0, −6.5] | $0.00036 | 4.27s | +4.61 | Not adopted: 69 of 200 answers failed structured output |
+
+**Multi-sample (current model, temperature 0.7, K=4):**
+
+| k | 1 | 2 | 3 | 4 |
+|---|---:|---:|---:|---:|
+| oracle pass@k | 69.2% | 71.2% | 72.2% | 73.0% |
+| majority@k | 69.2% | 68.8% | 69.0% | 69.0% |
+
+Self-consistency with one model gains nothing: majority@4 ≈ pass@1.
+
+**Cross-model headroom (the routing question), same 100 rows, one answer per model:**
+- The **oracle over all 5 models is 73%**, identical to one model's pass@4. A majority vote
+  across the models gives 69–71%, against 69% for the current model alone.
+- **24 of the 100 questions were never matched by any of 1,400 answers.** Of the 5 with
+  BIRD-Verified entries, 2 match the corrected gold and 2 had revised (flawed) questions.
+  So most of the universally "unsolvable" questions checked so far are label or question
+  problems, not model gaps.
+- **Implication:** on these candidates, routing, ensembling, or selection can add at most
+  ~4 pts. The errors are shared by every model. What moves the score now is teaching
+  BIRD's *annotation conventions* (what the gold SQL literally expects), not more model
+  diversity. That's also the most plausible reason fine-tuned leaders (RLVR/SFT on BIRD
+  train) gain where prompting plateaus. Gate F-G's criterion (pass@K < ~80% ⇒ generation,
+  not selection, is the bottleneck) is met at 73%.
+
+### Phase 4R: category-based model routing (added 2026-09-25 at owner request)
+
+A concrete, testable version of "different models for different question types":
+1. **Headroom check first (free, from the candidate bank).** The oracle over models vs the
+   best single model. *Current evidence: 73% vs 69–71% on the 100-row pilot bank*, so a
+   router is capped at ≈ +2–4 pts with today's candidates. Re-check whenever the candidate
+   set changes (e.g. a fine-tuned or few-shot-conditioned model).
+2. **Only observable categories** (no gold SQL at inference): database/domain;
+   question/hint features (superlative, ratio/percentage, temporal, count, multi-part);
+   the complexity of the fast model's own draft; schema size.
+3. **Fit on `train_dev`** with leave-one-database-out validation. Switch away from the
+   default model for a category only with enough support (≥ 20 questions and a paired gain
+   whose CI excludes 0).
+4. **Test once** on `train_lockbox` (counts as a lockbox look) plus a Mini-Dev gate,
+   against the best single model, cross-model majority vote, and the Phase 4 cascade,
+   under the same §5.4 rule.
+5. **Status:** deferred until step 1 shows ≥ 5 pts of headroom. The first candidate set
+   doesn't.
+
 ### 6.4 Phase 4: cascade and selection
 
 - **Cascade safety gate (hard requirement):** measure how often 3 agreeing samples are

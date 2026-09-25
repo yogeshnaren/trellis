@@ -447,3 +447,21 @@ diverges from BIRD's literal gold.
 
 **Also:** the LLM client timeout is now configurable (`--llm-timeout`,
 `Agent(llm_timeout_s=...)`); it was a hard-coded 20s that reasoning calls can exceed.
+
+## 2026-09-25 — Phase 3 model bake-off and sampling; routing headroom
+**Pilots** (100 `train_dev` rows × 2, vs the accepted configuration; run by a delegated
+agent under a $1.50 ledger cap, which spent $0.51):
+- `deepseek-v4p1-flash` +3.5 [−1.5, +8.5] at +41% uncached cost, required minimum +2.71:
+  on course, so it qualifies for a full comparison;
+- `deepseek-v4-pro` −0.5 at 6× cost: not adopted;
+- `gpt-oss-120b` −0.5: not adopted;
+- `glm-5p3-flash` −13.5 (thinking-only; 35% structured-output failures): not adopted.
+
+Multi-sample (T=0.7, K=4): pass@4 73.0% but majority@4 69.0% ≈ pass@1, so no
+self-consistency gain.
+
+**Routing headroom:** the oracle over all five models is 73%, the same as one model's
+pass@4. 24 of 100 questions were never matched by any of 1,400 answers. Of the 5 of those
+with BIRD-Verified entries, 4 are label or question problems. Category routing is added to
+the plan (Phase 4R) with a fit-on-`train_dev` / test-once-on-lockbox protocol, **deferred**
+until the headroom check shows ≥ 5 pts.
