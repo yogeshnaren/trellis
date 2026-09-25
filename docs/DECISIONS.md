@@ -432,3 +432,18 @@ later Mini-Dev gate check.
 **Phase 1 result:** accepted configuration `--prompt-profile benchmark --quote-identifiers
 --pipeline-repairs`. On `train_dev` it moved from 60.1% to 68.7% row-weighted and from
 58.5% to 69.3% macro, for $1.24 of the $2 cap (ledger figure).
+
+## 2026-09-24 — Phase 3a: reasoning mode not adopted for DeepSeek-V4-Flash
+**Decision:** keep `reasoning_effort="none"` for the BIRD configuration.
+
+**Evidence:** pilots on 100 stratified `train_dev` rows × 2 vs the accepted configuration:
+- low effort: −1.5 pts [−6.5, +3.5], +103% uncached cost, P50 1.2s → 4.9s;
+- high effort: −1.5 pts [−6.5, +3.0], +201% cost, P50 5.9s;
+- the required minima were +7.3 and +10.3.
+
+**Audit:** partly token-cap truncation (4 and 11 structured-output failures), mostly
+reasoning producing more elaborate SQL (`EXISTS` rewrites, parsing text columns) that
+diverges from BIRD's literal gold.
+
+**Also:** the LLM client timeout is now configurable (`--llm-timeout`,
+`Agent(llm_timeout_s=...)`); it was a hard-coded 20s that reasoning calls can exceed.

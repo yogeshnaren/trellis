@@ -525,6 +525,40 @@ $0.31 ($0.000205/answer measured, $0.000491 uncached-equivalent); P50 0.97s, P90
   prices), but **the repo has no batch submission path yet**. Batch savings are contingent,
   and every estimate here is priced at serverless rates until that path exists.
 
+### Phase 3 log
+
+**3a: reasoning on, JSON format unchanged (2026-09-24): NOT adopted.**
+- A probe confirmed DeepSeek-V4-Flash accepts `reasoning_effort` together with structured
+  JSON output. Reasoning tokens count toward output, and latency varies widely (2.8s vs
+  14.9s on the same question).
+- The client timeout is now configurable (`--llm-timeout`; it was hard-coded at 20s).
+- Pilots: 100 stratified `train_dev` rows (25 per database) × 2, vs the accepted
+  configuration's full run on the same rows. Cost $0.36.
+
+| Pilot | Δ vs accepted (95% CI) | Uncached $/answer | P50 | Required minimum |
+|---|---|---:|---:|---:|
+| `--reasoning-effort low --max-tokens 4096` | **−1.5** [−6.5, +3.5] | $0.00085 (+103%) | 4.9s (was 1.2) | +7.28 |
+| `--reasoning-effort high --max-tokens 8192` | **−1.5** [−6.5, +3.0] | $0.00126 (+201%) | 5.9s | +10.25 |
+
+**Audit (why no gain):**
+- Some reasoning runs hit the token cap, truncating the JSON: 4 (low) and 11 (high)
+  structured-output failures.
+- More importantly, reasoning "overthinks" against BIRD's literal gold. It writes `EXISTS`
+  instead of joins, and parses a text `screentime` column into numbers where gold sorts the
+  raw text. That's arguably better SQL that the labels score as wrong.
+- Fixing truncation alone is worth ~1–2 pts, far from the required +7.
+- Conclusion for this model on this data: its reasoning doesn't beat its fast path. The
+  leaderboard's reasoning gains come from stronger models, and often from selection among
+  many candidates, not from one flash-model reasoning pass.
+
+**Consequence for the roadmap:**
+- 3b as planned (the format change after the 3a winner) is moot.
+- The next Phase 3 evidence should come from **model choice and diversity at K samples**,
+  not from reasoning depth:
+  1. a non-reasoning model bake-off at K=1 on the same 100 rows;
+  2. oracle pass@K vs majority vote at K = 2, 4 from the fast path, which is the Phase 4
+     bottleneck test.
+
 ### 6.4 Phase 4: cascade and selection
 
 - **Cascade safety gate (hard requirement):** measure how often 3 agreeing samples are

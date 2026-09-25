@@ -89,6 +89,7 @@ class Agent:
         temperature: float = 0.0,
         request_options: dict[str, Any] | None = None,
         pipeline_repairs: bool = False,
+        llm_timeout_s: float = 20.0,
     ):
         self.model = model
         self.conn = conn
@@ -103,6 +104,8 @@ class Agent:
         # get a "did you mean" repair, one refusal is retried as answerable, an empty result
         # gets one guarded re-check. Forbidden SQL still never retries.
         self.pipeline_repairs = pipeline_repairs
+        # Reasoning-mode calls can legitimately exceed the interactive 20s client timeout.
+        self.llm_timeout_s = llm_timeout_s
 
     async def ask(self, question: str, ctx: ConversationContext) -> AgentResult:
         started = time.perf_counter()
@@ -121,6 +124,7 @@ class Agent:
                     budget=self.budget,
                     request_options=self.request_options,
                     temperature=self.temperature,
+                    timeout_s=self.llm_timeout_s,
                 )
                 result.llm_calls.append(llm_result)
                 result.t_llm_ms += llm_result.latency_ms
@@ -261,6 +265,7 @@ class Agent:
                 budget=self.budget,
                 request_options=self.request_options,
                 temperature=self.temperature,
+                timeout_s=self.llm_timeout_s,
             )
         except (BudgetExceeded, AuthenticationError, RateLimitError, APITimeoutError,
                 APIConnectionError):

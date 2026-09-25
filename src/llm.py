@@ -88,6 +88,7 @@ async def complete(
     budget: BudgetGuard | None = None,
     request_options: dict[str, Any] | None = None,
     temperature: float = 0.0,
+    timeout_s: float = 20.0,
 ) -> LLMResult:
     """Complete once, retrying transient failures while preserving hard budget reserve."""
     guard = budget or get_shared_budget(float(os.getenv("FIREWORKS_BUDGET_USD", "6.00")))
@@ -96,7 +97,7 @@ async def complete(
     client = AsyncOpenAI(
         api_key=os.environ.get("FIREWORKS_API_KEY"),
         base_url="https://api.fireworks.ai/inference/v1",
-        timeout=20.0,
+        timeout=timeout_s,
     )
     options = model_request_options(model)
     options.update(request_options or {})

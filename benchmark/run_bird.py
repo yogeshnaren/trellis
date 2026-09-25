@@ -141,6 +141,7 @@ async def benchmark(args: argparse.Namespace) -> Path:
                         else None
                     ),
                     pipeline_repairs=args.pipeline_repairs,
+                    llm_timeout_s=args.llm_timeout,
                 )
                 result = await agent.ask(
                     with_evidence(question.question, question.evidence),
@@ -268,6 +269,7 @@ def run_metadata(
         "temperature": args.temperature,
         "max_tokens": args.max_tokens,
         "reasoning_effort": args.reasoning_effort,
+        "llm_timeout_s": args.llm_timeout,
         "max_repairs": 1,
     }
     # Python sources only: result files under benchmark/results/ (including the raw file
@@ -430,6 +432,9 @@ def parse_args() -> argparse.Namespace:
         "retry, one guarded empty-result retry, size-scaled execution timeout.",
     )
     parser.add_argument("--temperature", type=float, default=0.0)
+    parser.add_argument(
+        "--llm-timeout", type=float, default=20.0, help="Per-call LLM client timeout in seconds."
+    )
     parser.add_argument("--max-tokens", type=int, default=400)
     parser.add_argument(
         "--reasoning-effort",
