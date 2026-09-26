@@ -13,9 +13,15 @@ from pathlib import Path
 from uuid import uuid4
 
 MODEL_GPT_OSS = "accounts/fireworks/models/gpt-oss-120b"
+# Superseded snapshot: the model behind every result dated 2026-09-24 and earlier. It is kept for
+# provenance and pricing only; it is not the default because not every key can call it.
 MODEL_DEEPSEEK = "accounts/fireworks/models/deepseek-v4-flash-0731"
+MODEL_DEEPSEEK_V4P1 = "accounts/fireworks/models/deepseek-v4p1-flash"
 MODEL_MINIMAX = "accounts/fireworks/models/minimax-m3"
-MODELS = (MODEL_GPT_OSS, MODEL_DEEPSEEK, MODEL_MINIMAX)
+# The default for the CLI and the benchmarks, chosen from measured accuracy among the models
+# every key could call on 2026-09-26 (docs/DECISIONS.md, 2026-09-26).
+DEFAULT_MODEL = MODEL_DEEPSEEK_V4P1
+MODELS = (MODEL_GPT_OSS, MODEL_DEEPSEEK_V4P1, MODEL_MINIMAX)
 
 # USD per one million tokens: input, cached input, output. Verified against
 # https://docs.fireworks.ai/serverless/pricing on 2026-09-22.
@@ -29,7 +35,7 @@ PRICING: dict[str, dict[str, float]] = {
     MODEL_MINIMAX: {"input": 0.30, "cached": 0.06, "output": 1.20},
     # Remaining Standard-tier serverless models, verified against the same page on 2026-09-23
     # for the SOTA-plan bake-offs (docs/SOTA_PLAN.md). Batch inference bills 50% of these.
-    "accounts/fireworks/models/deepseek-v4p1-flash": {"input": 0.30, "cached": 0.006, "output": 1.20},
+    MODEL_DEEPSEEK_V4P1: {"input": 0.30, "cached": 0.006, "output": 1.20},
     "accounts/fireworks/models/deepseek-v4-pro-0813": {"input": 1.32, "cached": 0.044, "output": 3.96},
     "accounts/fireworks/models/glm-5p3": {"input": 1.40, "cached": 0.26, "output": 4.40},
     "accounts/fireworks/models/glm-5p3-flash": {"input": 0.15, "cached": 0.03, "output": 0.50},

@@ -14,7 +14,7 @@ from rich.table import Table
 
 from src.agent import Agent, AgentResult
 from src.conversation import ConversationContext
-from src.costs import MODEL_DEEPSEEK, get_shared_budget
+from src.costs import DEFAULT_MODEL, get_shared_budget
 from src.db import connect_readonly
 from src.schema import get_schema, table_count
 
@@ -31,10 +31,16 @@ def _render(result: AgentResult, shared_remaining: float) -> None:
         style = "yellow" if result.response_type == "unsupported" else "cyan"
         console.print(Panel(result.message or "", title=title, border_style=style))
     if result.sql:
-        console.print(Panel(Syntax(result.sql, "sql"), title="Generated SQL"))
+        console.print(Panel(Syntax(result.sql, "sql", word_wrap=True), title="Generated SQL"))
     if result.error:
         console.print(f"[red]{result.error_category}: {result.error}[/red]")
-        console.print("Try rephrasing the question.")
+        if result.error_category == "model-unavailable":
+            console.print(
+                "Set FIREWORKS_MODEL in .env to a model your key can call, then verify it with "
+                "[bold]uv run python -m benchmark.preflight --models <model>[/bold]."
+            )
+        else:
+            console.print("Try rephrasing the question.")
         return
     rows = result.rows or []
     if result.response_type == "query":
@@ -57,7 +63,7 @@ def _render(result: AgentResult, shared_remaining: float) -> None:
 async def _run() -> None:
     load_dotenv()
     db_path = Path(os.getenv("DB_PATH", "data/Chinook.db"))
-    model = os.getenv("FIREWORKS_MODEL", MODEL_DEEPSEEK)
+    model = os.getenv("FIREWORKS_MODEL", DEFAULT_MODEL)
     ceiling = float(os.getenv("FIREWORKS_BUDGET_USD", "6.00"))
     session_allowance = float(os.getenv("SESSION_BUDGET_USD", "2.00"))
     guard = get_shared_budget(ceiling)

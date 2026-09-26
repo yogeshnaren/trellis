@@ -220,3 +220,44 @@ def test_empty_result_retry_only_replaces_with_a_non_empty_answer(tmp_path: Path
         kept, _ = _run(tmp_path, [_query(empty), bad_retry], repairs=True)
         # Any unsafe, invalid, unchanged, or still-empty retry keeps the original answer.
         assert kept.ok and kept.sql == empty and kept.rows == []
+
+
+def _status_error(cls: type[Exception], status: int) -> Exception:
+    from types import SimpleNamespace
+
+    # The SDK only reads request, status_code and headers from the response it is handed.
+    response = SimpleNamespace(request=None, status_code=status, headers={}, json=dict)
+    return cls("Model not found, inaccessible, and/or not deployed", response=response, body=None)
+
+
+@pytest.mark.parametrize("name,status", [("NotFoundError", 404), ("PermissionDeniedError", 403)])
+def test_unavailable_model_is_a_handled_error_not_a_crash(
+    tmp_path: Path, name: str, status: int
+) -> None:
+    import asyncio
+
+    import openai
+
+    error = _status_error(getattr(openai, name), status)
+
+    async def failing_complete(*args: Any, **kwargs: Any) -> LLMResult:
+        raise error
+
+    async def scenario() -> Any:
+        conn = connect_readonly()
+        try:
+            agent = Agent(
+                "accounts/fireworks/models/retired-model",
+                conn,
+                BudgetGuard(1.0, tmp_path / "spend.sqlite"),
+                complete_fn=failing_complete,
+                pipeline_repairs=True,
+            )
+            return await agent.ask("Name an artist", ConversationContext(get_schema()))
+        finally:
+            conn.close()
+
+    result = asyncio.run(scenario())
+    assert result.error_category == "model-unavailable"
+    assert "retired-model" in (result.error or "")
+    assert not result.ok and result.rows is None and not result.llm_calls

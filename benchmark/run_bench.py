@@ -20,7 +20,7 @@ from benchmark.evaluate import evaluate_sql, evaluate_task_success
 from src.agent import Agent, AgentResult
 from src.conversation import ConversationContext
 from src.costs import (
-    MODEL_DEEPSEEK,
+    DEFAULT_MODEL,
     MODELS,
     BudgetExceeded,
     BudgetGuard,
@@ -31,7 +31,7 @@ from src.llm import complete
 from src.prompts import baseline_prompt
 from src.schema import DEFAULT_DB_PATH, get_schema
 
-CONTROL_MODEL = MODEL_DEEPSEEK
+CONTROL_MODEL = DEFAULT_MODEL
 
 
 def arm_matrix(models: list[str], arms: list[str]) -> list[tuple[str, str]]:

@@ -19,6 +19,7 @@ from openai import (
 
 from src.costs import (
     MODEL_DEEPSEEK,
+    MODEL_DEEPSEEK_V4P1,
     MODEL_GPT_OSS,
     BudgetGuard,
     cost_usd,
@@ -37,6 +38,7 @@ ErrorCategory = Literal[
     "rate-limited",
     "network-failed",
     "timed-out",
+    "model-unavailable",
 ]
 
 
@@ -65,7 +67,7 @@ def model_request_options(model: str) -> dict[str, Any]:
     """
     if model == MODEL_GPT_OSS:
         return {"reasoning_effort": "low"}
-    if model == MODEL_DEEPSEEK:
+    if model in {MODEL_DEEPSEEK, MODEL_DEEPSEEK_V4P1}:
         return {"reasoning_effort": "none"}
     return {}
 

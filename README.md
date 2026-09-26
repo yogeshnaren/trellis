@@ -1,339 +1,289 @@
+<div align="center">
+
 # Trellis
 
-**A schema-grounded, safety-first agentic text-to-SQL CLI, running open-source models on
-[Fireworks AI](https://fireworks.ai).**
+**A schema-grounded, safety-first text-to-SQL agent. Bounded, instrumented, and measured against BIRD.**
 
-Trellis takes a natural-language question, generates SQL grounded in the database's actual
-schema, validates it with a SQL-AST safety layer before it ever touches the database, executes
-it read-only, and repairs itself once on failure — all with full latency/token/cost
-instrumentation and a hard spend ceiling. The name is the point: the schema acts as a trellis,
-a structure the model's output has to grow along rather than wander from — every architectural
-decision below optimizes for that grounding, not just raw model capability.
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776ab)
+![License MIT](https://img.shields.io/badge/license-MIT-green)
+![Type checked: mypy strict](https://img.shields.io/badge/mypy-strict-3fb950)
+![Models: open-weight on Fireworks AI](https://img.shields.io/badge/models-open--weight%20on%20Fireworks%20AI-8957e5)
 
-```
-Question:> What are the top 5 best-selling genres by total sales?
-```
-```
-SELECT g.Name AS Genre, SUM(il.UnitPrice * il.Quantity) AS TotalSales FROM Genre g
-JOIN Track t ON t.GenreId = g.GenreId JOIN InvoiceLine il ON il.TrackId = t.TrackId
-GROUP BY g.GenreId, g.Name ORDER BY TotalSales DESC LIMIT 5;
-```
-```
-Rock | 826.65   Latin | 382.14   Metal | 261.36   Alternative & Punk | 241.56   TV Shows | 93.53
-1.57s · 2284 in (0 cached) / 95 out · $0.000565 · $5.96 shared budget remaining
-```
-*(live output, uncached first call — repeat or follow-up questions hit the prompt cache and run
-noticeably faster/cheaper; see the results table below.)*
+<img src="docs/assets/cli-hero.svg" width="900" alt="Trellis CLI answering a question about Chinook sales: a colour-coded SQL panel, a result table, and a status line showing time, tokens, cost and remaining budget">
 
-## Results at a glance
+</div>
 
-Two independent evaluations, both live-measured against the current Fireworks catalog
-(`deepseek-v4-flash-0731`), not estimated:
+Trellis turns a question into SQL that is grounded in the database's real schema. A SQL-AST
+safety layer checks that SQL before it touches the database. It runs read-only, repairs itself
+at most once, and reports latency, tokens and cost for every answer under a hard spend ceiling.
+The schema is the trellis: a structure the model's output has to grow along, so the
+architecture optimises for grounding, not just raw model capability.
 
-| Benchmark | Exec accuracy | P50 | P90 | Repair rate | $/query |
-|---|---:|---:|---:|---:|---:|
-| Chinook dev set (10 questions, this project's own) | 60%¹ | 0.84s | 0.96s | 0% | $0.000502 |
-| [BIRD-SQL](https://bird-bench.github.io) Mini-Dev (full 500 questions, public benchmark, never tuned against) | 45.8%² | 1.53s | 4.97s | 2.0% | $0.000485 |
+## Results
 
-¹ Raw execution-equivalence score. Hand-inspecting all four misses found three are not
-generation errors — see [Known gaps](#known-gaps--what-id-tackle-next). ² Simple/moderate/
-challenging breakdown: 62.2% / 40.0% / 36.3% — see [Benchmarking against BIRD-SQL](#benchmarking-against-bird-sql)
-and the full root-cause [postmortem](docs/POSTMORTEM.md).
+<!-- BEGIN generated:headline -->
+| | BIRD Mini-Dev | BIRD dev, untouched | Both, row-weighted |
+|---|---:|---:|---:|
+| **Official execution accuracy** | **65.3%** | **67.6%** | **≈ 66.9%** |
+| Questions × repeats | 500 × 3 | 1,036 × 1 | 1,536 rows |
+| Simple / moderate / challenging | 76.6 / 62.9 / 54.6 | 71.0 / 55.6 / 65.1 | n/a |
+| P50 / P90 latency | 1.36s / 2.79s | 1.37s / 3.03s | n/a |
+| Cost per query, as measured | $0.000205 | $0.000167 | n/a |
+| Cost per query, no prompt cache | $0.000661 | $0.000638 | $0.000651 |
+| Per 1,000 queries: measured / no cache | $0.20 / $0.66 | $0.17 / $0.64 | n/a |
+<!-- END generated:headline -->
 
-At $0.000485–$0.000502/query, 30,000 queries/day costs roughly **$14.55–15.06**. Both numbers
-were produced by `benchmark/run_bench.py` / `benchmark/run_bird.py` against the live API on
-2026-09-22 — reproduce them with the commands in [Validation](#validation).
+Default model `deepseek-v4p1-flash` with reasoning off, frozen Phase 1 configuration, all runs
+on a clean commit. Tables in this README are regenerated from the committed reports by
+[`scripts/render_readme_assets.py`](scripts/render_readme_assets.py); the [provenance table](#provenance-and-timeline)
+below pins each run to its commit, config and data hash.
 
-## Requirements
+- **History on Mini-Dev:** 47.6% (2026-09-23 baseline) → 59.3% (Phase 1 prompt and pipeline
+  changes, `deepseek-v4-flash-0731`) → **65.3%** (same config and prompt hash, `deepseek-v4p1-flash`).
+- **Why this default.** On the paired 500-question Mini-Dev comparison it beats the previous
+  snapshot by **+5.9 [+3.2, +8.7]** points. On `train_dev` it ties (+0.4 [−1.9, +2.7]). It costs the
+  same as measured ($0.000205) but is slower (P50 1.36s vs 0.97s) and about a third dearer with no
+  cache. The previous snapshot is a dated model that providers retire and not every account can
+  call, so it is kept for provenance only. `gpt-oss-120b` is the cheaper, faster alternative
+  (−1.4 points on `train_dev`; see the [comparison](#quality-cost-and-latency)).
+- **Difficulty mix differs.** Mini-Dev skews harder (148 simple / 250 moderate / 102 challenging);
+  `dev_untouched` skews simple (777 / 216 / 43). That is why the two headline numbers differ.
+- **Scope.** Both use BIRD's official comparator (`set(pred) == set(gold)`). This is a local run,
+  **not a leaderboard submission**. The row-weighted figure is approximate because 23 Mini-Dev rows
+  use Mini-Dev's own database versions. Mini-Dev has been looked at twice of a planned four; the
+  earlier 45.8% figure used a stricter local metric and survives only in the
+  [postmortem](docs/POSTMORTEM.md).
 
-This is a from-scratch agent design, not a wrapper around an existing text-to-SQL framework.
-The requirements it's built to:
+<img src="docs/assets/progress.svg" width="760" alt="Bar chart: BIRD Mini-Dev official accuracy rose from 47.6% to 59.3% to 65.3% overall, with gains in every difficulty tier">
 
-- **Interactive CLI**: a terminal session where a user asks a question, gets SQL + results,
-  and can ask natural follow-ups in the same session.
-- **Beat the naive baseline**: `Convert this question to SQL: {question}` with no schema, no
-  validation, no repair — the kind of prompt most first prototypes start with, and the one this
-  project measures itself against directly (see the `baseline` arm in every bake-off).
-- **P50 end-to-end latency under 3 seconds**, single user.
-- **Self-validated**, not just demoed: execution accuracy against gold result sets, not string
-  matching against gold SQL — a syntactically different query that returns the right rows should
-  count as correct.
-- **Cost-aware at scale**: instrumented $/query and a hard spend ceiling, because "it works in
-  a demo" and "it's sustainable at 30,000 queries/day" are different bars.
-- **Extended goal, added after the original build**: hold up against a public, external
-  benchmark ([BIRD-SQL](https://bird-bench.github.io)) rather than only the 10 questions this
-  project wrote and tuned its own prompt against.
+<img src="docs/assets/per-database.svg" width="760" alt="Bar chart of Mini-Dev accuracy across 11 databases with the previous gate marked as a tick on each bar">
 
-## Quick command playbook (start here)
-
-This section is written for anyone — no Python or SQL background required. It gets you from a
-fresh checkout to asking Trellis a question in plain English in under 5 minutes.
-
-**What this actually is:** a chat-like tool where you type a question about a music-store
-database in plain English (e.g. "which country spends the most?") and it writes and runs the
-correct SQL for you, showing you the answer as a table.
-
-### 1. One-time setup (do this once)
+## Quickstart
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh   # installs `uv`, the Python tool runner
-./scripts/setup_chinook.sh                         # downloads the sample database
-uv sync                                             # installs project dependencies
-cp .env.example .env                                # creates your local config file
-```
-
-Then open `.env` in any text editor and paste your Fireworks API key on this line:
-
-```
-FIREWORKS_API_KEY=your-key-here
-```
-
-That's it — setup is done and does not need to be repeated.
-
-### 2. Start the chat CLI
-
-```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh   # installs uv
+./scripts/setup_chinook.sh                         # sample database
+uv sync && cp .env.example .env                    # dependencies and local config
+$EDITOR .env                                       # set FIREWORKS_API_KEY (and FIREWORKS_MODEL)
 uv run trellis
 ```
 
-You'll see a banner showing the model, database, and remaining budget, then a `Question:>`
-prompt. Type a question in plain English and press Enter:
+**Bring your own key.** The key lives only in the gitignored `.env`. It is never committed,
+logged, or written to the spend ledger. A `$6` shared ceiling and a `$2` per-session allowance
+cap spend. A longer walkthrough, in-chat commands and troubleshooting are in
+[`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md).
 
-```
-Question:> What are the top 5 best-selling genres by total sales?
-Question:> Which employee has the most customers assigned to them?
-Question:> Now show me the same thing but for the bottom 5 instead
-```
+## How it works
 
-Every answer is printed as a readable table, followed by a dim status line showing time taken,
-tokens used, cost, and remaining budget. You can ask natural follow-up questions ("now show me
-just the top 3", "what about only from Brazil?") — the tool remembers the SQL from your last
-question (but not the results) so it can build on it.
-
-**In-chat commands:**
-
-| Type this        | What it does                                     |
-| ---------------- | ------------------------------------------------ |
-| `/schema`        | Shows the database tables and columns being used |
-| `/last`          | Re-prints the most recent SQL query generated    |
-| `/clear`         | Forgets conversation history and starts fresh    |
-| `exit` or `quit` | Leaves the CLI                                   |
-
-Press `Ctrl+C` at any time to quit immediately.
-
-### 3. Everyday commands cheat sheet
-
-| I want to...                                | Run this                                               |
-| ------------------------------------------- | ------------------------------------------------------ |
-| Ask questions interactively                 | `uv run trellis`                                       |
-| Check the code still works after a change   | `uvx --with-editable . pytest`                         |
-| Check code style/formatting                 | `uvx --with-editable . ruff check src benchmark tests` |
-| Check type correctness                      | `uvx --with-editable . mypy src benchmark`             |
-| Verify a model works before benchmarking it | `uv run python -m benchmark.preflight --budget 0.05`   |
-| Compare models head-to-head on Chinook      | see [Model bake-off](#model-bake-off) below            |
-| Benchmark against BIRD-SQL Mini-Dev         | see [Benchmarking against BIRD-SQL](#benchmarking-against-bird-sql) |
-| See the latest Chinook report               | open `benchmark/results/report.md`                     |
-| See the latest BIRD-SQL report              | open `benchmark/results/bird_report.md`                |
-| See sample question → SQL → answer pairs    | open `data/dev_answers.json`                           |
-
-### 4. If something goes wrong
-
-| Symptom                                          | Likely cause / fix                                                                                                                                                 |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `FIREWORKS_API_KEY is not set`                   | Add the key to `.env` (see step 1), or `export FIREWORKS_API_KEY=...` in your shell                                                                                |
-| "Shared project budget exhausted"                | The project-wide `$6` spend ceiling was hit; raise `FIREWORKS_BUDGET_USD` in `.env` if you're sure, or inspect/reset the ledger `benchmark/results/.spend.sqlite` |
-| "This CLI session's soft allowance is exhausted" | You've spent the `$2` per-session cap; restart the CLI to get a fresh session allowance                                                                            |
-| A query returns an error instead of a table      | The tool safely rejected or failed to run the generated SQL; just rephrase the question — nothing destructive happens because the database connection is read-only |
-| `uv: command not found`                          | Re-run the install line at the top of step 1, then open a new terminal                                                                                             |
-
-## Architecture
-
-```
-question ──► [ConversationContext] ──► build messages
-                                         │  (system: role + cached schema + rules)
-                                         │  (history: last N turns, SQL only)
-                                         ▼
-                                     Fireworks LLM
-                                  structured output: {response_type, sql, message}
-                                         │
-                                         ▼
-                                  [SafetyCheck]  sqlglot AST: reject non-SELECT / multi-statement
-                                         │        / unknown tables & columns / forbidden functions
-                                         ▼
-                                  [Validate] EXPLAIN QUERY PLAN  ──fail──┐
-                                         │                                │
-                                        pass                              │
-                                         ▼                                │
-                                  [Execute] read-only sqlite               │
-                                         │                                │
-                                    ┌────┴────┐                           │
-                                  ok        error ─────────────────────────┤
-                                    │                                      │
-                                    │                          [Repair] 1 retry max
-                                    │                          append error to messages
-                                    │                                      │
-                                    │◄─────────────────────────────────────┘
-                                    ▼
-                             render table (rich) + record turn
+```mermaid
+flowchart LR
+    Q["Question<br/>+ last SQL turns"] --> P["Prompt<br/>cached schema + rules"]
+    P --> L["LLM, structured JSON<br/>query · unsupported · clarify"]
+    L -- query --> S{"AST safety<br/>sqlglot"}
+    L -- "unsupported / clarify" --> R["Render table<br/>+ status line"]
+    S -- reject --> X["Refuse<br/>never retried"]
+    S -- pass --> V{"EXPLAIN<br/>validate"}
+    V -- ok --> E["Read-only execute"]
+    V -- fail --> F["Repair, once"]
+    E -- error --> F
+    F --> L
+    E -- ok --> R
 ```
 
-### Engineering decisions that matter
+In the CLI the worst case is two model calls, ever, so the P90 tail is predictable. The first
+capture below shows two real refusals: the model declines both a question the schema cannot answer
+and a destructive request before writing any SQL. The second capture is the AST guard fed a
+`DELETE` directly, which shows the independent second layer a misbehaving model would meet.
 
-- **AST-based safety, not a keyword blocklist.** `src/db.py` parses every generated query with
-  `sqlglot`, walking the full statement tree — including CTEs, subqueries, and correlated
-  references — to reject anything that isn't a read-only `SELECT`/`WITH`, references an unknown
-  table or column, or calls a forbidden function. A regex blocklist can't see through a CTE; an
-  AST can. SQLite's own authorizer, `query_only`, disabled extension loading, and a read-only URI
-  connection sit underneath as a second, independent layer.
-- **Bounded repair, not an open agent loop.** At most one repair round-trip after a validation
-  or execution failure — worst case is two LLM calls, ever. This makes the P90 latency tail
-  predictable instead of open-ended, at the cost of occasionally not self-correcting a harder
-  failure. Safety rejections never retry (there's nothing to repair — the query itself is
-  disallowed).
-- **Structured output, not free-text parsing.** The model returns JSON matching a fixed schema
-  (`response_type`, `sql`, `message`), eliminating markdown-fence stripping, eliminating preamble
-  prose, and — since output tokens dominate decode latency — keeping responses short by
-  construction rather than by prompting for brevity and hoping.
-- **A semantic guardrail, not "always emit SQL."** `response_type` lets the model say a question
-  is unsupported or ask for clarification instead of inventing a query for something the schema
-  can't answer — added after live testing showed irrelevant questions otherwise got fabricated
-  SQL just to satisfy the schema.
-- **SQL-only conversation memory.** Follow-ups need the *query* they're refining, not the
-  *results* — carrying full result sets in history would inflate every subsequent prompt for no
-  accuracy gain and would persist result-row values across turns unnecessarily.
-- **Schema introspected once, generalized, cached.** `src/schema.py` builds a compact schema
-  block from live `PRAGMA` introspection — not hardcoded per database. Any low-cardinality
-  text column gets illustrative sample values (reduces case/spelling mismatches like `'rock'`
-  vs `'Rock'`); any column whose sampled values look date-like gets a small distinct-year
-  sample instead. This is what makes the same agent work unmodified across Chinook and all 11
-  BIRD-SQL databases.
-- **Budget-guarded spend, reserve then settle.** Every call reserves a conservative
-  worst-case cost under an `asyncio.Lock` *before* dispatch, then settles to actual cost after —
-  so concurrent requests can never blow past the ceiling on a race, only underspend it.
-- **No agent framework.** `sqlglot` exists specifically for AST safety; `pydantic` derives the
-  response schema. The rest is `openai` (Fireworks is OpenAI-SDK compatible), `rich`, and
-  `python-dotenv`. A framework SQL agent would hide the per-stage latency instrumentation
-  (`t_schema`, `t_llm`, `t_exec`, `t_repair`) this project is built around measuring.
+<img src="docs/assets/cli-refusals.svg" width="900" alt="Two real refusals: a weather question and a delete request each return a yellow Unsupported question panel">
 
-Full dated decision log, including reversed decisions and why, is in
-[docs/DECISIONS.md](docs/DECISIONS.md).
+<img src="docs/assets/cli-safety.svg" width="900" alt="The AST guard rejecting a DELETE statement with a red safety-rejected message">
 
-## Validation
+Benchmark mode adds three guarded repairs (off in the CLI): a "did you mean" repair for unknown
+identifiers, one retry of a refusal, and one re-check of an empty result. Forbidden SQL is never
+retried.
 
-Accuracy is checked by **executing both queries and comparing full result sets** — order-
-insensitive unless the gold query has an explicit `ORDER BY`, in which case row order must match
-too — not by comparing SQL text. A syntactically different query that returns the same rows
-counts as correct; a syntactically similar one that returns the wrong rows does not.
+## Quality, cost and latency
+
+Accuracy is only half the story, so every configuration is scored on all three axes. These are
+full `train_dev` runs (1,002 answers on four databases the prompts were never tuned on).
+
+<!-- BEGIN generated:pareto -->
+| Configuration | Official EX | P50 | P90 | $/query measured | $/query no cache | $ per 1k (no cache) | Verdict |
+|---|---:|---:|---:|---:|---:|---:|---|
+| Baseline, product prompt (`deepseek-v4-flash-0731`) | 60.1% | n/v | n/v | $0.000293 | $0.000511 | $0.51 | starting point |
+| + benchmark prompt profile | 67.1% | 1.22s | 8.46s | $0.000278 | $0.000467 | $0.47 | adopted |
+| + quoting + pipeline repairs (the frozen config) | 68.7% | 1.05s | 8.46s | $0.000398 | $0.000497 | $0.50 | adopted |
+| **same config on `deepseek-v4p1-flash` (default)** | 69.4% | 1.50s | 3.03s | $0.000141 | $0.000696 | $0.70 | **default**: ties here, +5.9 on Mini-Dev |
+| `gpt-oss-120b`, low effort, same config | 67.3% | 0.97s | 1.93s | $0.000166 | $0.000398 | $0.40 | cheaper and faster; misses the non-inferiority margin |
+<!-- END generated:pareto -->
+
+*n/v: latency for the baseline run is invalid, because synchronous scoring blocked the event loop.
+"No cache" prices every prompt token at the full rate, computed from the recorded token counts. It
+is the fair cost axis: provider cache hits swung the measured cost between 23% and 46% across
+comparable runs, so a warm-cache figure alone flatters. At 30,000 queries a day the default
+costs about **$6** with a warm cache and about **$20** without one.*
+
+<img src="docs/assets/pareto.svg" width="900" alt="Scatter of every tested change: only the prompt profile and the quoting and repairs bundle clear the minimum required gain line">
+
+Every point is a paired comparison against the configuration it was tested against. The dashed
+line is the minimum gain the acceptance rule demands at that cost (train_dev comparisons only).
+
+### Experiment ledger
+
+Each change declares its minimum gain before it runs, and it is adopted only if both the
+row-weighted and the database-macro gain clear it. The ledger records rejections too.
+
+| Change | Δ official EX (95% CI) | Cost, latency | Verdict |
+|---|---|---|---|
+| Benchmark prompt profile | **+7.0** [+4.5, +9.8] | −8.6% cost, P50 1.13 → 1.22s | ✅ adopted |
+| Quoting + pipeline repairs | +1.6 [+0.2, +3.0]; macro **+3.9** [+1.1, +7.1] | +6.4% cost, P50 1.22 → 1.05s | ⚠️ borderline, adopted after audit |
+| Dictionary CSVs in the prompt | +1.2 [−1.2, +4.4] | +32% cost, P50 1.02 → 1.48s | ❌ below the +2.6 needed |
+| Reasoning, low / high | −1.5 / −1.5 | +103% / +201% cost, P50 4.9s / 5.9s | ❌ overthinks BIRD's literal gold |
+| Retrieved few-shot (BM25, k=3) | +0.0 [−4.0, +4.0] | +20% cost, P50 1.16 → 2.01s | ❌ examples do not transfer conventions |
+| Swap to gpt-oss-120b | −1.4 [−3.9, +1.1] | −20% cost, P50 1.05 → 0.97s | ❌ lower bound breaks the −1.5 margin |
+| glm-5p3-flash, low effort | +0.0 [−4.5, +4.5] | −41% cost, P50 1.16 → 1.93s | ❌ slower for the same accuracy |
+| deepseek-v4-pro | −0.5 [−4.0, +3.0] | 5.8× cost, P50 3.78s | ❌ |
+| Escalate disagreements to glm-5p3 | +0.8 | 2.8× cost | ❌ |
+| deepseek-v4p1-flash, `train_dev` (full) | +0.4 [−1.9, +2.7]; macro +1.5 [−0.7, +3.9] | +40% no-cache cost, P50 1.05 → 1.61s | ➖ ties; misses the +2.9 needed as a swap |
+| deepseek-v4p1-flash, Mini-Dev (paired, pilot mode) | **+5.9** [+3.2, +8.7]; macro +5.9 [+2.9, +8.8] | +35% no-cache cost, P50 0.97 → 1.36s | ✅ adopted as the default (wins where the questions are harder) |
+
+**What the ledger says about the ceiling.** Self-consistency at K=4 adds nothing: majority@4 is
+69.0% against 69.2% at K=1. One model's oracle pass@4 is 73.0%, and an oracle over five different
+models (one answer each) is also 73%, so the errors are shared. Reading the 24 of 100 pilot
+questions that no model ever matched, 17 are label or question errors in the benchmark itself, so
+the practical ceiling on `train_dev` is about 82%. What still moves the score is BIRD's annotation
+conventions, not more model diversity.
+
+## Provenance and timeline
+
+Every headline number comes from one run. Each row pins when it ran, on which code, and on which
+data and configuration, so anyone can tell whether a result is reproducible from a given commit.
+
+<!-- BEGIN generated:provenance -->
+| Run (UTC) | Set | Model | Answers | Official EX | Commit | Tree | Config | Data |
+|---|---|---|---:|---:|---|---|---|---|
+| 2026-09-24 00:53 | train_dev baseline (product prompt) | `deepseek-v4-flash-0731` | 1,002 | 60.1% | `5a69af6` | clean | `76ed4867` | `e5503cce` |
+| 2026-09-24 17:07 | train_dev + benchmark profile | `deepseek-v4-flash-0731` | 1,002 | 67.1% | `6d18d06` | dirty `18243ce1` | `e7fc10c4` | `e5503cce` |
+| 2026-09-24 17:57 | train_dev + quoting and repairs | `deepseek-v4-flash-0731` | 1,002 | 68.7% | `1694580` | dirty `47a379b8` | `a5a42bc0` | `e5503cce` |
+| 2026-09-24 23:23 | Mini-Dev, gate 1 | `deepseek-v4-flash-0731` | 1,500 | 59.3% | `285272c` | clean | `92e1c3cb` | `4ba5fa8d` |
+| 2026-09-25 01:52 | dev_untouched | `deepseek-v4-flash-0731` | 1,036 | 63.6% | `a9ab833` | dirty `9e2f8c8c` | `e0ecfba5` | `b0aed7f6` |
+| 2026-09-26 20:38 | train_dev, v4p1-flash | `deepseek-v4p1-flash` | 1,002 | 69.1% | `a9ab833` | dirty `48db653b` | `baff9689` | `e5503cce` |
+| 2026-09-26 21:15 | Mini-Dev, gate 2 | `deepseek-v4p1-flash` | 1,500 | 65.3% | `eafe2ba` | clean | `baff9689` | `4ba5fa8d` |
+| 2026-09-26 21:21 | dev_untouched | `deepseek-v4p1-flash` | 1,036 | 67.6% | `eafe2ba` | clean | `baff9689` | `b0aed7f6` |
+| 2026-09-26 21:27 | train_dev, v4p1-flash, clean reproduction | `deepseek-v4p1-flash` | 1,002 | 69.4% | `eafe2ba` | clean | `baff9689` | `e5503cce` |
+<!-- END generated:provenance -->
+
+- **Run (UTC)** is when the run finished, and is the id in its files,
+  `benchmark/results/bird_raw_<id>.jsonl` and `bird_meta_<id>.json`. **Commit** and **Tree** record the code: `clean` means the run
+  used exactly that commit; `dirty <hash>` means it ran with uncommitted edits that the hash pins but the
+  commit alone cannot recreate. The runs on `deepseek-v4p1-flash` at commit `eafe2ba` are clean.
+- **Config** hashes the model, prompt profile, quoting, repairs, temperature, token limit,
+  reasoning effort and timeout. **Data** hashes the question file. The effective prompt hash
+  (`4b52d7aa`) is the same at both Mini-Dev gates, so the only variable between them is the model.
+- **Reproduction check.** The `train_dev` config was run twice on `deepseek-v4p1-flash`: 69.1% on an
+  uncommitted tree, then 69.4% on the clean commit. That is within run-to-run noise, so a fresh run
+  of the frozen config should land within a point or so of the published figures.
+- `analyze flips` refuses to compare runs that differ in anything except the variable declared
+  under test, and acceptance requires the gain to clear a minimum set before the run.
+- The Mini-Dev gate numbers, per-database tables and failure lists are in
+  [`bird_report_minidev_gate2_v4p1.md`](benchmark/results/bird_report_minidev_gate2_v4p1.md);
+  the paired comparison with gate 1 is in
+  [`flips_minidev_gate1_vs_gate2_v4p1.md`](benchmark/results/flips_minidev_gate1_vs_gate2_v4p1.md).
+
+## Engineering decisions that matter
+
+- **AST safety, not a keyword blocklist.** `sqlglot` walks the whole statement, including CTEs and
+  subqueries, and rejects anything that is not a read-only `SELECT` or `WITH`, names an unknown
+  table or column, or calls a forbidden function. SQLite's authorizer, `query_only` and a
+  read-only URI connection sit underneath as an independent second layer.
+- **Bounded repair, not an open loop.** One repair after a validation or execution failure, and
+  none after a safety rejection. Predictable tail latency in exchange for the occasional
+  unrecovered hard query.
+- **Structured output.** The model returns `{response_type, sql, message}`. That removes fence
+  stripping and prose, and `unsupported` and `clarify` stop it inventing SQL for questions the
+  schema cannot answer.
+- **SQL-only memory.** Follow-ups need the query being refined, not its result rows, so history
+  stays small and no result values persist across turns.
+- **One schema introspector.** `src/schema.py` builds the prompt block from live `PRAGMA` calls,
+  which is why the same agent runs unmodified on Chinook and all 11 BIRD databases.
+- **Reserve, then settle.** Every call reserves a worst-case cost under a lock before dispatch and
+  settles to the actual cost afterwards, so concurrent requests can never overshoot the ceiling.
+- **No agent framework.** A framework would hide the per-stage timings (`t_schema`, `t_llm`,
+  `t_exec`, `t_repair`) this project exists to measure.
+
+**How results are protected from self-deception.** Runs are pinned by content (database hashes,
+effective prompt, config, code state) and refuse comparison if anything but the declared variable
+differs. Iteration happens on held-out train databases, with a separate lockbox and Mini-Dev used
+only as an infrequent gate (1 of 4 looks used). Mini-Dev failures were read in the
+[postmortem](docs/POSTMORTEM.md) to find causes, so it is a gate, not an untouched set. One
+cross-process ledger enforces spend. The full dated log, including reversals, is in
+[`docs/DECISIONS.md`](docs/DECISIONS.md).
+
+## Reproduce
+
+The frozen configuration (`config baff9689`) runs on the default model with no extra flags beyond
+the ones below. `--budget` is the ledger ceiling in dollars, so a run stops before overspending.
 
 ```bash
-uvx --with-editable . pytest
-uvx --with-editable . ruff check src benchmark tests
-uvx --with-editable . mypy src benchmark
+uvx --with-editable . pytest && uvx --with-editable . ruff check src benchmark tests
+uv run python -m benchmark.preflight --models accounts/fireworks/models/deepseek-v4p1-flash  # is the model callable?
+./scripts/setup_bird_minidev.sh           # ~800MB download, data/bird/ is gitignored
+
+# BIRD Mini-Dev, 500 x 3 (about $0.3, about 40 minutes at concurrency 8)
+uv run python -m benchmark.run_bird --prompt-profile benchmark --quote-identifiers \
+  --pipeline-repairs --reasoning-effort none --llm-timeout 60 --repeats 3 --concurrency 8 \
+  --seed 0 --budget 6.00 --report benchmark/results/bird_report_mine.md
+
+# Chinook dev set, product prompt, with the raw-prompt control arm
+uv run python -m benchmark.run_bench --models accounts/fireworks/models/deepseek-v4p1-flash \
+  --repeats 3 --arms agent baseline --budget 6.00
+
+uv run python scripts/render_readme_assets.py    # regenerate this page's charts and tables
 ```
 
-Every independent benchmark question/repeat gets fresh conversation context — no cross-question
-history contamination. A same-model **raw-prompt control arm** (`baseline_prompt` — the literal
-naive one-liner with no schema, no safety, no repair) runs alongside the agent on every
-bake-off, so the reported gains are attributable to the architecture, not just the model.
+Scores move a little from run to run even at temperature 0 (two identical runs disagreed on about
+10% of questions), so compare to the paired intervals above, not to a single decimal place.
 
-### Model bake-off (Chinook)
+### Chinook dev set
 
-```bash
-uv run python -m benchmark.preflight --budget 0.05
-uv run python -m benchmark.run_bench \
-  --models accounts/fireworks/models/gpt-oss-120b \
-           accounts/fireworks/models/deepseek-v4-flash-0731 \
-           accounts/fireworks/models/minimax-m3 \
-  --repeats 3 --concurrency 1 --arms agent baseline --budget 4.00
-uv run python -m benchmark.report benchmark/results/raw_bakeoff_*.jsonl
-```
+The 10 questions this project wrote, with the product prompt and the raw-prompt control, 3 repeats
+at concurrency 1 (the authoritative latency setting), run 2026-09-26 21:30 UTC at commit `eafe2ba` (clean),
+questions hash `ebbc3af8`, report [`report_chinook_v4p1.md`](benchmark/results/report_chinook_v4p1.md):
 
-The July 2026 three-model comparison (`gpt-oss-20b` / `deepseek-v4-flash` / `minimax-m3`, since
-superseded in the Fireworks catalog — see the 2026-09-22 entry in
-[docs/DECISIONS.md](docs/DECISIONS.md)) picked DeepSeek-V4-Flash as the winner: best accuracy,
-best P50, lowest $/query, simultaneously. `benchmark/results/report.md` reflects a fresh
-2026-09-22 live run against the current model; the historical multi-model comparison JSONL is
-kept in `benchmark/results/` for provenance.
+| Arm | Exec accuracy | P50 | P90 | $/query | $ per day at 30k |
+|---|---:|---:|---:|---:|---:|
+| Trellis agent | **53.3%** | 1.59s | 2.65s | $0.000292 | $8.76 |
+| Raw-prompt control (no schema, safety or repair) | 0.0% | 2.72s | 3.75s | $0.000246 | $7.37 |
 
-## Benchmarking against BIRD-SQL
+This is fast-iteration evidence, not an accuracy claim. Strictly scored, the agent misses the same four
+questions as on the previous snapshot (q_003, q_006, q_008, q_009, which were hand-inspected and are
+mostly evaluation-contract mismatches rather than wrong answers) and, in 2 of 3 repeats, q_007. On
+q_007 every repeat returned the right value (449.46), but two added a `Year` column that the strict
+comparison rejects. The previous snapshot scored 60% on the same questions.
 
-The Chinook dev set is 10 questions this project wrote and iterated its own prompt against —
-useful for fast iteration, not a real accuracy claim. [BIRD-SQL](https://bird-bench.github.io) is
-a widely-used public text-to-SQL benchmark; this project evaluates against its curated
-**Mini-Dev** subset (500 questions across 11 SQLite databases, official dev-labels) as an
-external, never-tuned-against signal. This is a local run for comparison, **not an official
-leaderboard submission** — BIRD's leaderboard scores a held-out test set through its own
-submission process this project doesn't have access to.
 
-```bash
-./scripts/setup_bird_minidev.sh          # ~800MB download, ~1.4GB on disk, data/bird/ is gitignored
-uv run python -m benchmark.run_bird --limit 50 --budget 1.00
-open benchmark/results/bird_report.md
-```
-
-`--limit` randomly samples N questions (seeded, reproducible with `--seed`) so cost stays
-bounded — at the measured ~$0.0005/query, a 50-question sample costs a few cents. Drop `--limit`
-to run the full 500 (~$0.25, a few minutes at `--concurrency 8`) — the result below is from a
-full run, not a sample. Other flags: `--difficulty simple moderate challenging`, `--db
-<db_id>...` to target specific databases, `--models` for a multi-model comparison the same way
-`run_bench.py` does.
-
-**What Trellis's agent adds over a schema-only baseline on BIRD:** BIRD questions include an
-`evidence` field — expert-annotated domain knowledge (unit conversions, business-logic
-definitions) often required to get the SQL right, distinct from anything in the schema itself.
-`benchmark/bird.py` threads this into the question passed to the agent, the same way a
-production system would thread in domain context beyond raw DDL.
-
-**Current result** (full 500-question set, `deepseek-v4-flash-0731`, 2026-09-22):
-
-| Difficulty | N | Exec accuracy |
-|---|---:|---:|
-| Simple | 148 | 62.2% |
-| Moderate | 250 | 40.0% |
-| Challenging | 102 | 36.3% |
-| **Overall** | **500** | **45.8%** |
-
-Per-database accuracy ranges from 33.3% (`california_schools`) to 73.1% (`superhero`) — see
-`benchmark/results/bird_report.md` for the full per-database table. This tracks the expected
-shape for a mid-tier, non-SQL-specialized general chat model with no BIRD-specific tuning: sharp
-accuracy dropoff from simple to challenging, and meaningfully harder than Chinook's small,
-hand-picked dev set. **Not implemented:** BIRD's other two official metrics, soft-F1 and R-VES
-(reward-weighted execution efficiency) — execution accuracy only.
-
-**Full root-cause analysis and a prioritized roadmap to close the gap** — comparing this result
-against the live BIRD leaderboard and literature baselines, with concrete failure examples,
-per-issue fix proposals, and an honest accounting of which fixes are cheap prompt changes versus
-which require a real cost/latency product tradeoff — is in
-**[docs/POSTMORTEM.md](docs/POSTMORTEM.md)**.
-
-## Known gaps & what I'd tackle next
-
-Self-critical by design — this is what a reviewer should ask about, so it's answered up front
-rather than left for someone to discover:
+## Limits and next steps
 
 | Gap | Why it matters |
 |---|---|
-| Concurrency tested only up to 5 simultaneous queries, on a single SQLite connection | A real multi-user deployment needs load-testing at dozens-to-hundreds of concurrent users, not 5 |
-| Chinook accuracy was tuned and measured on the same 10 questions | Addressed in part by the BIRD-SQL benchmark above (never tuned against), but a larger held-out Chinook-style set would still strengthen this |
-| Schema size tested up to BIRD's largest Mini-Dev database, not true enterprise scale | Very large schemas (hundreds of tables) will need retrieval or bounded schema-discovery instead of full-schema-in-prompt — see the ReAct-vs-full-schema tradeoff in `docs/DECISIONS.md` |
-| No per-user session isolation or per-user rate limiting | Today there is one shared conversation context and one shared budget; a real multi-user product needs both scoped per user |
-| No PII masking or column-level redaction | Query results are returned as plain values; this needs a governance review before pointing at real sensitive data |
-| No fallback if Fireworks has an outage | The tool currently fails outright after one retry, with no backup path |
-| Raw execution-equivalence score, not error-corrected for tie-breaking artifacts | See the honest breakdown of the Chinook 60% figure in `docs/DECISIONS.md`'s 2026-09-22 entry — some of what "fails" is stricter-than-necessary evaluation, not generation error |
+| No automatic fallback if a model or the provider is unavailable | An unavailable model now returns a clear `model-unavailable` error with a fix hint, but nothing switches to a second model on its own |
+| Scores are local, not a leaderboard submission; `train_lockbox` is unused | Only the hidden test set can back a claim like ">80%". The lockbox is reserved for the final frozen configuration |
+| The ceiling is generation, not selection | Pass@K stays near 73%, so the next lever is teaching BIRD conventions (fine-tuning gate), not sampling more |
+| One shared conversation and budget | A multi-user product needs per-user isolation and rate limits |
+| No PII masking or column-level redaction | Results are returned as plain values; needs governance review before real data |
+| Schemas tested up to BIRD's largest database | Hundreds of tables need retrieval, not full-schema-in-prompt |
+| Execution accuracy only | BIRD's soft-F1 and R-VES are not implemented |
 
-## Repo layout
+## Repo map
 
 ```
-src/                 agent, CLI, schema introspection, safety/validation, LLM client, costs
-benchmark/           bake-off harness, BIRD-SQL runner, execution-accuracy evaluator, reports
-scripts/             setup_chinook.sh, setup_bird_minidev.sh
-data/                Chinook.db + dev questions; data/bird/ (gitignored, fetched on demand)
-docs/                POSTMORTEM.md (BIRD-SQL root-cause analysis + roadmap to 80%), DECISIONS.md,
-                     AI_USAGE.md, PROMPT_ITERATIONS.md, COST_COMPARISON.txt, BUILD_PLAN.md
-                     (the original engineering spec), plus live-eval failure notes
-tests/               pytest suite (no live API calls — LLM calls are mocked)
+src/         agent, CLI, schema introspection, safety and validation, LLM client, costs
+benchmark/   BIRD and Chinook runners, evaluators, paired-comparison analysis, reports
+scripts/     dataset setup, README asset generator
+data/        Chinook.db and dev questions; data/bird/ is fetched on demand
+docs/        GETTING_STARTED · SOTA_PLAN · POSTMORTEM · DECISIONS · BUILD_PLAN · AI_USAGE
+tests/       pytest suite; no live API calls (the model client is mocked)
 ```
-
-## License
 
 [MIT](LICENSE).
