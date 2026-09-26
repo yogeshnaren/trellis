@@ -143,10 +143,8 @@ $EDITOR .env                                       # set FIREWORKS_API_KEY (and 
 uv run trellis
 ```
 
-**Bring your own key.** The key lives only in the gitignored `.env`. It is never committed,
-logged, or written to the spend ledger. A `$6` shared ceiling and a `$2` per-session allowance
-cap spend. A longer walkthrough, in-chat commands and troubleshooting are in
-[`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md).
+**Bring your own key.** A `$6` shared ceiling and a `$2` per-session allowance cap spend. A longer
+walkthrough, in-chat commands and troubleshooting are in [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md).
 
 ## How it works
 
