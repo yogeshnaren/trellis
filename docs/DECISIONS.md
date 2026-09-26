@@ -465,3 +465,29 @@ pass@4. 24 of 100 questions were never matched by any of 1,400 answers. Of the 5
 with BIRD-Verified entries, 4 are label or question problems. Category routing is added to
 the plan (Phase 4R) with a fit-on-`train_dev` / test-once-on-lockbox protocol, **deferred**
 until the headroom check shows ≥ 5 pts.
+
+## 2026-09-25 — Never-solved audit; retrieved few-shot not adopted
+- Of the 24 pilot questions no model ever matched, 17 are gold/question errors, 1 gold
+  times out, 2 are value-format errors (text-encoded durations/money), 2 are BIRD
+  literal-hint conventions, and 2 are ambiguous. The practical `train_dev` ceiling is about 82%.
+- `--fewshot 3` (BM25 over BIRD train, held-out databases excluded): +0.0 [−4.0, +4.0] at
+  +20% cost and +0.85s P50, and 0 of the targeted convention cases fixed. Not adopted.
+
+## 2026-09-25 — Cheap-model Pareto round: no model change
+Expensive models (Kimi K3, Ember-1, Qwen3.8-Max, Inkling) were excluded on price. A
+non-inferiority rule for cheaper/faster swaps was declared before the runs and is now
+printed by `analyze flips`: CI lower bounds ≥ −1.5 pts, cost and P50 no worse, one
+strictly better.
+- `gpt-oss-120b` (full, 501 × 2): −1.4 [−3.9, +1.1] at −20% cost. Fails the margin.
+- `glm-5p3-flash` with `low` effort: +0.0 at −41% cost but +0.8s P50. Not adopted.
+- `nemotron-lightning-3.5`: 4.5%. Rejected.
+- Escalating the 17% of answers where two families disagree to `glm-5p3`: +0.8 pts at
+  2.8× cost. Not adopted.
+- `deepseek-v4p1-flash`: the first full run was invalid (reasoning left on). The rerun
+  with the cap extended by $0.40 gave +0.4 [−1.9, +2.7] (macro +1.5) against a required
+  +2.86, so it is not adopted.
+- **Decision:** keep `deepseek-v4-flash-0731`. Round total: $1.46.
+- `dev_untouched` measured at 63.6%; full-dev estimate ≈ 62.2%.
+
+**Also fixed:** `is_safe` now turns sqlglot `TokenError` (prose in the `sql` field) into a
+parse rejection instead of raising.

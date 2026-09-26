@@ -593,6 +593,71 @@ Self-consistency with one model gains nothing: majority@4 ≈ pass@1.
   train) gain where prompting plateaus. Gate F-G's criterion (pass@K < ~80% ⇒ generation,
   not selection, is the bottleneck) is met at 73%.
 
+**Never-solved audit (2026-09-25, free).** The 24 of 100 pilot questions that no model or
+sample ever matched, read one by one:
+
+| Category | Count | Examples |
+|---|---:|---|
+| Gold label or question error | **17** | `COUNT(food_type = 'american')` counts every row; joins on `city` instead of the id (114,912 rows); "Orange Cap winner" gold joins `Man_of_the_Series`; a "win rate" of 3.93; a Bruce Almighty question whose gold filters on "Godzilla"; question 2022 vs gold 2012 |
+| Gold times out here | 1 | #8190 |
+| Genuine: value format | 2 | `screentime` is text like `0:17:30`; `NetWorth` is text like `$20,000,000.00` (so `MAX` compares it alphabetically) |
+| Genuine: BIRD literal-hint convention | 2 | hint `MAX(COUNT(Role_id))` means literally no DISTINCT; "number of stores refers to store_nbr" means return the column |
+| Ambiguous/mixed | 2 | |
+
+About **17–18% of `train_dev` is unsolvable as labeled**, so the practical ceiling there is
+≈ 82%.
+
+**Retrieved few-shot from BIRD train (`--fewshot 3`, 2026-09-25): NOT adopted.**
+- BM25 over question + hint; the pool is official BIRD train minus every held-out database
+  (7,953 examples, 0 leakage). Examples go in the user message.
+- Pilot vs the accepted run on the same 100 rows: **+0.0 [−4.0, +4.0]**; uncached cost
+  +20%; P50 1.16s → 2.01s; required minimum +2.75.
+- It fixed none of the targeted convention/format cases (#1915, #8170, #743, #748: 0/2
+  each). Examples from other databases don't transfer these conventions. The flag stays
+  for later reuse.
+
+**Cheap-model Pareto round (declared 2026-09-25, before any run; owner-approved $1.50
+ledger cap).** Expensive models (Kimi K3, Ember-1, Qwen3.8-Max, Inkling) are excluded on
+price. Rules fixed in advance:
+- *Upgrade* (v4p1-flash): the usual §5.4 rule, full `train_dev` × 2.
+- *Swap* (gpt-oss-120b): **non-inferiority**: row and macro CI lower bounds ≥ −1.5 pts,
+  uncached $/answer and P50 no worse, at least one strictly better (`analyze flips` prints
+  it). Full `train_dev` × 2.
+- *Screens* (glm-5p3-flash with `--reasoning-effort low --max-tokens 2048`, fixing the
+  400-token truncation behind its 69 failures; nemotron-lightning-3.5 with `low`, since
+  `none` returns empty SQL): the same 100 pilot rows × 2. A screen only earns a full run.
+- *Escalation* (glm-5p3, thinking-only, `low`): only on `train_dev` questions where the
+  current model and gpt-oss-120b disagree by result signature, 1 repeat. Reported as the
+  accuracy/cost of "escalate on disagreement" vs the current model; the cascade itself is
+  a Phase 4 decision.
+- `dev_untouched` × 1 with the accepted configuration: a measured dev number for the
+  leaderboard comparison (reported, never tuned on).
+
+**Results (2026-09-25/26; $1.46 spent against the $1.50 cap + $0.40 extension).**
+
+| Run | Result | Verdict |
+|---|---|---|
+| gpt-oss-120b, full `train_dev` × 2 (`20260925T014638Z`) | **−1.40** [−3.89, +1.10], macro −1.04 [−3.51, +1.37]; uncached $0.000398 vs $0.000497 (−20%); P50 0.97s vs 1.05s | **Not adopted:** the CI lower bound breaks the −1.5 margin (restaurant −3.4) |
+| glm-5p3-flash, `low`, 2,048 tokens, 100 × 2 (`20260925T014328Z`) | **+0.0** [−4.5, +4.5]; structured-output failures 69 → 0; uncached −41%; P50 1.93s vs 1.16s, P90 9.2s | **Not adopted** (slower). An equal-accuracy second family |
+| nemotron-lightning-3.5, `low`, 100 × 2 (`20260925T020504Z`) | **4.5%**: 187 of 200 structured-output failures (reasoning runs to the 2,048 cap, or malformed JSON); P50 14s | **Rejected** |
+| glm-5p3 on disagreements, 92 questions × 1 (`20260925T014854Z`) | Current model and gpt-oss-120b disagree on 17.2% of answers. There, current is right 29.7%, gpt-oss 21.5%, glm-5p3 34.3%. Escalate-on-disagreement: **68.7% → 69.5% (+0.8)** at 2.8× uncached cost ($0.00138) and P50 +0.54s | **Not adopted:** the §5.4 bar would be ≈ +5.6 |
+| deepseek-v4p1-flash, full × 2 (`20260925T015827Z`) | **Invalid:** launched without `--reasoning-effort none` (the pilot had it), so the model reasoned and 84 of 1,002 answers truncated at 400 tokens | Rerun (owner extended the cap by $0.40 for it) |
+| deepseek-v4p1-flash rerun, `none` (`20260926T203859Z`) | **+0.40** [−1.90, +2.69], macro **+1.53** [−0.69, +3.94] (sales_in_weather +8.8, restaurant −1.3, soccer_2016 −1.4); uncached $0.000696 (+40%); P50 1.61s vs 1.05s; measured $0.000185 with cache | **Not adopted:** required +2.86. The pilot's +3.5 regressed toward zero at full size |
+| `dev_untouched` × 1 (`20260925T015202Z`) | **63.6%** (simple 68.0, moderate 50.0, challenging 53.5; macro 63.9); cost $0.45 ($0.000431/answer: cold per-database cache on one repeat); P50 0.98s | Reported only |
+
+- **Full-dev estimate.** `dev_untouched` (1,036) plus Mini-Dev gate 1 (498 unique) ≈
+  **62.2%**, approximate because 23 Mini-Dev rows use Mini-Dev's database versions. Main
+  leaderboard entries with dev within ±1.6 pts of that scored 60–68 on test (median ≈
+  64.5), which puts an estimated test rank around **#80–92 of 130**. That is context, not
+  a conversion rule.
+- **Harness bug found by Nemotron:** prose with a stray quote in the `sql` field raised
+  sqlglot's `TokenError` out of `is_safe` and crashed the run. It's now a `SQL parse
+  failed` rejection (repairable), with a test. The same path serves the product CLI.
+- **Conclusion:** among cheap models, nothing beats the current model on the
+  quality-cost-latency frontier, and neither does the newer v4p1-flash. Cross-family
+  escalation adds under 1 pt. The remaining lever is teaching BIRD's conventions (literal
+  hints, value formats), not more models.
+
 ### Phase 4R: category-based model routing (added 2026-09-25 at owner request)
 
 A concrete, testable version of "different models for different question types":

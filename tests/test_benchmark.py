@@ -424,7 +424,7 @@ def test_run_metadata_ignores_result_files_when_hashing_code(tmp_path: Path) -> 
         difficulty=None, db=["movie"], limit=2, per_db=None, ids=None, seed=0,
         models=["m"], temperature=0.0, max_tokens=400, reasoning_effort=None, repeats=1,
         prompt_profile="product", quote_identifiers=False, pipeline_repairs=False, dictionary=False,
-        llm_timeout=20.0,
+        llm_timeout=20.0, fewshot=0, fewshot_pool=Path("data/bird/train/train.json"),
     )
     if not args.questions.exists():
         import pytest
@@ -449,6 +449,17 @@ def test_required_gain_uses_uncached_cost_and_latency() -> None:
     assert required_gain(1.5, (1.0, 1.0, 2.0), (0.1, 0.9, 1.0)) == pytest.approx(1.5)
 
 
+def test_non_inferiority_needs_margin_no_worse_cost_latency_and_one_saving() -> None:
+    from benchmark.analyze import non_inferior
+
+    old = (0.0, 1.0, 1.0)
+    assert non_inferior(-1.4, -0.5, old, (0.0, 0.8, 1.0))
+    assert not non_inferior(-1.6, 0.0, old, (0.0, 0.8, 0.9))  # CI past the margin
+    assert not non_inferior(0.0, -2.0, old, (0.0, 0.8, 0.9))  # macro past the margin
+    assert not non_inferior(0.0, 0.0, old, (0.0, 0.8, 1.2))  # slower
+    assert not non_inferior(0.0, 0.0, old, (0.0, 1.0, 1.0))  # no saving at all
+
+
 def test_sample_curves_pass_and_majority() -> None:
     from benchmark.analyze import sample_curves
 
@@ -466,3 +477,27 @@ def test_sample_curves_pass_and_majority() -> None:
     assert curves[3] == pytest.approx((1.0, 0.5))  # pass@3 = 100%, majority@3 = 50%
     # With k=2 on question 0: subsets {x,x}->x wrong, {x,y}->tie->earliest x wrong (x2).
     assert curves[2][1] == pytest.approx((0 + 1) / 2)
+
+
+def test_fewshot_excludes_held_out_databases_and_renders() -> None:
+    from benchmark.fewshot import FewShotIndex, render_examples
+
+    pool = [
+        {"db_id": "held", "question": "How many movies star Tom Cruise?", "evidence": "",
+         "SQL": "SELECT 1"},
+        {"db_id": "other", "question": "How many movies star an actor?",
+         "evidence": "actor refers to Name", "SQL": "SELECT COUNT(*) FROM m"},
+        {"db_id": "other", "question": "How many films were released?", "evidence": "",
+         "SQL": "SELECT 2"},
+        {"db_id": "third", "question": "What is the weather today?", "evidence": "",
+         "SQL": "SELECT 3"},
+    ]
+    index = FewShotIndex(pool, exclude_dbs={"held"})
+    shots = index.examples("How many movies star Tom Cruise?", "", 3)
+    assert shots and all(s["db_id"] != "held" for s in shots)
+    assert shots[0]["SQL"] == "SELECT COUNT(*) FROM m"  # best BM25 match
+    assert len({s["db_id"] for s in shots}) == len(shots)  # at most one per database
+    block = render_examples(shots)
+    assert "OTHER databases" in block and "Hint: actor refers to Name" in block
+    assert block.endswith("Now answer this question:\n")
+    assert render_examples([]) == ""

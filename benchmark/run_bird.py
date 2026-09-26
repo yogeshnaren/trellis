@@ -44,6 +44,9 @@ from benchmark.bird import (
     with_evidence,
 )
 from benchmark.evaluate import BIRD_OFFICIAL_TIMEOUT_S, BirdScore, score_bird
+from benchmark.fewshot import DEFAULT_POOL as FEWSHOT_POOL
+from benchmark.fewshot import FewShotIndex, render_examples
+from benchmark.splits import TRAIN_DEV_DBS, TRAIN_LOCKBOX_DBS
 from src.agent import Agent
 from src.conversation import ConversationContext
 from src.costs import MODEL_DEEPSEEK, get_shared_budget
@@ -115,6 +118,11 @@ async def benchmark(args: argparse.Namespace) -> Path:
     semaphore = asyncio.Semaphore(args.concurrency)
     stop = asyncio.Event()
     records: list[dict[str, Any]] = []
+    fewshot = (
+        FewShotIndex.from_file(args.fewshot_pool, set(TRAIN_DEV_DBS) | set(TRAIN_LOCKBOX_DBS))
+        if args.fewshot
+        else None
+    )
 
     async def one(model: str, question: BirdQuestion, repeat: int) -> None:
         if stop.is_set():
@@ -143,8 +151,12 @@ async def benchmark(args: argparse.Namespace) -> Path:
                     pipeline_repairs=args.pipeline_repairs,
                     llm_timeout_s=args.llm_timeout,
                 )
+                prompt = with_evidence(question.question, question.evidence)
+                if fewshot is not None:
+                    shots = fewshot.examples(question.question, question.evidence, args.fewshot)
+                    prompt = render_examples(shots) + prompt
                 result = await agent.ask(
-                    with_evidence(question.question, question.evidence),
+                    prompt,
                     ConversationContext(
                         get_schema(
                             db_path,
@@ -266,6 +278,10 @@ def run_metadata(
         "quote_identifiers": args.quote_identifiers,
         "pipeline_repairs": args.pipeline_repairs,
         "dictionary": args.dictionary,
+        "fewshot": args.fewshot,
+        "fewshot_pool_sha256_16": (
+            dataset_fingerprint(args.fewshot_pool) if args.fewshot else None
+        ),
         "temperature": args.temperature,
         "max_tokens": args.max_tokens,
         "reasoning_effort": args.reasoning_effort,
@@ -420,6 +436,13 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Render names SQLite can't read bare (e.g. `T-BIL`) backticked in the schema.",
     )
+    parser.add_argument(
+        "--fewshot",
+        type=int,
+        default=0,
+        help="Retrieved BIRD-train examples per question (other databases only; 0 = off).",
+    )
+    parser.add_argument("--fewshot-pool", type=Path, default=FEWSHOT_POOL)
     parser.add_argument(
         "--dictionary",
         action="store_true",

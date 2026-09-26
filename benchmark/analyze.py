@@ -462,6 +462,26 @@ def required_gain(
     return base_min + cost_increase / 0.5 + latency_increase
 
 
+NON_INFERIORITY_MARGIN_PTS = 1.5
+
+
+def non_inferior(
+    row_ci_low: float,
+    macro_ci_low: float,
+    old: tuple[float, float, float],
+    new: tuple[float, float, float],
+    margin_pts: float = NON_INFERIORITY_MARGIN_PTS,
+) -> bool:
+    """The §5.4 non-inferiority rule for a cheaper/faster swap (declared 2026-09-25).
+
+    Both CI lower bounds (points) must be ≥ −margin, uncached $/answer and P50 must be no
+    worse, and at least one of them strictly better.
+    """
+    no_worse = new[1] <= old[1] and new[2] <= old[2]
+    better = new[1] < old[1] or new[2] < old[2]
+    return min(row_ci_low, macro_ci_low) >= -margin_pts and no_worse and better
+
+
 def check_full_comparison(
     old_meta: dict[str, Any] | None,
     new_meta: dict[str, Any] | None,
@@ -605,6 +625,16 @@ def flips_report(
             f"**{'yes' if row_delta * 100 >= minimum and row_ci[0] > 0 else 'no'}**, "
             f"macro **{'yes' if macro_delta * 100 >= minimum and macro_ci[0] > 0 else 'no'}**"
             " (point estimate ≥ minimum and CI lower bound > 0)."
+        ),
+        (
+            f"Non-inferiority (CI lower bounds ≥ −{NON_INFERIORITY_MARGIN_PTS:.1f} pts, cost "
+            "and P50 no worse, one strictly better): **"
+            + (
+                "yes"
+                if non_inferior(row_ci[0] * 100, macro_ci[0] * 100, old_cost, new_cost)
+                else "no"
+            )
+            + "**."
         ),
         (
             "Audit required: a CI lower bound is within 1 pt of 0."

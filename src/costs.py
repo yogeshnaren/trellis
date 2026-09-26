@@ -37,6 +37,8 @@ PRICING: dict[str, dict[str, float]] = {
     "accounts/fireworks/models/kimi-k3": {"input": 3.00, "cached": 0.30, "output": 15.00},
     "accounts/fireworks/models/qwen3p8-max": {"input": 2.00, "cached": 0.25, "output": 6.00},
     "accounts/fireworks/models/nemotron-3-ultra-nvfp4": {"input": 0.60, "cached": 0.12, "output": 2.40},
+    # Added 2026-09-25 from the same pricing page for the cheap-model Pareto pilots.
+    "accounts/fireworks/models/nemotron-lightning-3p5-30b-a3b": {"input": 0.05, "cached": 0.01, "output": 0.20},
 }
 # SQLite spend ledger; a legacy JSON ledger at the same stem is imported once on first use.
 DEFAULT_LEDGER = Path("benchmark/results/.spend.sqlite")

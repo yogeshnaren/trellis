@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from sqlglot import exp, parse
-from sqlglot.errors import ParseError
+from sqlglot.errors import ParseError, TokenError
 
 from src.schema import DEFAULT_DB_PATH, get_identifier_allowlist, get_table_columns
 
@@ -195,7 +195,8 @@ def is_safe(
     """Validate one read-only statement using a SQLite-dialect AST."""
     try:
         statements = [statement for statement in parse(sql, read="sqlite") if statement]
-    except ParseError as exc:
+    except (ParseError, TokenError) as exc:
+        # TokenError: prose or an unterminated string in the sql field, not a parse tree.
         return False, f"SQL parse failed: {exc}"
     if len(statements) != 1:
         return False, "Exactly one SQL statement is required"

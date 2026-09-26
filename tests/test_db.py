@@ -43,6 +43,13 @@ def test_safe_queries(sql: str) -> None:
     assert is_safe(sql, db_path=DB_PATH)[0]
 
 
+def test_prose_in_sql_field_is_rejected_not_raised() -> None:
+    # A model once put an English sentence with a stray quote in the sql field; the
+    # tokenizer error crashed the benchmark instead of becoming a (repairable) rejection.
+    safe, reason = is_safe("The database returns zero rows when nothing matches. 'x", db_path=DB_PATH)
+    assert not safe and reason.startswith("SQL parse failed")
+
+
 def test_shadowed_cte_alias_is_executable(conn: sqlite3.Connection) -> None:
     sql = (
         "WITH counts AS ("
