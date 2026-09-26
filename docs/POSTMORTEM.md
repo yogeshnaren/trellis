@@ -1,5 +1,7 @@
 # Performance Postmortem: Trellis on BIRD-SQL Mini-Dev
 
+> **Historical document.** It analyses the 2026-09-22 baseline (45.8% on the old local metric, 47.6% under BIRD's official comparator). The current configuration scores **59.3%** on Mini-Dev; see the [README](../README.md#results) and [SOTA_PLAN.md](SOTA_PLAN.md) for what changed and what was tried.
+
 **Scope:** a full, live, 500-question run of Trellis's production agent pipeline against
 BIRD-SQL Mini-Dev (the official curated dev subset — 11 databases, all three difficulty tiers),
 followed by a manual root-cause pass over ~35 individual failures across every database, cross-

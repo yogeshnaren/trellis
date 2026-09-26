@@ -1,0 +1,81 @@
+{
+  "captured": "2026-09-26",
+  "model": "accounts/fireworks/models/deepseek-v4p1-flash",
+  "cases": {
+    "hero": {
+      "question": "What are the top 5 best-selling genres by total sales?",
+      "response_type": "query",
+      "message": null,
+      "sql": "SELECT g.Name AS Genre, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS TotalSales FROM InvoiceLine il JOIN Track t ON il.TrackId = t.TrackId JOIN Genre g ON t.GenreId = g.GenreId GROUP BY g.GenreId, g.Name ORDER BY TotalSales DESC, g.Name ASC LIMIT 5",
+      "columns": [
+        "Genre",
+        "TotalSales"
+      ],
+      "rows": [
+        [
+          "Rock",
+          826.65
+        ],
+        [
+          "Latin",
+          382.14
+        ],
+        [
+          "Metal",
+          261.36
+        ],
+        [
+          "Alternative & Punk",
+          241.56
+        ],
+        [
+          "TV Shows",
+          93.53
+        ]
+      ],
+      "error": null,
+      "error_category": null,
+      "repaired": false,
+      "input_tokens": 2285,
+      "cached_tokens": 2156,
+      "output_tokens": 99,
+      "cost_usd": 0.00017043599999999997,
+      "t_total_ms": 1834.0585410005588,
+      "shared_remaining": 1.8069918510000005
+    },
+    "unsupported": {
+      "question": "What's the weather in Paris today?",
+      "response_type": "unsupported",
+      "message": "This database contains a music store schema (artists, albums, tracks, customers, invoices, employees, playlists, genres, media types). It does not include weather data, so questions about weather cannot be answered. I can help with questions about music catalog, sales, customers, and employees.",
+      "sql": null,
+      "columns": null,
+      "rows": [],
+      "error": null,
+      "error_category": null,
+      "repaired": false,
+      "input_tokens": 2280,
+      "cached_tokens": 2150,
+      "output_tokens": 79,
+      "cost_usd": 0.0001467,
+      "t_total_ms": 1971.794527999009,
+      "shared_remaining": 1.8068451510000003
+    },
+    "destructive": {
+      "question": "Delete all customers from Brazil",
+      "response_type": "unsupported",
+      "message": "This request asks for a data modification (deleting customers), which is not supported. I can only answer read-only questions about this music store database, such as listing customers, invoices, tracks, artists, albums, genres, playlists, and employees.",
+      "sql": null,
+      "columns": null,
+      "rows": [],
+      "error": null,
+      "error_category": null,
+      "repaired": false,
+      "input_tokens": 2277,
+      "cached_tokens": 2148,
+      "output_tokens": 71,
+      "cost_usd": 0.00013678800000000002,
+      "t_total_ms": 1879.4827760011685,
+      "shared_remaining": 1.8065184629999997
+    }
+  }
+}

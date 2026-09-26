@@ -491,3 +491,25 @@ strictly better.
 
 **Also fixed:** `is_safe` now turns sqlglot `TokenError` (prose in the `sql` field) into a
 parse rejection instead of raising.
+
+## 2026-09-26 — Default model becomes deepseek-v4p1-flash; unavailable models are a handled error
+**Decision:** the CLI and benchmarks default to `accounts/fireworks/models/deepseek-v4p1-flash`
+(reasoning off) instead of the dated `deepseek-v4-flash-0731` snapshot. This supersedes
+the 2026-09-25 "keep `deepseek-v4-flash-0731`" decision, which was made on `train_dev` alone.
+**Why:**
+- Reproducibility. The dated snapshot could not be called from at least one account
+  (`404 Model not found`, although `models.list()` still showed it). A default that not every user's
+  key can reach cannot be the basis for published numbers.
+- Evidence, not just availability. Same frozen configuration (`config baff9689`), same prompt hash
+  (`4b52d7aa`) and data hash (`4ba5fa8d`), clean commit `eafe2ba`:
+  Mini-Dev 500 × 3 went from 59.3% to **65.3%** (paired, pilot mode, +5.9 [+3.2, +8.7]);
+  `dev_untouched` 1,036 × 1 is **67.6%** (was 63.6%); `train_dev` full ties (+0.4 [−1.9, +2.7]).
+- Cost and latency are worse, not better: P50 0.97s → 1.36s on Mini-Dev, no-cache cost
+  $0.000491 → $0.000661 per answer (measured cost is unchanged at $0.000205 because of cache hits).
+  `gpt-oss-120b` stays the cheaper, faster alternative at −1.4 points on `train_dev`.
+- The §5.4 swap rule (+2.9 needed) is not met on `train_dev`, so this is a default chosen from the
+  pooled evidence and from availability, not an accepted upgrade. Mini-Dev was looked at a second
+  time for it (2 of 4 looks used).
+**Also changed:** a 404/403 from the API is now a `model-unavailable` result with a fix hint (it used
+to raise out of `Agent.ask` and crash the CLI); the SQL panel wraps long queries; `MODEL_DEEPSEEK`
+stays as a named constant for provenance and pricing.
