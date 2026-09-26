@@ -13,6 +13,8 @@ from openai import (
     APIConnectionError,
     APITimeoutError,
     AuthenticationError,
+    NotFoundError,
+    PermissionDeniedError,
     RateLimitError,
 )
 from pydantic import ValidationError
@@ -132,6 +134,12 @@ class Agent:
                 return self._finish(result, str(exc), "budget-exceeded", started)
             except AuthenticationError as exc:
                 return self._finish(result, str(exc), "authentication-failed", started)
+            except (NotFoundError, PermissionDeniedError) as exc:
+                # The key cannot call this model (retired, not deployed, or not granted).
+                return self._finish(
+                    result, f"Model {self.model} is not available to this API key: {exc}",
+                    "model-unavailable", started,
+                )
             except RateLimitError as exc:
                 return self._finish(result, str(exc), "rate-limited", started)
             except APITimeoutError as exc:
@@ -267,8 +275,8 @@ class Agent:
                 temperature=self.temperature,
                 timeout_s=self.llm_timeout_s,
             )
-        except (BudgetExceeded, AuthenticationError, RateLimitError, APITimeoutError,
-                APIConnectionError):
+        except (BudgetExceeded, AuthenticationError, NotFoundError, PermissionDeniedError,
+                RateLimitError, APITimeoutError, APIConnectionError):
             return None
         result.llm_calls.append(llm_result)
         result.t_llm_ms += llm_result.latency_ms

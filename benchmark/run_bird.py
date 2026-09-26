@@ -49,7 +49,7 @@ from benchmark.fewshot import FewShotIndex, render_examples
 from benchmark.splits import TRAIN_DEV_DBS, TRAIN_LOCKBOX_DBS
 from src.agent import Agent
 from src.conversation import ConversationContext
-from src.costs import MODEL_DEEPSEEK, get_shared_budget
+from src.costs import DEFAULT_MODEL, get_shared_budget
 from src.db import connect_readonly, timeout_for_database
 from src.prompts import PROMPT_PROFILES
 from src.schema import get_schema
@@ -405,7 +405,7 @@ def build_bird_report(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--models", nargs="+", default=[MODEL_DEEPSEEK])
+    parser.add_argument("--models", nargs="+", default=[DEFAULT_MODEL])
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--concurrency", type=int, default=3)
     parser.add_argument("--budget", type=float, default=2.0)

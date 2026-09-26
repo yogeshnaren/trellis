@@ -6,15 +6,15 @@ import pytest
 from benchmark.evaluate import evaluate_sql, evaluate_task_success
 from benchmark.report import build_report
 from benchmark.run_bench import arm_matrix, extract_baseline_sql
-from src.costs import MODEL_DEEPSEEK, MODEL_GPT_OSS, MODEL_MINIMAX
+from src.costs import DEFAULT_MODEL, MODEL_GPT_OSS, MODEL_MINIMAX
 from src.db import connect_readonly
 
 
 def test_arm_matrix_limits_baseline_to_control() -> None:
     matrix = arm_matrix(
-        [MODEL_GPT_OSS, MODEL_DEEPSEEK, MODEL_MINIMAX], ["agent", "baseline"]
+        [MODEL_GPT_OSS, DEFAULT_MODEL, MODEL_MINIMAX], ["agent", "baseline"]
     )
-    assert matrix.count((MODEL_DEEPSEEK, "baseline")) == 1
+    assert matrix.count((DEFAULT_MODEL, "baseline")) == 1
     assert (MODEL_GPT_OSS, "baseline") not in matrix
     assert sum(arm == "agent" for _, arm in matrix) == 3
 

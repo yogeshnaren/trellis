@@ -234,3 +234,13 @@ def test_benchmark_profile_swaps_only_the_presentation_rules() -> None:
     assert BENCHMARK_SYSTEM_PROMPT.startswith(head)
     assert BENCHMARK_SYSTEM_PROMPT.endswith(tail[tail.index("Temporal keys:"):])
     assert "{schema}" in BENCHMARK_SYSTEM_PROMPT
+
+
+def test_deepseek_snapshots_run_without_reasoning_and_the_default_is_priced() -> None:
+    from src.costs import DEFAULT_MODEL, MODEL_DEEPSEEK, MODEL_DEEPSEEK_V4P1, PRICING
+    from src.llm import model_request_options
+
+    assert DEFAULT_MODEL == MODEL_DEEPSEEK_V4P1 and DEFAULT_MODEL in PRICING
+    for model in (MODEL_DEEPSEEK, MODEL_DEEPSEEK_V4P1):
+        # Reasoning tokens would be billed and can truncate the 400-token JSON answer.
+        assert model_request_options(model) == {"reasoning_effort": "none"}
