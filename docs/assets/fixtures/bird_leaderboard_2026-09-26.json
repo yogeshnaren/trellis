@@ -1,0 +1,1230 @@
+{
+ "source": "https://bird-bench.github.io/",
+ "fetched": "2026-09-26",
+ "note": "Execution accuracy (EX) with Oracle Knowledge. Dev scores are self-reported. Parsed from the static HTML: the overall leaderboard and the Single-Model leaderboard (Self Consistency: blank = none, Few = 1-7 candidates, Many = 8-32, Scale = >32). The leaderboard publishes no cost or latency.",
+ "overall": [
+  {
+   "name": "Human Performance Data Engineers + DB Students",
+   "size": "",
+   "dev": null,
+   "test": 92.96
+  },
+  {
+   "name": "DataGallery-Text2SQL Huawei 2012 Labs [DataGallery Team]",
+   "size": "UNK",
+   "dev": 78.1,
+   "test": 82.39
+  },
+  {
+   "name": "SiriusAI-SQL Tencent Data Computing Platform Department",
+   "size": "UNK",
+   "dev": 77.77,
+   "test": 82.28
+  },
+  {
+   "name": "AskData + GPT-4o AT&T CDO - DSAIR [Shkapenyuk et al. '25]",
+   "size": "UNK",
+   "dev": 77.64,
+   "test": 81.95
+  },
+  {
+   "name": "Agentar-Scale-SQL Ant Group [Pengfei Wang et al. '25]",
+   "size": "UNK",
+   "dev": 74.9,
+   "test": 81.67
+  },
+  {
+   "name": "Sber Text2SQL SberData Research",
+   "size": "UNK",
+   "dev": 75.74,
+   "test": 81.33
+  },
+  {
+   "name": "Xiaomi Text2SQL Xiaomi ITP & Data",
+   "size": "UNK",
+   "dev": 73.66,
+   "test": 80.83
+  },
+  {
+   "name": "RAS Adya AI",
+   "size": "UNK",
+   "dev": 72.49,
+   "test": 79.82
+  },
+  {
+   "name": "DeepEye HKUST(GZ) [Boyan Li et al. '26]",
+   "size": "UNK",
+   "dev": 74.49,
+   "test": 79.09
+  },
+  {
+   "name": "MarkovSQL Anonymous",
+   "size": "UNK",
+   "dev": 75.1,
+   "test": 78.7
+  },
+  {
+   "name": "DeepEye-SQL HKUST(GZ) [Boyan Li et al. '25]",
+   "size": "27B",
+   "dev": 74.49,
+   "test": 78.42
+  },
+  {
+   "name": "Spektr-SQL Amazon Ads - SpektrBot [Kishore Kumar et al.]",
+   "size": "UNK",
+   "dev": 73.09,
+   "test": 78.31
+  },
+  {
+   "name": "LongData-SQL LongShine AI Research",
+   "size": "UNK",
+   "dev": 74.32,
+   "test": 77.53
+  },
+  {
+   "name": "AxisSQL UST",
+   "size": "31B",
+   "dev": null,
+   "test": 76.86
+  },
+  {
+   "name": "GT-ChatBI-SQL MR Tech",
+   "size": "UNK",
+   "dev": 75.95,
+   "test": 76.8
+  },
+  {
+   "name": "Zhiwen-Lingsi-Agent China Telecom, TeleAI",
+   "size": "UNK",
+   "dev": 73.53,
+   "test": 76.63
+  },
+  {
+   "name": "DeepEye-SQL HKUST(GZ) [Boyan Li et al. '25]",
+   "size": "UNK",
+   "dev": 73.53,
+   "test": 76.58
+  },
+  {
+   "name": "Q-SQL AWS-Quick Science [Ravi Shankar et al.'25]",
+   "size": "30B-3B-MoE",
+   "dev": 72.99,
+   "test": 76.47
+  },
+  {
+   "name": "MIC2-SQL Anonymous",
+   "size": "UNK",
+   "dev": 74.45,
+   "test": 76.41
+  },
+  {
+   "name": "DataSpace-Text2SQL Institute of Dataspace, Hefei Comprehensive National Science Center-IDATA",
+   "size": "UNK",
+   "dev": null,
+   "test": 76.36
+  },
+  {
+   "name": "JoyDataAgent-SQL JD-CHO & JD JoyWork",
+   "size": "4B",
+   "dev": null,
+   "test": 76.19
+  },
+  {
+   "name": "RS Anonymous",
+   "size": "UNK",
+   "dev": 72.69,
+   "test": 76.08
+  },
+  {
+   "name": "CHASE-SQL + Gemini Google Cloud [Pourreza et al. '24]",
+   "size": "UNK",
+   "dev": 74.9,
+   "test": 76.02
+  },
+  {
+   "name": "xiaoyi-text-to-sql wenyuai",
+   "size": "UNK",
+   "dev": 72.75,
+   "test": 75.96
+  },
+  {
+   "name": "RED-SQL South China Normal University",
+   "size": "30B",
+   "dev": 74.19,
+   "test": 75.91
+  },
+  {
+   "name": "JoyDataAgent-SQL JD:CHO-JDT-JDL",
+   "size": "UNK",
+   "dev": 74.25,
+   "test": 75.85
+  },
+  {
+   "name": "Sinovatio-SQL Sinovatio AI Lab",
+   "size": "UNK",
+   "dev": 73.72,
+   "test": 75.8
+  },
+  {
+   "name": "TCDataAgent-SQL Tencent Cloud",
+   "size": "UNK",
+   "dev": 74.12,
+   "test": 75.74
+  },
+  {
+   "name": "Contextual-SQL Contextual AI",
+   "size": "UNK",
+   "dev": 73.5,
+   "test": 75.63
+  },
+  {
+   "name": "XiYan-SQL Alibaba Cloud [Yifu Liu et al. '24]",
+   "size": "UNK",
+   "dev": 73.34,
+   "test": 75.63
+  },
+  {
+   "name": "RS Anonymous",
+   "size": "UNK",
+   "dev": 72.23,
+   "test": 75.41
+  },
+  {
+   "name": "DB-SQL Anonymous",
+   "size": "UNK",
+   "dev": 73.66,
+   "test": 75.35
+  },
+  {
+   "name": "CYAN-SQL Tencent Cloud / Fudan University",
+   "size": "UNK",
+   "dev": 73.47,
+   "test": 75.35
+  },
+  {
+   "name": "MCR-SQL + Qwen2.5-Coder-32B-Instruct Anonymous",
+   "size": "32B",
+   "dev": 72.88,
+   "test": 75.29
+  },
+  {
+   "name": "MRS-Agent AIC-Lab, Chungbuk National University",
+   "size": "UNK",
+   "dev": 77.1,
+   "test": 75.13
+  },
+  {
+   "name": "Spektr-SQL Amazon Ads-SpektrBot [Ravi Shankar et al.]",
+   "size": "30B-3B-MoE",
+   "dev": 72.1,
+   "test": 74.85
+  },
+  {
+   "name": "ELG-SQL AMS CIR",
+   "size": "32B",
+   "dev": 73.4,
+   "test": 74.51
+  },
+  {
+   "name": "JT-SQLAgent CMCC, JIUTIAN Research",
+   "size": "32B",
+   "dev": 73.6,
+   "test": 74.06
+  },
+  {
+   "name": "CSC-SQL + XiYanSQL-QwenCoder-32B-2412 Wuhan University of Technology + University of Science and Technology of China [Lei Sheng et al. '25]",
+   "size": "32B",
+   "dev": 71.33,
+   "test": 73.67
+  },
+  {
+   "name": "Kwai-AutoSQL Kuaishou Business Team",
+   "size": "UNK",
+   "dev": 70.67,
+   "test": 73.34
+  },
+  {
+   "name": "ExSL + granite-34b-code IBM Research AI",
+   "size": "34B",
+   "dev": 72.43,
+   "test": 73.17
+  },
+  {
+   "name": "Reasoning-SQL 14B Google Cloud / Stanford [Pourreza et al. '25]",
+   "size": "14 B",
+   "dev": 72.29,
+   "test": 72.78
+  },
+  {
+   "name": "GPT-5.5-xhigh OpenAI",
+   "size": "UNK",
+   "dev": null,
+   "test": 72.55
+  },
+  {
+   "name": "GenaSQL Gena Co. [Dönder et al. '25]",
+   "size": "UNK",
+   "dev": 70.53,
+   "test": 72.28
+  },
+  {
+   "name": "OpenSearch-SQL, v2 + GPT-4o Alibaba Cloud [Xiangjin Xie et al. '25]",
+   "size": "UNK",
+   "dev": 69.3,
+   "test": 72.28
+  },
+  {
+   "name": "EGV-SQL + Qwen3.6-27B Tampere University",
+   "size": "27B",
+   "dev": 71.64,
+   "test": 72.16
+  },
+  {
+   "name": "OmniSQL-32B Renmin University of China + ByteDance Infra Lab [Li et al. '25]",
+   "size": "32B",
+   "dev": 69.23,
+   "test": 72.05
+  },
+  {
+   "name": "Distillery + GPT-4o Distyl AI Research [Maamari et al. '24]",
+   "size": "UNK",
+   "dev": 67.21,
+   "test": 71.83
+  },
+  {
+   "name": "Share + GPT-5 HKU [Qu et al. ACL Main'25]",
+   "size": "UNK",
+   "dev": 65.45,
+   "test": 71.83
+  },
+  {
+   "name": "CSC-SQL + Qwen2.5-Coder-7B-Instruct Wuhan University of Technology + University of Science and Technology of China [Lei Sheng et al. '25]",
+   "size": "7B",
+   "dev": 69.19,
+   "test": 71.72
+  },
+  {
+   "name": "LEAF-SQL JXUFE",
+   "size": "14B",
+   "dev": 69.43,
+   "test": 71.6
+  },
+  {
+   "name": "Queryosity Conrad Labs queryosity.io",
+   "size": "UNK",
+   "dev": 69.4,
+   "test": 71.16
+  },
+  {
+   "name": "CHESSIR +CG +UT Stanford [Talaei et al.'24]",
+   "size": "UNK",
+   "dev": 68.31,
+   "test": 71.1
+  },
+  {
+   "name": "Infly-RL-SQL-32B inftech.ai",
+   "size": "32B",
+   "dev": 70.08,
+   "test": 70.6
+  },
+  {
+   "name": "SLM-SQL + Qwen2.5-Coder-1.5B-Instruct Wuhan University of Technology + University of Science and Technology of China [Lei Sheng et al. '25]",
+   "size": "1.5B",
+   "dev": 67.08,
+   "test": 70.49
+  },
+  {
+   "name": "Insights AI Uber Freight",
+   "size": "UNK",
+   "dev": 72.16,
+   "test": 70.26
+  },
+  {
+   "name": "Alpha-SQL + Qwen2.5-Coder-32B-Instruct HKUST(GZ) [Li et al. '25]",
+   "size": "32B",
+   "dev": 69.7,
+   "test": 70.26
+  },
+  {
+   "name": "PURPLE + RED + GPT-4o Fudan University + Transwarp Technology",
+   "size": "UNK",
+   "dev": 68.12,
+   "test": 70.21
+  },
+  {
+   "name": "Claude Opus 4.6 Baseline",
+   "size": "UNK",
+   "dev": 68.77,
+   "test": 70.15
+  },
+  {
+   "name": "PB-SQL, GPT-4o Seoul National University",
+   "size": "UNK",
+   "dev": 68.64,
+   "test": 69.26
+  },
+  {
+   "name": "GSR Anonymous",
+   "size": "UNK",
+   "dev": 66.88,
+   "test": 69.26
+  },
+  {
+   "name": "TC-SQL mindflow.ai",
+   "size": "UNK",
+   "dev": 70.93,
+   "test": 69.2
+  },
+  {
+   "name": "XiYanSQL-QwenCoder-32B Alibaba Cloud [Yifu Liu et al. '24]",
+   "size": "32B",
+   "dev": 67.01,
+   "test": 69.03
+  },
+  {
+   "name": "RECAP + Gemini Google Cloud",
+   "size": "UNK",
+   "dev": 66.95,
+   "test": 69.03
+  },
+  {
+   "name": "ByteBrain ByteDance Infra Lab",
+   "size": "33B",
+   "dev": 65.45,
+   "test": 68.87
+  },
+  {
+   "name": "RSL-SQL + GPT-4o Anonymous [Cao et al.'24]",
+   "size": "UNK",
+   "dev": 67.21,
+   "test": 68.7
+  },
+  {
+   "name": "Qwen3.5-2B + StructCoT Distillation (SC@7) Alio Leuchtmann",
+   "size": "2B",
+   "dev": 61.4,
+   "test": 68.47
+  },
+  {
+   "name": "Qwen3-Coder-480B-A35B Baseline",
+   "size": "UNK",
+   "dev": 66.17,
+   "test": 68.14
+  },
+  {
+   "name": "PRIME-SQL Anonymous",
+   "size": "UNK",
+   "dev": 70.93,
+   "test": 68.03
+  },
+  {
+   "name": "OmniSQL-7B Renmin University of China + ByteDance Infra Lab [Li et al. '25]",
+   "size": "7B",
+   "dev": 69.04,
+   "test": 67.97
+  },
+  {
+   "name": "ExSL + granite-20b-code IBM Research AI",
+   "size": "20B",
+   "dev": 65.38,
+   "test": 67.86
+  },
+  {
+   "name": "AskData + GPT-4o AT&T CDO - DSAIR [Shkapenyuk et al. '25]",
+   "size": "UNK",
+   "dev": 65.91,
+   "test": 67.41
+  },
+  {
+   "name": "Claude 4.5 Sonnet Baseline",
+   "size": "UNK",
+   "dev": 67.34,
+   "test": 66.85
+  },
+  {
+   "name": "CHESSIR +SS +CG Stanford [Talaei et al.'24]",
+   "size": "UNK",
+   "dev": 65.0,
+   "test": 66.69
+  },
+  {
+   "name": "Elysian-SQL + gpt-oss-120b Independent Researcher",
+   "size": "120B",
+   "dev": 62.4,
+   "test": 66.46
+  },
+  {
+   "name": "E-SQL + GPT-4o Bilkent University [Caferoğlu et al.'24]",
+   "size": "UNK",
+   "dev": 65.58,
+   "test": 66.29
+  },
+  {
+   "name": "Arcwise + GPT-4o Arcwise",
+   "size": "UNK",
+   "dev": 67.99,
+   "test": 66.21
+  },
+  {
+   "name": "NucliOS MathCo",
+   "size": "UNK",
+   "dev": 63.95,
+   "test": 65.9
+  },
+  {
+   "name": "Command A Cohere AI [Team Cohere et al.'25]",
+   "size": "111B",
+   "dev": 63.49,
+   "test": 65.68
+  },
+  {
+   "name": "RSL-SQL + DeepSeek-v2 Anonymous [Cao et al.'24]",
+   "size": "UNK",
+   "dev": 63.56,
+   "test": 65.51
+  },
+  {
+   "name": "MCS-SQL + GPT-4 Dunamu [Lee et al. '24]",
+   "size": "UNK",
+   "dev": 63.36,
+   "test": 65.45
+  },
+  {
+   "name": "SCL-SQL Xffuture",
+   "size": "UNK",
+   "dev": 64.73,
+   "test": 65.23
+  },
+  {
+   "name": "OpenSearch-SQL,v1 + GPT-4 Alibaba Cloud",
+   "size": "UNK",
+   "dev": 61.34,
+   "test": 64.95
+  },
+  {
+   "name": "SFT CodeS-15B + SQLFixAgent Soochow University",
+   "size": "UNK",
+   "dev": null,
+   "test": 64.62
+  },
+  {
+   "name": "PURPLE + GPT-4o Fudan University + Transwarp Technology",
+   "size": "UNK",
+   "dev": 62.97,
+   "test": 64.51
+  },
+  {
+   "name": "MSL-SQL + DeepSeek-V2.5 Wuhan University of Technology",
+   "size": "236B",
+   "dev": 66.82,
+   "test": 64.0
+  },
+  {
+   "name": "EBA-SQL + GPT-4 Northeastern University",
+   "size": "UNK",
+   "dev": 64.6,
+   "test": 63.5
+  },
+  {
+   "name": "Sense Anonymous",
+   "size": "13B",
+   "dev": 55.48,
+   "test": 63.39
+  },
+  {
+   "name": "OneSQL-v0.1-Qwen-32B onekq.ai",
+   "size": "32B",
+   "dev": 64.6,
+   "test": 63.33
+  },
+  {
+   "name": "GRA-SQL Tencent CDP-youpu",
+   "size": "UNK",
+   "dev": 62.58,
+   "test": 63.22
+  },
+  {
+   "name": "GLM-4.7 Baseline",
+   "size": "UNK",
+   "dev": 63.82,
+   "test": 62.94
+  },
+  {
+   "name": "SuperSQL HKUST(GZ) [Li et al. '24]",
+   "size": "UNK",
+   "dev": 58.5,
+   "test": 62.66
+  },
+  {
+   "name": "SLM-SQL + Qwen2.5-Coder-0.5B-Instruct Wuhan University of Technology + University of Science and Technology of China [Lei Sheng et al. '25]",
+   "size": "0.5B",
+   "dev": 56.87,
+   "test": 61.82
+  },
+  {
+   "name": "{Chat2Query} (GPT-4 + data entity modeling) (PingCAP) PingCAP",
+   "size": "UNK",
+   "dev": 58.15,
+   "test": 60.98
+  },
+  {
+   "name": "DeepSeek-R1 Baseline",
+   "size": "UNK",
+   "dev": 61.67,
+   "test": 60.93
+  },
+  {
+   "name": "Dubo-SQL, v1 Mercator Technologies",
+   "size": "UNK",
+   "dev": 59.71,
+   "test": 60.71
+  },
+  {
+   "name": "Struct-SQL Crater Labs [Thaker et al. CAIAC'26]",
+   "size": "4B",
+   "dev": 54.63,
+   "test": 60.42
+  },
+  {
+   "name": "SFT CodeS-15B Renmin University of China [Li et al. SIGMOD'24]",
+   "size": "15B",
+   "dev": 58.47,
+   "test": 60.37
+  },
+  {
+   "name": "DTS-SQL + DeepSeek 7B University of Alberta [Pourreza et al. '24]",
+   "size": "7B",
+   "dev": 55.8,
+   "test": 60.31
+  },
+  {
+   "name": "Kimi-K2-Thinking Baseline",
+   "size": "UNK",
+   "dev": 60.63,
+   "test": 59.87
+  },
+  {
+   "name": "E-SQL + GPT-4o mini Bilkent University [Caferoğlu et al.'24]",
+   "size": "UNK",
+   "dev": 61.6,
+   "test": 59.81
+  },
+  {
+   "name": "MAC-SQL + GPT-4 BUAA & Tencent [Wang et al. '23]",
+   "size": "UNK",
+   "dev": 57.56,
+   "test": 59.59
+  },
+  {
+   "name": "xorazm-text2sql-0.8b Martin Luther University Halle-Wittenberg",
+   "size": "0.8B",
+   "dev": 53.52,
+   "test": 59.59
+  },
+  {
+   "name": "SFT CodeS-7B Renmin University of China [Li et al. SIGMOD'24]",
+   "size": "7B",
+   "dev": 57.17,
+   "test": 59.25
+  },
+  {
+   "name": "TA-SQL + GPT-4 HKU [Qu et al. ACL Findings'24]",
+   "size": "UNK",
+   "dev": 56.19,
+   "test": 59.14
+  },
+  {
+   "name": "DAIL-SQL + GPT-4 Alibaba Group [Gao and Wang et al. VLDB'24]",
+   "size": "UNK",
+   "dev": 54.76,
+   "test": 57.41
+  },
+  {
+   "name": "ExSL + granite-20b-code IBM Research AI",
+   "size": "20B",
+   "dev": 51.69,
+   "test": 57.13
+  },
+  {
+   "name": "DeepSeek Baseline",
+   "size": "236B",
+   "dev": 56.13,
+   "test": 56.68
+  },
+  {
+   "name": "DIN-SQL + GPT-4 University of Alberta [Pourreza et al. '23]",
+   "size": "UNK",
+   "dev": 50.72,
+   "test": 55.9
+  },
+  {
+   "name": "Mistral Baseline",
+   "size": "123B",
+   "dev": 53.52,
+   "test": 55.84
+  },
+  {
+   "name": "GPT-4 Baseline",
+   "size": "UNK",
+   "dev": 46.35,
+   "test": 54.89
+  },
+  {
+   "name": "Interactive-T2S Peking University [Xiong et al. CIKM'25]",
+   "size": "UNK",
+   "dev": 54.56,
+   "test": 54.11
+  },
+  {
+   "name": "Prem-1B-SQL Prem AI",
+   "size": "1B",
+   "dev": null,
+   "test": 51.54
+  },
+  {
+   "name": "Claude-2 Baseline",
+   "size": "UNK",
+   "dev": 42.7,
+   "test": 49.02
+  },
+  {
+   "name": "Open-SQL Anonymous",
+   "size": "7B",
+   "dev": 37.68,
+   "test": 47.74
+  },
+  {
+   "name": "ChatGPT + CoT HKU & DAMO [Li et al. NeurIPS'23]",
+   "size": "UNK",
+   "dev": 36.64,
+   "test": 40.08
+  },
+  {
+   "name": "ChatGPT Baseline",
+   "size": "UNK",
+   "dev": 37.22,
+   "test": 39.3
+  },
+  {
+   "name": "Codex Baseline",
+   "size": "175B",
+   "dev": 34.35,
+   "test": 36.47
+  },
+  {
+   "name": "sqlpup (7-sample vote) [Shiven Khurdi '26]",
+   "size": "394M",
+   "dev": 23.51,
+   "test": 33.15
+  },
+  {
+   "name": "Palm-2 Baseline",
+   "size": "UNK",
+   "dev": 27.38,
+   "test": 33.04
+  },
+  {
+   "name": "ChatGPT + CoT HKU & DAMO [Li et al. NeurIPS'23]",
+   "size": "UNK",
+   "dev": 25.88,
+   "test": 28.95
+  },
+  {
+   "name": "sqlpup (single pass) [Shiven Khurdi '26]",
+   "size": "394M",
+   "dev": 19.23,
+   "test": 27.33
+  },
+  {
+   "name": "ChatGPT Baseline",
+   "size": "UNK",
+   "dev": 24.05,
+   "test": 26.77
+  },
+  {
+   "name": "Codex Baseline",
+   "size": "175B",
+   "dev": 25.42,
+   "test": 24.86
+  },
+  {
+   "name": "T5-3B Baseline",
+   "size": "3B",
+   "dev": 23.34,
+   "test": 24.05
+  },
+  {
+   "name": "T5-Large Baseline",
+   "size": "770M",
+   "dev": 19.75,
+   "test": 20.94
+  },
+  {
+   "name": "T5-Base Baseline",
+   "size": "220M",
+   "dev": 11.54,
+   "test": 12.89
+  },
+  {
+   "name": "T5-3B Baseline",
+   "size": "3B",
+   "dev": 10.37,
+   "test": 11.17
+  },
+  {
+   "name": "T5-Large Baseline",
+   "size": "770M",
+   "dev": 9.71,
+   "test": 10.38
+  },
+  {
+   "name": "T5-Base Baseline",
+   "size": "220M",
+   "dev": 6.32,
+   "test": 7.06
+  }
+ ],
+ "single_model": [
+  {
+   "name": "Human Performance Data Engineers + DB Students",
+   "size": "",
+   "self_consistency": "",
+   "dev": null,
+   "test": 92.96
+  },
+  {
+   "name": "Gemini-SQL2 Google Research & Cloud",
+   "size": "UNK",
+   "self_consistency": "Many",
+   "dev": 74.12,
+   "test": 80.04
+  },
+  {
+   "name": "Gemini-SQL (Multitask SFT + Gemini-2.5-Pro) Google Cloud Databases Google Cloud Databases",
+   "size": "UNK",
+   "self_consistency": "Many",
+   "dev": 73.27,
+   "test": 77.14
+  },
+  {
+   "name": "SiriusAI-SQL Tencent Data Computing Platform Department",
+   "size": "27B",
+   "self_consistency": "Many",
+   "dev": 74.31,
+   "test": 76.47
+  },
+  {
+   "name": "Q-SQL AWS-Quick Science [Ravi Shankar et al.'25]",
+   "size": "30B-3B-MoE",
+   "self_consistency": "Many",
+   "dev": 72.99,
+   "test": 76.47
+  },
+  {
+   "name": "Databricks RLVR 32B Databricks Mosaic Research Databricks Mosaic Research",
+   "size": "32B",
+   "self_consistency": "Few",
+   "dev": null,
+   "test": 75.68
+  },
+  {
+   "name": "Spektr-SQL Amazon Ads-SpektrBot [Ravi Shankar et al.]",
+   "size": "30B-3B-MoE",
+   "self_consistency": "Few",
+   "dev": 72.1,
+   "test": 74.85
+  },
+  {
+   "name": "Sophon-Text2SQL-32B ByteDance DataPlatform-LLM",
+   "size": "32B",
+   "self_consistency": "Many",
+   "dev": 72.43,
+   "test": 74.79
+  },
+  {
+   "name": "ELG-SQL AMS CIR",
+   "size": "32B",
+   "self_consistency": "Many",
+   "dev": 73.4,
+   "test": 74.51
+  },
+  {
+   "name": "Kwai-AutoSQL-32B Kuaishou Business Team",
+   "size": "32B",
+   "self_consistency": "Many",
+   "dev": 70.99,
+   "test": 74.12
+  },
+  {
+   "name": "Kwai-AutoSQL-14B Kuaishou Business Team",
+   "size": "14B",
+   "self_consistency": "Many",
+   "dev": 69.69,
+   "test": 74.01
+  },
+  {
+   "name": "Arctic-Text2SQL-R1-32B Snowflake Snowflake AI Research",
+   "size": "32B",
+   "self_consistency": "Few",
+   "dev": 72.2,
+   "test": 73.84
+  },
+  {
+   "name": "Databricks RLVR 32B Databricks Mosaic Research Databricks Mosaic Research",
+   "size": "32B",
+   "self_consistency": "",
+   "dev": 70.8,
+   "test": 73.56
+  },
+  {
+   "name": "Jiayin-Pangu-Text2SQL-14B Jiayin AI Research Team",
+   "size": "14B",
+   "self_consistency": "Many",
+   "dev": 71.1,
+   "test": 73.45
+  },
+  {
+   "name": "FTEL-Text2SQL FPT Telecom",
+   "size": "30B-3B-MoE",
+   "self_consistency": "Few",
+   "dev": 71.19,
+   "test": 72.78
+  },
+  {
+   "name": "GPT-5.5-xhigh OpenAI",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": null,
+   "test": 72.55
+  },
+  {
+   "name": "Arctic-Text2SQL-R1-14B Snowflake Snowflake AI Research",
+   "size": "14B",
+   "self_consistency": "Few",
+   "dev": 71.4,
+   "test": 72.22
+  },
+  {
+   "name": "Fractal-SQL Fractal Analytics Fractal Analytics",
+   "size": "30B-3B-MoE",
+   "self_consistency": "Many",
+   "dev": 70.5,
+   "test": 72.0
+  },
+  {
+   "name": "SQLWeaver-32B Alibaba AI Data",
+   "size": "32B",
+   "self_consistency": "",
+   "dev": 69.28,
+   "test": 71.66
+  },
+  {
+   "name": "ShepherdSQL JD Bitcircuit Research",
+   "size": "30B-3B-MoE",
+   "self_consistency": "Many",
+   "dev": 71.71,
+   "test": 71.16
+  },
+  {
+   "name": "JD-UNION-Text2sql-32B JD UNION",
+   "size": "32B",
+   "self_consistency": "Many",
+   "dev": 70.27,
+   "test": 70.93
+  },
+  {
+   "name": "SIFT-32B Seek AI Seek AI Research",
+   "size": "32B",
+   "self_consistency": "Scale",
+   "dev": 70.08,
+   "test": 70.93
+  },
+  {
+   "name": "CrazyData-Text2SQL-32B JD Bitcircuit Research",
+   "size": "32B",
+   "self_consistency": "Many",
+   "dev": null,
+   "test": 70.71
+  },
+  {
+   "name": "Infly-RL-SQL-32B inftech.ai",
+   "size": "32B",
+   "self_consistency": "Few",
+   "dev": 70.08,
+   "test": 70.6
+  },
+  {
+   "name": "Arctic-Text2SQL-R1-7B Snowflake Snowflake AI Research",
+   "size": "7B",
+   "self_consistency": "Few",
+   "dev": 70.7,
+   "test": 70.43
+  },
+  {
+   "name": "Claude Opus 4.6 Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 68.77,
+   "test": 70.15
+  },
+  {
+   "name": "XiYanSQL-QwenCoder-32B Alibaba Cloud [Yifu Liu et al. '24]",
+   "size": "32B",
+   "self_consistency": "Few",
+   "dev": 67.01,
+   "test": 69.03
+  },
+  {
+   "name": "Arctic-ExCoT-70B Snowflake [Zhai et al. '25]",
+   "size": "70B",
+   "self_consistency": "",
+   "dev": 68.51,
+   "test": 68.53
+  },
+  {
+   "name": "Qwen3.5-2B + StructCoT Distillation Alio Leuchtmann",
+   "size": "2B",
+   "self_consistency": "Few",
+   "dev": 61.4,
+   "test": 68.47
+  },
+  {
+   "name": "Arctic-ExCoT-32B Snowflake [Zhai et al. '25]",
+   "size": "32B",
+   "self_consistency": "",
+   "dev": 68.32,
+   "test": 68.19
+  },
+  {
+   "name": "Qwen3-Coder-480B-A35B Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 66.17,
+   "test": 68.14
+  },
+  {
+   "name": "Align-SQL-7B Anonymous",
+   "size": "7B",
+   "self_consistency": "Few",
+   "dev": 64.99,
+   "test": 67.97
+  },
+  {
+   "name": "Claude 4.5 Sonnet Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 67.34,
+   "test": 66.85
+  },
+  {
+   "name": "Align-SQL-3B Anonymous",
+   "size": "3B",
+   "self_consistency": "Few",
+   "dev": 56.0,
+   "test": 66.41
+  },
+  {
+   "name": "Command A Cohere AI [Team Cohere et al.'25]",
+   "size": "111B",
+   "self_consistency": "",
+   "dev": 63.49,
+   "test": 65.68
+  },
+  {
+   "name": "OneSQL-v0.1-Qwen-32B onekq.ai",
+   "size": "32B",
+   "self_consistency": "",
+   "dev": 64.6,
+   "test": 63.33
+  },
+  {
+   "name": "GLM-4.7 Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 63.82,
+   "test": 62.94
+  },
+  {
+   "name": "SuperSQL HKUST(GZ) [Li et al. '24]",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 58.5,
+   "test": 62.66
+  },
+  {
+   "name": "DeepSeek-R1 Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 61.67,
+   "test": 60.93
+  },
+  {
+   "name": "Struct-SQL Crater Labs [Thaker et al. CAIAC'26]",
+   "size": "4B",
+   "self_consistency": "",
+   "dev": 54.63,
+   "test": 60.42
+  },
+  {
+   "name": "SFT CodeS-15B Renmin University of China [Li et al. SIGMOD'24]",
+   "size": "15B",
+   "self_consistency": "",
+   "dev": 58.47,
+   "test": 60.37
+  },
+  {
+   "name": "Kimi-K2-Thinking Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 60.63,
+   "test": 59.87
+  },
+  {
+   "name": "xorazm-text2sql-0.8b Martin Luther University Halle-Wittenberg [link]",
+   "size": "0.8B",
+   "self_consistency": "Few",
+   "dev": 53.52,
+   "test": 59.59
+  },
+  {
+   "name": "SFT CodeS-7B Renmin University of China [Li et al. SIGMOD'24]",
+   "size": "7B",
+   "self_consistency": "",
+   "dev": 57.17,
+   "test": 59.25
+  },
+  {
+   "name": "DeepSeek Baseline",
+   "size": "236B",
+   "self_consistency": "",
+   "dev": 56.13,
+   "test": 56.68
+  },
+  {
+   "name": "Mistral Baseline",
+   "size": "123B",
+   "self_consistency": "",
+   "dev": 53.52,
+   "test": 55.84
+  },
+  {
+   "name": "GPT-4 Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 46.35,
+   "test": 54.89
+  },
+  {
+   "name": "Prem-1B-SQL Prem AI",
+   "size": "1B",
+   "self_consistency": "Few",
+   "dev": null,
+   "test": 51.54
+  },
+  {
+   "name": "Claude-2 Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 42.7,
+   "test": 49.02
+  },
+  {
+   "name": "ChatGPT + CoT HKU & DAMO [Li et al. NeurIPS'23]",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 36.64,
+   "test": 40.08
+  },
+  {
+   "name": "ChatGPT Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 37.22,
+   "test": 39.3
+  },
+  {
+   "name": "Codex Baseline",
+   "size": "175B",
+   "self_consistency": "",
+   "dev": 34.35,
+   "test": 36.47
+  },
+  {
+   "name": "sqlpup (7-sample vote) [Shiven Khurdi '26]",
+   "size": "394M",
+   "self_consistency": "Few",
+   "dev": 23.51,
+   "test": 33.15
+  },
+  {
+   "name": "Palm-2 Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 27.38,
+   "test": 33.04
+  },
+  {
+   "name": "sqlpup (single pass) [Shiven Khurdi '26]",
+   "size": "394M",
+   "self_consistency": "",
+   "dev": 19.23,
+   "test": 27.33
+  },
+  {
+   "name": "ChatGPT Baseline",
+   "size": "UNK",
+   "self_consistency": "",
+   "dev": 24.05,
+   "test": 26.77
+  },
+  {
+   "name": "Codex Baseline",
+   "size": "175B",
+   "self_consistency": "",
+   "dev": 25.42,
+   "test": 24.86
+  },
+  {
+   "name": "T5-3B Baseline",
+   "size": "3B",
+   "self_consistency": "",
+   "dev": 23.34,
+   "test": 24.05
+  },
+  {
+   "name": "T5-Large Baseline",
+   "size": "770M",
+   "self_consistency": "",
+   "dev": 19.75,
+   "test": 20.94
+  },
+  {
+   "name": "T5-Base Baseline",
+   "size": "220M",
+   "self_consistency": "",
+   "dev": 11.54,
+   "test": 12.89
+  },
+  {
+   "name": "T5-3B Baseline",
+   "size": "3B",
+   "self_consistency": "",
+   "dev": 10.37,
+   "test": 11.17
+  },
+  {
+   "name": "T5-Large Baseline",
+   "size": "770M",
+   "self_consistency": "",
+   "dev": 9.71,
+   "test": 10.38
+  },
+  {
+   "name": "T5-Base Baseline",
+   "size": "220M",
+   "self_consistency": "",
+   "dev": 6.32,
+   "test": 7.06
+  }
+ ]
+}
