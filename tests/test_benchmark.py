@@ -11,9 +11,7 @@ from src.db import connect_readonly
 
 
 def test_arm_matrix_limits_baseline_to_control() -> None:
-    matrix = arm_matrix(
-        [MODEL_GPT_OSS, DEFAULT_MODEL, MODEL_MINIMAX], ["agent", "baseline"]
-    )
+    matrix = arm_matrix([MODEL_GPT_OSS, DEFAULT_MODEL, MODEL_MINIMAX], ["agent", "baseline"])
     assert matrix.count((DEFAULT_MODEL, "baseline")) == 1
     assert (MODEL_GPT_OSS, "baseline") not in matrix
     assert sum(arm == "agent" for _, arm in matrix) == 3
@@ -45,12 +43,15 @@ def test_evaluation_aligns_columns_by_name_and_preserves_duplicates() -> None:
 
 
 def test_e2e_success_requires_agent_delivery() -> None:
-    assert evaluate_task_success(
-        error="Unknown column: c.genre_count",
-        response_type="query",
-        rows=None,
-        sql_equivalent=True,
-    ) is False
+    assert (
+        evaluate_task_success(
+            error="Unknown column: c.genre_count",
+            response_type="query",
+            rows=None,
+            sql_equivalent=True,
+        )
+        is False
+    )
     assert evaluate_task_success(
         error=None,
         response_type="query",
@@ -82,7 +83,11 @@ def test_month_date_grain_contract_equates_formats() -> None:
             "FROM Invoice WHERE strftime('%Y', InvoiceDate) = '2021' "
             "GROUP BY Month ORDER BY MonthlyRevenue DESC",
             conn,
-            contract={"date_grain": "month", "order_policy": "strict", "tie_policy": "bag_within_ties"},
+            contract={
+                "date_grain": "month",
+                "order_policy": "strict",
+                "tie_policy": "bag_within_ties",
+            },
         )
         assert with_contract.correct and with_contract.sql_equivalent
     finally:
@@ -137,7 +142,9 @@ def test_official_ex_uses_bird_set_semantics() -> None:
         # Extra columns, unrounded-vs-rounded values, errors, and missing SQL all score 0.
         assert not official_ex(conn, gold, "SELECT Name, GenreId FROM Genre")
         assert not official_ex(
-            conn, "SELECT AVG(Milliseconds) FROM Track", "SELECT ROUND(AVG(Milliseconds), 2) FROM Track"
+            conn,
+            "SELECT AVG(Milliseconds) FROM Track",
+            "SELECT ROUND(AVG(Milliseconds), 2) FROM Track",
         )
         assert not official_ex(conn, gold, "SELECT Nope FROM Genre")
         assert not official_ex(conn, gold, None)
@@ -198,10 +205,20 @@ def test_load_questions_keeps_duplicate_rows_and_defaults(tmp_path: Path) -> Non
     path.write_text(
         json.dumps(
             [
-                {"question_id": 7, "db_id": "d", "question": "a", "SQL": "SELECT 1",
-                 "difficulty": "simple"},
-                {"question_id": 7, "db_id": "d", "question": "a", "SQL": "SELECT 1",
-                 "difficulty": "simple"},
+                {
+                    "question_id": 7,
+                    "db_id": "d",
+                    "question": "a",
+                    "SQL": "SELECT 1",
+                    "difficulty": "simple",
+                },
+                {
+                    "question_id": 7,
+                    "db_id": "d",
+                    "question": "a",
+                    "SQL": "SELECT 1",
+                    "difficulty": "simple",
+                },
                 {"db_id": "d", "question": "train-style", "SQL": "SELECT 2"},
             ]
         )
@@ -222,11 +239,15 @@ def test_load_run_maps_legacy_duplicate_ids_to_distinct_rows(tmp_path: Path) -> 
     ]
     legacy = tmp_path / "legacy.jsonl"
     legacy.write_text(
-        "\n".join(json.dumps({"question_id": q, "model": "m", "sql": s}) for q, s in
-                  [(137, "a"), (5, "b"), (137, "c")])
+        "\n".join(
+            json.dumps({"question_id": q, "model": "m", "sql": s})
+            for q, s in [(137, "a"), (5, "b"), (137, "c")]
+        )
     )
     assert {row: rec["sql"] for row, rec in load_run(legacy, questions).items()} == {
-        0: "a", 1: "b", 2: "c"
+        0: "a",
+        1: "b",
+        2: "c",
     }
     current = tmp_path / "current.jsonl"
     current.write_text(json.dumps({"question_id": 137, "row_index": 2, "model": "m"}))
@@ -243,11 +264,15 @@ def test_score_bird_executes_once_for_all_metrics() -> None:
         assert same.official_ex and same.row_count == 25
         # Local metric keeps its multiset semantics; official uses sets.
         assert not score_bird(
-            conn, "q", "SELECT Name FROM Track LIMIT 5", "SELECT Name FROM Track LIMIT 5",
+            conn,
+            "q",
+            "SELECT Name FROM Track LIMIT 5",
+            "SELECT Name FROM Track LIMIT 5",
             delivered=False,
         ).official_ex
-        reordered = score_bird(conn, "q", gold, "SELECT Name FROM Genre ORDER BY 1 DESC",
-                               delivered=True)
+        reordered = score_bird(
+            conn, "q", gold, "SELECT Name FROM Genre ORDER BY 1 DESC", delivered=True
+        )
         assert reordered.signature == same.signature
         other = score_bird(conn, "q", gold, "SELECT Name FROM MediaType", delivered=True)
         assert other.signature != same.signature and not other.official_ex
@@ -285,18 +310,28 @@ def test_sql_complexity_bands() -> None:
     assert sql_complexity("SELECT a.x, COUNT(*) FROM a JOIN b ON a.id = b.id GROUP BY a.x") == (
         "medium"
     )
-    assert sql_complexity(
-        "SELECT x FROM a JOIN b ON a.i = b.i JOIN c ON b.j = c.j "
-        "WHERE a.k IN (SELECT k FROM d) GROUP BY x"
-    ) == "high"
+    assert (
+        sql_complexity(
+            "SELECT x FROM a JOIN b ON a.i = b.i JOIN c ON b.j = c.j "
+            "WHERE a.k IN (SELECT k FROM d) GROUP BY x"
+        )
+        == "high"
+    )
     assert sql_complexity("NOT SQL AT ALL (((") == "unparsed"
 
 
 def _write_run(path: Path, rows: list[tuple[int, int, bool]], meta: dict[str, object]) -> None:
     path.write_text(
         "\n".join(
-            json.dumps({"row_index": row, "question_id": row, "repeat": rep, "model": "m",
-                        "official_ex": ok})
+            json.dumps(
+                {
+                    "row_index": row,
+                    "question_id": row,
+                    "repeat": rep,
+                    "model": "m",
+                    "official_ex": ok,
+                }
+            )
             for row, rep, ok in rows
         )
     )
@@ -315,10 +350,17 @@ def test_flips_refuses_undeclared_differences_and_bootstraps_by_question(tmp_pat
         BirdQuestion(i, "big" if i < 6 else "small", "q", "", "SELECT 1", "unknown", row_index=i)
         for i in range(8)
     ]
-    base = {"dataset_sha256_16": "d", "database_sha256_16": {"big": "1", "small": "2"},
-            "effective_prompt_sha256_16": "p0", "config_sha256_16": "c",
-            "git_commit": "g", "code_state_sha256_16": "s0",
-            "expected_rows": list(range(8)), "expected_repeats": 2, "complete": True}
+    base = {
+        "dataset_sha256_16": "d",
+        "database_sha256_16": {"big": "1", "small": "2"},
+        "effective_prompt_sha256_16": "p0",
+        "config_sha256_16": "c",
+        "git_commit": "g",
+        "code_state_sha256_16": "s0",
+        "expected_rows": list(range(8)),
+        "expected_repeats": 2,
+        "complete": True,
+    }
     old, new = tmp_path / "bird_raw_old.jsonl", tmp_path / "bird_raw_new.jsonl"
     # Two repeats each. The large database improves and the small one collapses: the
     # row-weighted gain is positive while the database macro is negative (review 4, #1).
@@ -372,10 +414,17 @@ def _two_row_runs(tmp_path: Path, new_rows: list[tuple[int, int, bool]], **new_m
     from benchmark.bird import BirdQuestion
 
     questions = [BirdQuestion(i, "db", "q", "", "SELECT 1", "unknown", row_index=i) for i in (0, 1)]
-    meta = {"dataset_sha256_16": "d", "database_sha256_16": {"db": "1"},
-            "effective_prompt_sha256_16": "p", "config_sha256_16": "c", "git_commit": "g",
-            "code_state_sha256_16": "s", "expected_rows": [0, 1], "expected_repeats": 2,
-            "complete": True}
+    meta = {
+        "dataset_sha256_16": "d",
+        "database_sha256_16": {"db": "1"},
+        "effective_prompt_sha256_16": "p",
+        "config_sha256_16": "c",
+        "git_commit": "g",
+        "code_state_sha256_16": "s",
+        "expected_rows": [0, 1],
+        "expected_repeats": 2,
+        "complete": True,
+    }
     old, new = tmp_path / "bird_raw_old.jsonl", tmp_path / "bird_raw_new.jsonl"
     _write_run(old, [(0, 0, False), (0, 1, False), (1, 0, True), (1, 1, True)], meta)
     _write_run(new, new_rows, {**meta, **new_meta})
@@ -413,6 +462,30 @@ def test_full_comparison_requires_two_repeats_and_same_expected_rows(tmp_path: P
     assert "full comparison, coverage verified" in report and "| Row-weighted | +50.00 |" in report
 
 
+def test_full_comparison_accepts_three_complete_repeats(tmp_path: Path) -> None:
+    from benchmark.analyze import flips_report
+    from benchmark.bird import BirdQuestion
+
+    questions = [BirdQuestion(i, "db", "q", "", "SELECT 1", "unknown", row_index=i) for i in (0, 1)]
+    old, new = tmp_path / "bird_raw_old.jsonl", tmp_path / "bird_raw_new.jsonl"
+    meta = {
+        "dataset_sha256_16": "d",
+        "database_sha256_16": {"db": "1"},
+        "effective_prompt_sha256_16": "p",
+        "config_sha256_16": "c",
+        "git_commit": "g",
+        "code_state_sha256_16": "s",
+        "expected_rows": [0, 1],
+        "expected_repeats": 3,
+        "complete": True,
+    }
+    _write_run(old, [(r, rep, False) for r in (0, 1) for rep in (0, 1, 2)], meta)
+    _write_run(new, [(r, rep, True) for r in (0, 1) for rep in (0, 1, 2)], meta)
+    report = flips_report(old, new, questions, tmp_path, iterations=100)
+    assert "full comparison, coverage verified" in report
+    assert "repeats old/new = 3/3" in report
+
+
 def test_run_metadata_ignores_result_files_when_hashing_code(tmp_path: Path) -> None:
     import argparse
 
@@ -421,10 +494,25 @@ def test_run_metadata_ignores_result_files_when_hashing_code(tmp_path: Path) -> 
     args = argparse.Namespace(
         questions=Path("data/bird/splits/train_dev.json"),
         db_dir=Path("data/bird/train/train_databases"),
-        difficulty=None, db=["movie"], limit=2, per_db=None, ids=None, seed=0,
-        models=["m"], temperature=0.0, max_tokens=400, reasoning_effort=None, repeats=1,
-        prompt_profile="product", quote_identifiers=False, pipeline_repairs=False, dictionary=False,
-        llm_timeout=20.0, fewshot=0, fewshot_pool=Path("data/bird/train/train.json"), truncation_retry=0,
+        difficulty=None,
+        db=["movie"],
+        limit=2,
+        per_db=None,
+        ids=None,
+        seed=0,
+        models=["m"],
+        temperature=0.0,
+        max_tokens=400,
+        reasoning_effort=None,
+        repeats=1,
+        prompt_profile="product",
+        quote_identifiers=False,
+        pipeline_repairs=False,
+        dictionary=False,
+        llm_timeout=20.0,
+        fewshot=0,
+        fewshot_pool=Path("data/bird/train/train.json"),
+        truncation_retry=0,
         column_meaning=0,
     )
     if not args.questions.exists():
@@ -484,14 +572,30 @@ def test_fewshot_excludes_held_out_databases_and_renders() -> None:
     from benchmark.fewshot import FewShotIndex, render_examples
 
     pool = [
-        {"db_id": "held", "question": "How many movies star Tom Cruise?", "evidence": "",
-         "SQL": "SELECT 1"},
-        {"db_id": "other", "question": "How many movies star an actor?",
-         "evidence": "actor refers to Name", "SQL": "SELECT COUNT(*) FROM m"},
-        {"db_id": "other", "question": "How many films were released?", "evidence": "",
-         "SQL": "SELECT 2"},
-        {"db_id": "third", "question": "What is the weather today?", "evidence": "",
-         "SQL": "SELECT 3"},
+        {
+            "db_id": "held",
+            "question": "How many movies star Tom Cruise?",
+            "evidence": "",
+            "SQL": "SELECT 1",
+        },
+        {
+            "db_id": "other",
+            "question": "How many movies star an actor?",
+            "evidence": "actor refers to Name",
+            "SQL": "SELECT COUNT(*) FROM m",
+        },
+        {
+            "db_id": "other",
+            "question": "How many films were released?",
+            "evidence": "",
+            "SQL": "SELECT 2",
+        },
+        {
+            "db_id": "third",
+            "question": "What is the weather today?",
+            "evidence": "",
+            "SQL": "SELECT 3",
+        },
     ]
     index = FewShotIndex(pool, exclude_dbs={"held"})
     shots = index.examples("How many movies star Tom Cruise?", "", 3)
@@ -519,8 +623,7 @@ def test_cost_includes_non_llm_per_question_charges() -> None:
     from benchmark.analyze import answer_uncached_cost, cost_latency, max_answer_cost
     from src.costs import MODEL_GPT_OSS
 
-    call = {"model": MODEL_GPT_OSS, "input_tokens": 1_000_000, "output_tokens": 0,
-            "cost_usd": 0.15}
+    call = {"model": MODEL_GPT_OSS, "input_tokens": 1_000_000, "output_tokens": 0, "cost_usd": 0.15}
     plain = {"llm_calls": [call], "t_total_ms": 1000.0}
     with_jev = {**plain, "extra_cost_usd": 0.02}
     assert answer_uncached_cost(plain) == pytest.approx(0.15)

@@ -24,7 +24,12 @@ def _mentioned(name: str, text: str) -> bool:
 
 
 def render_profile_facts(
-    profile: DatabaseProfile, question: str, evidence: str, *, max_facts: int = 4
+    profile: DatabaseProfile,
+    question: str,
+    evidence: str,
+    *,
+    max_facts: int = 4,
+    include_values: bool = True,
 ) -> str:
     """Render at most four relevant physical facts; return nothing when none match."""
     text = f"{question} {evidence}"
@@ -32,8 +37,10 @@ def render_profile_facts(
 
     # Name matches avoid dumping every formatted column in a wide database.
     matches = [
-        c for c in profile.columns
-        if c.text_format and (
+        c
+        for c in profile.columns
+        if c.text_format
+        and (
             _mentioned(c.column, text)
             or (_mentioned(c.table, text) and _norm(c.column) in {"date", "time"})
         )
@@ -45,23 +52,22 @@ def render_profile_facts(
             f"{column.text_format} formatting{example}."
         )
 
-    # An exact value location can distinguish look-alike columns. Show all matching
-    # locations (up to three) rather than asserting one is canonical.
-    quoted = {
-        left or right
-        for left, right in re.findall(
-            r"(?<![A-Za-z0-9])'([^']{4,})'|(?<![A-Za-z0-9])\"([^\"]{4,})\"", text
-        )
-    }
-    value_locations: dict[str, set[str]] = defaultdict(set)
-    for table, colname, value in retrieve_values(profile, text, k=20):
-        if value in quoted:
-            value_locations[value].add(f"{table}.{colname}")
-    for value, locations in list(value_locations.items())[:2]:
-        if len(locations) == 1:
-            facts.append(
-                f"- Stored value {value!r} occurs in {', '.join(sorted(locations))}."
+    if include_values:
+        # An exact value location can distinguish look-alike columns. Show all matching
+        # locations (up to three) rather than asserting one is canonical.
+        quoted = {
+            left or right
+            for left, right in re.findall(
+                r"(?<![A-Za-z0-9])'([^']{4,})'|(?<![A-Za-z0-9])\"([^\"]{4,})\"", text
             )
+        }
+        value_locations: dict[str, set[str]] = defaultdict(set)
+        for table, colname, value in retrieve_values(profile, text, k=20):
+            if value in quoted:
+                value_locations[value].add(f"{table}.{colname}")
+        for value, locations in list(value_locations.items())[:2]:
+            if len(locations) == 1:
+                facts.append(f"- Stored value {value!r} occurs in {', '.join(sorted(locations))}.")
 
     for join in profile.joins:
         if not join.parent_unique and (

@@ -1312,6 +1312,25 @@ checkpoints.
      test. This is one diagnostic pass, not confirmation for an SFT decision.
      The full report is benchmark/results/candidate_bank_diagnostic.md.
 
+   - **Rank 1b database-facts comparison (2026-09-26 local / 2026-09-27 UTC).**
+     A 100-question, two-repeat pilot first found misleading case-folded and
+     ambiguous value facts; exact-case and unique-location guards were added.
+     The corrected pilot improved paired EX by +3.0 pts [+0.5, +6.5], so it
+     qualified for a full run. On all 501 train_dev questions × 2 repeats,
+     official EX rose from 69.4% to 70.2%: row-weighted +0.80 pts
+     [−0.30, +2.00], database macro +1.59 pts [+0.05, +3.51]. The
+     predeclared rule requires **both** gains ≥ +1.5 with intervals above 0;
+     rank 1b missed that rule. **Owner override:** adopt bounded facts for the
+     benchmark profile (product unchanged); `--no-profile-facts` remains the
+     control. This is not yet evidence of transfer: the four-database bootstrap
+     holds databases fixed. Two consistent flips occurred on questions receiving
+     no fact, showing T=0 variation. The next step is a preregistered first
+     lockbox look across seven unseen domains, without per-question tuning.
+     The pilots and full variant added about $0.220; shared spend ended at
+     $6.495 of the approved $7. See benchmark/results/rank1b_outcome.md,
+     benchmark/results/profile_facts_failure_analysis.md and
+     benchmark/results/rank1b_full_comparison.md.
+
 ---
 
 ## Sources
