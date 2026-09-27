@@ -49,11 +49,14 @@ from benchmark.column_meaning import render as render_meanings
 from benchmark.evaluate import BIRD_OFFICIAL_TIMEOUT_S, BirdScore, score_bird
 from benchmark.fewshot import DEFAULT_POOL as FEWSHOT_POOL
 from benchmark.fewshot import FewShotIndex, render_examples
+from benchmark.profile_context import render_profile_facts
 from benchmark.splits import TRAIN_DEV2_DBS, TRAIN_DEV_DBS, TRAIN_LOCKBOX_DBS
+from benchmark.strategies import STRATEGIES
 from src.agent import Agent
 from src.conversation import ConversationContext
-from src.costs import DEFAULT_MODEL, get_shared_budget
+from src.costs import DEFAULT_LEDGER, DEFAULT_MODEL, get_shared_budget
 from src.db import connect_readonly, timeout_for_database
+from src.db_profile import build_profile
 from src.prompts import PROMPT_PROFILES
 from src.schema import get_schema
 
@@ -117,12 +120,20 @@ async def benchmark(args: argparse.Namespace) -> Path:
     questions = select_questions(args)
     if not questions:
         raise SystemExit("No BIRD questions matched --difficulty/--db/--limit filters")
-    guard = get_shared_budget(args.budget)
+    guard = get_shared_budget(args.budget, args.ledger_path)
     semaphore = asyncio.Semaphore(args.concurrency)
     stop = asyncio.Event()
     records: list[dict[str, Any]] = []
     meanings = (
         ColumnMeanings.from_file(args.column_meaning_file) if args.column_meaning else None
+    )
+    profiles = (
+        {
+            db_id: build_profile(db_path_for(db_id, db_dir=args.db_dir))
+            for db_id in sorted({q.db_id for q in questions})
+        }
+        if args.profile_facts
+        else {}
     )
     fewshot = (
         FewShotIndex.from_file(
@@ -161,7 +172,13 @@ async def benchmark(args: argparse.Namespace) -> Path:
                     llm_timeout_s=args.llm_timeout,
                     truncation_retry_tokens=args.truncation_retry,
                 )
-                prompt = with_evidence(question.question, question.evidence)
+                prompt = STRATEGIES[args.strategy] + with_evidence(
+                    question.question, question.evidence
+                )
+                if args.profile_facts:
+                    prompt = render_profile_facts(
+                        profiles[question.db_id], question.question, question.evidence
+                    ) + prompt
                 if meanings is not None:
                     notes = meanings.select(
                         question.db_id, question.question, question.evidence,
@@ -305,6 +322,8 @@ def run_metadata(
         "max_repairs": 1,
         # Recorded only when on, so runs without it keep the accepted config hash.
         **({"truncation_retry_tokens": args.truncation_retry} if args.truncation_retry else {}),
+        **({"profile_facts": True} if getattr(args, "profile_facts", False) else {}),
+        **({"strategy": args.strategy} if getattr(args, "strategy", "direct") != "direct" else {}),
         **(
             {
                 "column_meaning": args.column_meaning,
@@ -436,6 +455,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--concurrency", type=int, default=3)
     parser.add_argument("--budget", type=float, default=2.0)
     parser.add_argument(
+        "--ledger-path", type=Path, default=DEFAULT_LEDGER,
+        help="Shared SQLite spend ledger (pass an absolute path across worktrees).",
+    )
+    parser.add_argument(
         "--difficulty", nargs="+", choices=DIFFICULTIES, help="Filter to these difficulties."
     )
     parser.add_argument("--db", nargs="+", help="Filter to these db_ids.")
@@ -489,6 +512,14 @@ def parse_args() -> argparse.Namespace:
         "column_meaning file to the user message; 0 = off.",
     )
     parser.add_argument("--column-meaning-file", type=Path, default=COLUMN_MEANING_PATH)
+    parser.add_argument(
+        "--strategy", choices=sorted(STRATEGIES), default="direct",
+        help="Prompting strategy for candidate-bank diversity.",
+    )
+    parser.add_argument(
+        "--profile-facts", action="store_true",
+        help="Add a bounded question-relevant slice of database-derived facts (rank 1b).",
+    )
     parser.add_argument(
         "--truncation-retry",
         type=int,

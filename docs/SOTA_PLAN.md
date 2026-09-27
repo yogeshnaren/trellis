@@ -53,7 +53,7 @@ available to the live inference path.
 | Mini-Dev gate 2 | `deepseek-v4p1-flash` | 500 × 3 | **65.3%** (979/1,500 outputs) | 2 of 4 gate looks used; macro 64.2% |
 | `dev_untouched` | `deepseek-v4p1-flash` | 1,036 × 1 | **67.6%** (700/1,036) | Reporting only; macro 68.1% |
 | `train_dev` clean reproduction | `deepseek-v4p1-flash` | 501 × 2 | **69.4%** | Iteration set; macro 70.8% |
-| **Cleaned Nov 2025 dev (primary)** | `deepseek-v4p1-flash` | 1,534 × 1 | **66.0%** (1,013/1,534) | Look 2 of 4 (the 99-row pilot was look 1); macro 64.1%; simple 75.3 / moderate 65.0 / challenging 32.9 |
+| **Cleaned Nov 2025 dev (primary)** | `deepseek-v4p1-flash` | 1,534 × 1 | **66.0%** (1,012/1,534) | Look 2 of 4 (the 99-row pilot was look 1); macro 64.1%; simple 75.3 / moderate 65.0 / challenging 32.9 |
 | `train_lockbox` | — | 974 questions | **Unopened** | 0 of 2 looks used |
 
 The exact current run IDs are `20260926T211555Z` (Mini-Dev),

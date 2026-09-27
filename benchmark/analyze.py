@@ -271,7 +271,7 @@ def rescore(
     return results
 
 
-def _pct(numerator: int, denominator: int) -> str:
+def _pct(numerator: float, denominator: int) -> str:
     return f"{numerator / denominator:.1%}" if denominator else "—"
 
 
@@ -423,8 +423,8 @@ def _flip_rows(
     fixes = sum(now[r] > was[r] for r in rows)
     delta = sum(now[r] - was[r] for r in rows) / len(rows)
     return (
-        f"| {label} | {len(rows)} | {_pct(round(sum(was[r] for r in rows)), len(rows))} | "
-        f"{_pct(round(sum(now[r] for r in rows)), len(rows))} | {delta * 100:+.1f} | "
+        f"| {label} | {len(rows)} | {_pct(sum(was[r] for r in rows), len(rows))} | "
+        f"{_pct(sum(now[r] for r in rows), len(rows))} | {delta * 100:+.1f} | "
         f"{regressions} | {fixes} | {mcnemar_exact_p(regressions, fixes):.3f} |"
     )
 
