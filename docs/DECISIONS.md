@@ -605,3 +605,13 @@ stays as a named constant for provenance and pricing.
   - A convert-note gate would lower EX. A don't-convert gate would game labels and
     risks test grading.
   - No Jev spend; the grading question goes to the BIRD team.
+
+## 2026-09-26 — Rank 4 diagnostic: selection ceiling +4 pts; generation bounds the score
+- Four candidates on 501 `train_dev` questions: direct 69.5%, plan 66.9%, decompose
+  67.1%, glm-5p3-flash 66.9%.
+- Oracle pass@4 73.5%; majority vote 68.9% (below direct); 18.6% of questions are
+  unanimous-but-wrong.
+- On the 357 questions kept by BIRD's quality filter: direct 81.0%, pass@4 84.6%.
+- Decision: selection can add at most ≈ +4 (realistically +1–2 with a real selector), so
+  generation quality and label conventions bound the score. The confirmation pass is
+  still required before any paid SFT (v2.8). Cost $0.76.

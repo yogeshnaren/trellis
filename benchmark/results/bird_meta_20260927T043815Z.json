@@ -1,0 +1,64 @@
+{
+ "questions": "data/bird/splits/train_dev.json",
+ "dataset_sha256_16": "e5503cce83be1678",
+ "db_dir": "data/bird/train/train_databases",
+ "database_sha256_16": {
+  "movie": "4d87ad371470f07a",
+  "restaurant": "39dbaf39bf244e10",
+  "sales_in_weather": "470eb5d25cd28104",
+  "soccer_2016": "84651eed21dbfae9"
+ },
+ "question_count": 12,
+ "effective_prompt_sha256_16": "a5288b1c7019d28f",
+ "effective_prompt_by_db": {
+  "movie": "b24326fc4f1a79ae",
+  "restaurant": "0d1eae3e198d53b0",
+  "sales_in_weather": "ce05894bda661123",
+  "soccer_2016": "a448dd34df22c02f"
+ },
+ "config": {
+  "models": [
+   "accounts/fireworks/models/deepseek-v4p1-flash"
+  ],
+  "prompt_profile": "benchmark",
+  "quote_identifiers": true,
+  "pipeline_repairs": true,
+  "dictionary": false,
+  "fewshot": 0,
+  "fewshot_pool_sha256_16": null,
+  "temperature": 0.0,
+  "max_tokens": 4096,
+  "reasoning_effort": "low",
+  "llm_timeout_s": 90.0,
+  "max_repairs": 1,
+  "truncation_retry_tokens": 8192,
+  "strategy": "decompose"
+ },
+ "config_sha256_16": "fa1eceaca37ac919",
+ "git_commit": "483a1068dec8214ae041b177bb4afd3072b5f0d6",
+ "code_state_sha256_16": "39882b9a71b22429",
+ "git_dirty": true,
+ "repeats": 1,
+ "difficulty": null,
+ "db": null,
+ "limit": null,
+ "per_db": 3,
+ "ids": null,
+ "seed": 7,
+ "expected_rows": [
+  9,
+  20,
+  25,
+  52,
+  55,
+  129,
+  192,
+  211,
+  350,
+  425,
+  448,
+  485
+ ],
+ "expected_repeats": 1,
+ "complete": true
+}

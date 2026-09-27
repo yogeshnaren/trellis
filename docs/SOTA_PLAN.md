@@ -1312,7 +1312,23 @@ looks for bundled checkpoints.
        (reasoning, 1c notes, casts). Rank G training on BIRD-style labels would *learn*
        these conventions, which helps dev scores but is a test-transfer risk. Weigh it
        once BIRD answers.
-
+   - **Rank 4 addendum: label quality (2026-09-26; bank cost $0.76, reported below).**
+     - Split by BIRD's own quality filter (`bird23-train-filtered`), the bank looks
+       different:
+       - on the 357 `train_dev` questions the filter keeps, direct scores **81.0%**
+         and pass@4 is 84.6%;
+       - of the 133 questions no candidate solves, only 41% are kept by the filter,
+         vs 71% overall.
+     - A large share of the remaining `train_dev` gap is label quality, not
+       generation. The filter may also drop genuinely hard questions, and cleaned dev
+       is still ≈ 66%, so this is context, not a score.
+     - A real selector on the 102 disagreement questions might recover about half the
+       +4.0 ceiling, at ≈ 4× generation cost (inside the submission ceilings).
+       Jev-`choice` selection is untested: there is no OpenRouter key yet.
+     - Owner review is under way on the 252 practice-set disagreements
+       (`benchmark/review_packet.py`, a private review page with stored verdicts). It
+       asks whether the answer keys or our answers are wrong, and re-scores rejected
+       experiments.
 
    - **Rank 4 candidate-bank diagnostic (2026-09-26, no new calls for this review).**
      Four saved candidates on all 501 train_dev questions: direct 69.5%, decompose
