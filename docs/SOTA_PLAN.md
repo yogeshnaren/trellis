@@ -55,6 +55,7 @@ available to the live inference path.
 | `train_dev` clean reproduction | `deepseek-v4p1-flash` | 501 × 2 | **69.4%** | Control on the iteration set; macro 70.8% |
 | `train_dev` + adopted rank 1b facts | `deepseek-v4p1-flash` | 501 × 2 | **70.2%** | Owner-adopted benchmark candidate; paired +0.8 pts [−0.3, +2.0] |
 | **Cleaned Nov 2025 dev (primary)** | `deepseek-v4p1-flash` | 1,534 × 1 | **66.0%** (1,012/1,534) | Look 2 of 4 (the 99-row pilot was look 1); macro 64.1%; simple 75.3 / moderate 65.0 / challenging 32.9 |
+| Cleaned Nov 2025 dev + rank 1b facts | `deepseek-v4p1-flash` | 1,534 × 1 | **66.5%** (1,020/1,534) | Look 3 of 4; paired +0.52 pts [−0.46, +1.50], 33 fixes / 25 regressions; macro 64.4%; descriptive, not transfer proof |
 | `train_lockbox` midpoint | `deepseek-v4p1-flash` | 175 × 3 per arm | **79.24% → 81.14%** | 7 databases, paired +1.90 pts [−0.19, +4.19]; safety screen passed, transfer unproven; 1 of 2 looks used, 799 rows sealed |
 
 The exact current run IDs are `20260926T211555Z` (Mini-Dev),
@@ -74,8 +75,9 @@ format oracle (§2) are historical diagnosis, not current improvement estimates.
 
 **Leaderboard context (v2.7):**
 - Trellis has **no test score**, and no public dev number converts into one.
-- Measured: Mini-Dev **65.3%**, `dev_untouched` **67.6%**, cleaned dev **66.0%**,
-  and `train_dev` control **69.4%** / rank 1b candidate **70.2%** (§0.1 table).
+- Measured: Mini-Dev **65.3%**, `dev_untouched` **67.6%**, cleaned dev baseline
+  **66.0%** and rank 1b **66.5%** (one repeat, CI includes zero), and `train_dev`
+  control **69.4%** / rank 1b candidate **70.2%** (§0.1 table).
 - The first `train_lockbox` look is a 175-row stratified sample: +1.90 pts for rank 1b,
   with a CI including zero. `train_dev2` remains unrun.
 - The v2.6 "≈ 66.9% full dev" pooled different question and database versions, so it is
@@ -518,7 +520,9 @@ a conversion rule for Trellis.
     1. **look 1:** the 99-question pricing pilot `20260927T022912Z` (59.6%); it counts,
        because its score and failures were used;
     2. **look 2:** the full baseline `20260927T025554Z` (66.0%);
-    3. **look 3:** one bundled milestone;
+    3. **look 3:** rank 1b bounded database facts, 1,020/1,534 = 66.5%, versus
+       1,012/1,534 = 66.0% at look 2. Paired +0.52 pts, 95% question-bootstrap
+       CI [−0.46, +1.50]; descriptive one-repeat gate, not a proven gain;
     4. **look 4:** the final freeze.
 
     Each look's purpose and configuration is recorded in the gate log. Aggregate scores
@@ -778,7 +782,7 @@ $0.31 ($0.000205/answer measured, $0.000491 uncached-equivalent); P50 0.97s, P90
   midpoint and final configurations), untouched dev, and the `--dictionary` Mini-Dev
   check.
 
-**Cleaned dev, looks 1–2 of 4 (2026-09-26).**
+**Cleaned dev, looks 1–3 of 4 (2026-09-26–27).**
 - Look 1: the 99-question pricing pilot `20260927T022912Z`, 59.6%, not representative
   (stratified by database).
 - Look 2: the full baseline `20260927T025554Z`, **66.0%** (macro 64.1%), with the
@@ -786,7 +790,13 @@ $0.31 ($0.000205/answer measured, $0.000491 uncached-equivalent); P50 0.97s, P90
 - The run code state was dirty: uncommitted analyser, signature and plan edits.
   Behaviour-relevant code (agent, prompts, schema) matched commit `77ee38b` except
   `result_signature`, which does not affect scoring.
-- Details are in §8. Two looks remain: one milestone and the final freeze.
+- Look 3: the full rank 1b bounded-facts configuration (resumed after a budget stop),
+  **66.5%** (1,020/1,534; macro 64.4%). The paired gain over look 2 is +0.52 pts
+  [−0.46, +1.50], with 33 fixes and 25 regressions. The CI includes zero; this
+  supports neither a reliable cleaned-dev gain nor hidden-test transfer. See
+  `benchmark/results/rank1b_dev_cleaned_full_outcome.md`. **One cleaned-dev look
+  remains, reserved for the final freeze.** No individual cleaned-dev failures were
+  inspected to tune rank 1b.
 
 ### 6.3 Historical Phase 3 proposal and log (completed)
 
