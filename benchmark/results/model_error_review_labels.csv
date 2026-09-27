@@ -1,0 +1,25 @@
+row_index,db_id,review_label,reason
+18,movie,genuine_model_error,Candidate ranks textual $-formatted NetWorth lexically rather than numerically; gold converts money and answers the question.
+98,restaurant,uncertain_convention,COUNT(street_name) vs COUNT(*) may differ only for NULL street groups; inspect results.
+108,restaurant,gold_defect,"Gold county literal Monterey returns zero; stored county is monterey county, which the candidate used."
+125,restaurant,gold_defect,Gold Napa Valley literal has wrong case for stored napa valley; it returns zero matching rows.
+145,restaurant,gold_defect,"Gold uses SQLite chained comparison 1000 <= street_num <= 2000, which does not implement BETWEEN."
+158,restaurant,gold_defect,"Gold counts restaurant rows, though question asks how many types; candidate counts distinct food_type."
+159,restaurant,uncertain_convention,Candidate returns full address in a different column order from gold; question does not fix order.
+180,soccer_2016,gold_defect,"Gold compares text SUBSTR(DOB) with numeric 1985; SQLite makes all 469 players pass, versus 203 with text-year comparison."
+282,soccer_2016,gold_defect,Gold tests Man_of_the_Series player ID > 1 instead of requiring that the same player won more than once.
+285,soccer_2016,gold_defect,"Gold returns only average LBW, omitting requested difference from runout."
+322,soccer_2016,both_or_mixed,Candidate uses a date literal inconsistent with stored ISO date; gold has an unrelated computation.
+323,soccer_2016,gold_defect,Gold hard-codes a different match ID and omits requested man-of-the-match name.
+345,soccer_2016,gold_defect,Gold numerator counts all years while denominator counts 2012; question asks 2012 win rate.
+347,soccer_2016,gold_defect,Gold LIMIT 2 omits most players despite request for both teams.
+361,soccer_2016,gold_defect,"Gold counts Wicket_Taken rows, not distinct matches with two innings."
+367,soccer_2016,gold_defect,"Gold counts matches involving Delhi, not matches Delhi won."
+389,soccer_2016,gold_defect,"Gold joins all match players to scored balls without identifying the striker, causing fan-out."
+403,soccer_2016,gold_defect,"Gold joins Player_Match only by player, multiplying man-of-match appearances."
+428,sales_in_weather,both_or_mixed,Neither SQL reliably matches the hottest weather day to sales on that same date.
+430,sales_in_weather,gold_defect,Gold adds a 2012 date condition absent from question and does not match weather to sale date.
+448,sales_in_weather,gold_defect,"Gold returns store numbers, while question asks how many stores."
+470,sales_in_weather,both_or_mixed,Neither SQL joins rainy weather dates to sales dates; ranking grain also differs.
+472,sales_in_weather,gold_defect,"Gold returns a station number, while question asks for earliest sunrise."
+494,sales_in_weather,gold_defect,Gold computes (max-min)/min; question and evidence ask max/min.

@@ -1,0 +1,14 @@
+{
+  "training_sample_sha256": "db335c8098ec5a2057cca95ac28e6400fa2752f7f29f00f635ffd10a6607d86b",
+  "training_labels_sha256": "1d376671c10935d67603c539ed389405d099b595f22be219612f3092912e75e5",
+  "training_clear_defects": 18,
+  "training_unresolved": 82,
+  "sample_weighted_clear_defect_fraction": 0.17522913651712493,
+  "model_error_review_labels": {
+    "both_or_mixed": 3,
+    "genuine_model_error": 1,
+    "gold_defect": 18,
+    "uncertain_convention": 2
+  },
+  "semantic_status": "single-reviewer triage, not an expert-verified error-rate estimate"
+}
