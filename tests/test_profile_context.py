@@ -55,3 +55,23 @@ def test_subgroup_rates_keep_half_correct_repeat_scores() -> None:
 
     row = _flip_rows("sample", [1, 2], {1: 1.0, 2: 0.5}, {1: 1.0, 2: 1.0})
     assert "| 75.0% | 100.0% | +25.0 |" in row
+
+
+def test_profile_facts_do_not_substitute_case_or_ambiguous_locations(monkeypatch) -> None:
+    profile = DatabaseProfile(
+        fingerprint="sample", version=2, columns=[], joins=[], build_seconds=0.0,
+        index_path="/unused",
+    )
+    monkeypatch.setattr(
+        profile_context,
+        "retrieve_values",
+        lambda _profile, _text, k: [
+            ("location", "street_name", "19th st"),
+            ("location", "city", "sunnyvale"),
+            ("generalinfo", "city", "sunnyvale"),
+        ],
+    )
+    facts = profile_context.render_profile_facts(
+        profile, "Which restaurant is on '19th St'?", "city = 'sunnyvale'"
+    )
+    assert facts == ""

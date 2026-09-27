@@ -48,17 +48,17 @@ def render_profile_facts(
     # An exact value location can distinguish look-alike columns. Show all matching
     # locations (up to three) rather than asserting one is canonical.
     quoted = {
-        (left or right).casefold()
+        left or right
         for left, right in re.findall(
             r"(?<![A-Za-z0-9])'([^']{4,})'|(?<![A-Za-z0-9])\"([^\"]{4,})\"", text
         )
     }
     value_locations: dict[str, set[str]] = defaultdict(set)
     for table, colname, value in retrieve_values(profile, text, k=20):
-        if value.casefold() in quoted:
+        if value in quoted:
             value_locations[value].add(f"{table}.{colname}")
     for value, locations in list(value_locations.items())[:2]:
-        if len(locations) <= 3:
+        if len(locations) == 1:
             facts.append(
                 f"- Stored value {value!r} occurs in {', '.join(sorted(locations))}."
             )
