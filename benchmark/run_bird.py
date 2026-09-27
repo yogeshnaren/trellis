@@ -49,11 +49,14 @@ from benchmark.column_meaning import render as render_meanings
 from benchmark.evaluate import BIRD_OFFICIAL_TIMEOUT_S, BirdScore, score_bird
 from benchmark.fewshot import DEFAULT_POOL as FEWSHOT_POOL
 from benchmark.fewshot import FewShotIndex, render_examples
+from benchmark.profile_context import render_profile_facts
 from benchmark.splits import TRAIN_DEV2_DBS, TRAIN_DEV_DBS, TRAIN_LOCKBOX_DBS
+from benchmark.strategies import STRATEGIES
 from src.agent import Agent
 from src.conversation import ConversationContext
-from src.costs import DEFAULT_MODEL, get_shared_budget
+from src.costs import DEFAULT_LEDGER, DEFAULT_MODEL, get_shared_budget
 from src.db import connect_readonly, timeout_for_database
+from src.db_profile import build_profile
 from src.prompts import PROMPT_PROFILES
 from src.schema import get_schema
 
@@ -101,7 +104,8 @@ def select_questions(args: argparse.Namespace) -> list[BirdQuestion]:
         chosen = {q.row_index for q in questions}
         wanted = set(args.ids)
         questions += [
-            q for q in load_questions(args.questions)
+            q
+            for q in load_questions(args.questions)
             if q.question_id in wanted and q.row_index not in chosen
         ]
     # Order by database: consecutive requests share a schema prompt prefix, which is what
@@ -117,12 +121,18 @@ async def benchmark(args: argparse.Namespace) -> Path:
     questions = select_questions(args)
     if not questions:
         raise SystemExit("No BIRD questions matched --difficulty/--db/--limit filters")
-    guard = get_shared_budget(args.budget)
+    guard = get_shared_budget(args.budget, args.ledger_path)
     semaphore = asyncio.Semaphore(args.concurrency)
     stop = asyncio.Event()
     records: list[dict[str, Any]] = []
-    meanings = (
-        ColumnMeanings.from_file(args.column_meaning_file) if args.column_meaning else None
+    meanings = ColumnMeanings.from_file(args.column_meaning_file) if args.column_meaning else None
+    profiles = (
+        {
+            db_id: build_profile(db_path_for(db_id, db_dir=args.db_dir))
+            for db_id in sorted({q.db_id for q in questions})
+        }
+        if args.profile_facts
+        else {}
     )
     fewshot = (
         FewShotIndex.from_file(
@@ -161,10 +171,24 @@ async def benchmark(args: argparse.Namespace) -> Path:
                     llm_timeout_s=args.llm_timeout,
                     truncation_retry_tokens=args.truncation_retry,
                 )
-                prompt = with_evidence(question.question, question.evidence)
+                prompt = STRATEGIES[args.strategy] + with_evidence(
+                    question.question, question.evidence
+                )
+                if args.profile_facts:
+                    prompt = (
+                        render_profile_facts(
+                            profiles[question.db_id],
+                            question.question,
+                            question.evidence,
+                            include_values=args.profile_value_facts,
+                        )
+                        + prompt
+                    )
                 if meanings is not None:
                     notes = meanings.select(
-                        question.db_id, question.question, question.evidence,
+                        question.db_id,
+                        question.question,
+                        question.evidence,
                         args.column_meaning,
                     )
                     prompt = render_meanings(notes) + prompt
@@ -245,9 +269,7 @@ async def benchmark(args: argparse.Namespace) -> Path:
         # only be compared as a pilot, never as full acceptance evidence.
         complete=not stop.is_set() and len(delivered) == len(jobs),
     )
-    output.with_name(f"bird_meta_{timestamp}.json").write_text(
-        json.dumps(meta, indent=1) + "\n"
-    )
+    output.with_name(f"bird_meta_{timestamp}.json").write_text(json.dumps(meta, indent=1) + "\n")
     Path(args.report).write_text(build_bird_report(records, len(questions), args.questions))
     return output
 
@@ -256,9 +278,7 @@ def _sha16(text: str) -> str:
     return hashlib.sha256(text.encode()).hexdigest()[:16]
 
 
-def run_metadata(
-    args: argparse.Namespace, questions: list[BirdQuestion]
-) -> dict[str, Any]:
+def run_metadata(args: argparse.Namespace, questions: list[BirdQuestion]) -> dict[str, Any]:
     """Everything needed to decide whether two runs are comparable.
 
     Pins *contents*, not paths: the question file, every database scored against, the
@@ -305,6 +325,14 @@ def run_metadata(
         "max_repairs": 1,
         # Recorded only when on, so runs without it keep the accepted config hash.
         **({"truncation_retry_tokens": args.truncation_retry} if args.truncation_retry else {}),
+        **({"profile_facts": True} if getattr(args, "profile_facts", False) else {}),
+        **(
+            {"profile_value_facts": False}
+            if getattr(args, "profile_facts", False)
+            and not getattr(args, "profile_value_facts", True)
+            else {}
+        ),
+        **({"strategy": args.strategy} if getattr(args, "strategy", "direct") != "direct" else {}),
         **(
             {
                 "column_meaning": args.column_meaning,
@@ -397,14 +425,15 @@ def build_bird_report(
                 f"${statistics.mean(costs) if costs else 0.0:.6f} |"
             )
 
-    lines.extend(["", "## Per-database accuracy", "", "| db_id | N | Exec Acc |", "|---|---:|---:|"])
+    lines.extend(
+        ["", "## Per-database accuracy", "", "| db_id | N | Exec Acc |", "|---|---:|---:|"]
+    )
     by_db: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for record in records:
         by_db[record["db_id"]].append(record)
     for db_id, rows in sorted(
         by_db.items(),
-        key=lambda kv: sum(is_correct(r) for r in kv[1])
-        / len(kv[1]),
+        key=lambda kv: sum(is_correct(r) for r in kv[1]) / len(kv[1]),
     ):
         correct = sum(is_correct(row) for row in rows)
         lines.append(f"| `{db_id}` | {len(rows)} | {correct / len(rows):.1%} |")
@@ -436,6 +465,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--concurrency", type=int, default=3)
     parser.add_argument("--budget", type=float, default=2.0)
     parser.add_argument(
+        "--ledger-path",
+        type=Path,
+        default=DEFAULT_LEDGER,
+        help="Shared SQLite spend ledger (pass an absolute path across worktrees).",
+    )
+    parser.add_argument(
         "--difficulty", nargs="+", choices=DIFFICULTIES, help="Filter to these difficulties."
     )
     parser.add_argument("--db", nargs="+", help="Filter to these db_ids.")
@@ -445,9 +480,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--per-db", type=int, default=None, help="Stratified sample: at most N rows per database."
     )
-    parser.add_argument(
-        "--ids", type=int, nargs="+", help="Question ids to add as targeted cases."
-    )
+    parser.add_argument("--ids", type=int, nargs="+", help="Question ids to add as targeted cases.")
     parser.add_argument("--seed", type=int, default=0, help="Sampling seed for --limit/--per-db.")
     parser.add_argument("--questions", type=Path, default=DEFAULT_QUESTIONS)
     parser.add_argument("--db-dir", type=Path, default=DEFAULT_DB_DIR)
@@ -490,6 +523,24 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--column-meaning-file", type=Path, default=COLUMN_MEANING_PATH)
     parser.add_argument(
+        "--strategy",
+        choices=sorted(STRATEGIES),
+        default="direct",
+        help="Prompting strategy for candidate-bank diversity.",
+    )
+    parser.add_argument(
+        "--profile-facts",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="Add bounded database-derived facts (default: on for benchmark, off for product).",
+    )
+    parser.add_argument(
+        "--profile-value-facts",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Include exact, unique value-location hints in profile facts; disable for ablation.",
+    )
+    parser.add_argument(
         "--truncation-retry",
         type=int,
         default=0,
@@ -507,7 +558,10 @@ def parse_args() -> argparse.Namespace:
         help="Override the per-model default (e.g. none/low/medium/high).",
     )
     parser.add_argument("--report", default="benchmark/results/bird_report.md")
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.profile_facts is None:
+        args.profile_facts = args.prompt_profile == "benchmark"
+    return args
 
 
 def main() -> None:

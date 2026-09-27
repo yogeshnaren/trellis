@@ -224,9 +224,7 @@ def contract_fix(db_path: Path, sql: str, gold: Rows, pred: Rows) -> str | None:
         if rewritten is None:
             continue
         rows = run_query(db_path, rewritten)
-        if rows is not None and (
-            set(rows) == target or matches_after_dropping_columns(gold, rows)
-        ):
+        if rows is not None and (set(rows) == target or matches_after_dropping_columns(gold, rows)):
             return name
     return None
 
@@ -271,7 +269,7 @@ def rescore(
     return results
 
 
-def _pct(numerator: int, denominator: int) -> str:
+def _pct(numerator: float, denominator: int) -> str:
     return f"{numerator / denominator:.1%}" if denominator else "—"
 
 
@@ -310,7 +308,9 @@ def rescore_report(raw_path: Path, results: list[dict[str, Any]]) -> str:
         corrected_cell = ""
         if has_corrected:
             scored = [r for r in rows if r["official_ex_corrected"] is not None]
-            corrected_cell = f" {_pct(sum(r['official_ex_corrected'] for r in scored), len(scored))} |"
+            corrected_cell = (
+                f" {_pct(sum(r['official_ex_corrected'] for r in scored), len(scored))} |"
+            )
         lines.append(
             f"| {label} | {len(rows)} | {_pct(ok, len(rows))} |{corrected_cell} "
             f"{_pct(ok + fixable, len(rows))} |"
@@ -364,9 +364,7 @@ META_GROUPS = {
 
 
 def load_meta(raw_path: Path) -> dict[str, Any] | None:
-    meta = raw_path.with_name(raw_path.name.replace("bird_raw_", "bird_meta_")).with_suffix(
-        ".json"
-    )
+    meta = raw_path.with_name(raw_path.name.replace("bird_raw_", "bird_meta_")).with_suffix(".json")
     return json.loads(meta.read_text()) if meta.exists() else None
 
 
@@ -416,15 +414,13 @@ def _bootstrap(
     return interval(row_stats), interval(macro_stats)
 
 
-def _flip_rows(
-    label: str, rows: list[int], was: dict[int, float], now: dict[int, float]
-) -> str:
+def _flip_rows(label: str, rows: list[int], was: dict[int, float], now: dict[int, float]) -> str:
     regressions = sum(now[r] < was[r] for r in rows)
     fixes = sum(now[r] > was[r] for r in rows)
     delta = sum(now[r] - was[r] for r in rows) / len(rows)
     return (
-        f"| {label} | {len(rows)} | {_pct(round(sum(was[r] for r in rows)), len(rows))} | "
-        f"{_pct(round(sum(now[r] for r in rows)), len(rows))} | {delta * 100:+.1f} | "
+        f"| {label} | {len(rows)} | {_pct(sum(was[r] for r in rows), len(rows))} | "
+        f"{_pct(sum(now[r] for r in rows), len(rows))} | {delta * 100:+.1f} | "
         f"{regressions} | {fixes} | {mcnemar_exact_p(regressions, fixes):.3f} |"
     )
 
@@ -519,7 +515,6 @@ def check_full_comparison(
     new_meta: dict[str, Any] | None,
     old: dict[int, list[dict[str, Any]]],
     new: dict[int, list[dict[str, Any]]],
-    repeats: int = FULL_COMPARISON_REPEATS,
 ) -> None:
     """Refuse a full (acceptance) comparison unless both runs are complete and identical in
     coverage: the same expected rows, each present with exactly ``repeats`` repeats.
@@ -528,6 +523,11 @@ def check_full_comparison(
     reached; one lucky row reads as +100 points with a [100, 100] interval.
     """
     problems = []
+    repeats = int((old_meta or {}).get("expected_repeats", FULL_COMPARISON_REPEATS))
+    if repeats < 2:
+        problems.append("acceptance comparison needs at least 2 repeats per question")
+    if new_meta and new_meta.get("expected_repeats", FULL_COMPARISON_REPEATS) != repeats:
+        problems.append("the runs expected different repeat counts")
     for label, meta, runs in (("old", old_meta, old), ("new", new_meta, new)):
         if meta is None or "expected_rows" not in meta:
             problems.append(f"{label} run has no expected-row metadata (predates v2.3)")
@@ -616,6 +616,7 @@ def flips_report(
     def passes(delta: float, ci_low: float) -> bool:
         clears = delta * 100 >= minimum and ci_low > 0
         return clears and (ceilings_ok or track != "submission")
+
     repeats = (
         max(len(runs) for runs in old.values()),
         max(len(runs) for runs in new.values()),
@@ -757,10 +758,11 @@ def sample_curves(
         for samples in runs.values():
             subsets = list(itertools.combinations(samples, k))
             passes.append(
-                sum(any(r.get("official_ex") for r in subset) for subset in subsets)
-                / len(subsets)
+                sum(any(r.get("official_ex") for r in subset) for subset in subsets) / len(subsets)
             )
-            majorities.append(sum(_majority_correct(list(subset)) for subset in subsets) / len(subsets))
+            majorities.append(
+                sum(_majority_correct(list(subset)) for subset in subsets) / len(subsets)
+            )
         curves[k] = (sum(passes) / len(passes), sum(majorities) / len(majorities))
     return curves
 
@@ -781,8 +783,14 @@ def samples_report(raw_path: Path, questions: list[BirdQuestion]) -> str:
         "|---:|---:|---:|---:|",
     ]
     for k, (passes, majority) in sample_curves(runs, max_k).items():
-        lines.append(f"| {k} | {passes:.1%} | {majority:.1%} | {(passes - majority) * 100:+.1f} pts |")
-    lines += ["", f"| Database | N | pass@1 | pass@{max_k} | majority@{max_k} |", "|---|---:|---:|---:|---:|"]
+        lines.append(
+            f"| {k} | {passes:.1%} | {majority:.1%} | {(passes - majority) * 100:+.1f} pts |"
+        )
+    lines += [
+        "",
+        f"| Database | N | pass@1 | pass@{max_k} | majority@{max_k} |",
+        "|---|---:|---:|---:|---:|",
+    ]
     for db_id in sorted({by_row[r].db_id for r in runs}):
         subset = {r: v for r, v in runs.items() if by_row[r].db_id == db_id}
         curve = sample_curves(subset, max_k)

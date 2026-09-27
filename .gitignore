@@ -8,5 +8,5 @@ __pycache__/
 benchmark/results/.spend.json
 benchmark/results/.spend.json.migrated
 benchmark/results/.spend.sqlite*
-data/bird/
+data/bird
 data/profiles/
