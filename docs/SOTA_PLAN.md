@@ -26,6 +26,14 @@ paired evidence; no public dev score predicts hidden-test performance.
   - figure corrections;
   - constraint checks in candidate selection.
 
+**Jev checkpoint (2026-09-27):** the typed client and independent OpenRouter
+provider/session caps are implemented. Two saved-answer shadow tests on `train_dev`
+failed the offline-to-live gate: requirement coverage found 0/5 hand-labeled defects
+in 50 calls; Jev choice lost 10 net correct answers versus result-majority on all
+102 contested old-bank questions without schema, and 11 net with a verified
+schema slice. Do not use Jev to repair or select live SQL on this
+evidence. Details and limitations: `benchmark/results/jev_shadow_outcome.md`.
+
 The v2.6 changes are:
 - a two-track acceptance rule;
 - a parallel generation/training track;
@@ -1202,8 +1210,8 @@ are contingent on an implemented submission path.
 - **API:** pinned `typesafe/jev-1.13` through OpenRouter's
   `POST /api/alpha/decisions`, with typed `noul`, `choice` and `score`
   outputs. No SQL or explanatory text generation. The OpenRouter model page (reachable
-  2026-09-26) lists $0.042 per million input tokens, output free. Endpoint behaviour and
-  latency still need a pilot; the API is alpha.
+  2026-09-26) lists $0.042 per million input tokens, output free. The 2026-09-27
+  shadow pilots measured actual usage and 178–187 ms typical Jev latency; the API is alpha.
 - **Call design (v2.7):** a declared pilot variable. Compare one bundled call with a
   two-stage design (only if justified) on net EX, false repairs, cost and P90. Calls fire
   on triggers; a post-SQL coverage decision necessarily follows SQL generation.
@@ -1241,6 +1249,23 @@ are contingent on an implemented submission path.
   Jev and a small LLM judge under the same candidate budget. A Jev
   decision ships only if its net gain meets §5 and its failure mode is
   understood.
+
+**Measured rank-3 and selector stop (2026-09-27).** Fifty manually labeled
+`train_dev` requirements yielded five omissions. Jev `noul` at the predeclared
+0.8 threshold found 0/5, with 0/45 false flags; the deterministic screen found
+0/5 with one false flag. The old four-candidate bank had 102 disagreements;
+Jev `choice` scored 29/102 versus result-majority's 39/102 without schema.
+After adding the verified schema slice required by this plan, Jev scored
+28/102 (10 fixes, 21 regressions), for 334/501 = 66.67% versus majority's
+345/501 = 68.86%. OpenRouter spent $0.011228532 across both selector trials,
+coverage screening and a one-call compatibility probe, within
+the $5 provider and $1 per-session limits. The bank predates bounded facts;
+its 73.5% perfect-selector ceiling cannot reach the 75% train-dev checkpoint.
+The live repair A/B and small LLM judge were not run: the Jev trigger failed
+the §6.7 gate, and another process had already taken Fireworks spend above
+the previously approved $7.15 cap. No Mini-Dev or lockbox look was used.
+Bounded metadata choices and question-intent routing remain separate untested
+hypotheses requiring verified candidate sets and labels.
 
 Jev's published limitations include arithmetic, counting, date
 comparison, long irrelevant state, indirection and literal readings.

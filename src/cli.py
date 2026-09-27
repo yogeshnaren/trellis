@@ -75,7 +75,7 @@ async def _run() -> None:
     console.print(
         Panel(
             f"Model: {model}\nDatabase: {db_path}\nTables: {table_count(db_path)}\n"
-            f"Shared remaining: ${guard.remaining:.4f}",
+            f"Shared remaining: ${guard.remaining_for('fireworks', ceiling):.4f}",
             title="Trellis",
         )
     )
@@ -97,7 +97,7 @@ async def _run() -> None:
             if question == "/last":
                 console.print(last_sql or "[dim]No SQL generated yet.[/dim]")
                 continue
-            if guard.remaining <= 0:
+            if guard.remaining_for("fireworks", ceiling) <= 0:
                 console.print("[red]Shared project budget exhausted; refusing a new query.[/red]")
                 continue
             if session_spent >= session_allowance:
@@ -115,7 +115,7 @@ async def _run() -> None:
                 result = await agent.ask(question, context)
             session_spent += result.cost_usd
             last_sql = result.sql or last_sql
-            _render(result, guard.remaining)
+            _render(result, guard.remaining_for("fireworks", ceiling))
     finally:
         connection.close()
 
