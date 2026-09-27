@@ -633,3 +633,10 @@ stays as a named constant for provenance and pricing.
   - the hidden test uses different databases;
   - choosing settings per database from evaluation results would tune on the gates.
 - Next: reduce latency with facts on.
+
+## 2026-09-27 — Reuse one Fireworks client per event loop (latency)
+- `complete()` created and closed a new `AsyncOpenAI` client on every call, so each
+  request paid a fresh TCP + TLS handshake.
+- It now reuses one client per event loop and passes the timeout per request.
+- An interleaved A/B (60 questions, concurrency 1) gave P50 1.46s → 1.22s (−16%) with
+  facts on. Facts on vs off showed no latency difference.

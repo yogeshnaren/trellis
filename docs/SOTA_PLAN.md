@@ -835,6 +835,41 @@ $0.31 ($0.000205/answer measured, $0.000491 uncached-equivalent); P50 0.97s, P90
   database-level noise, can't transfer to the hidden test's different databases, and
   would tune on the gates, so it was not adopted.
 
+**Latency, with database facts on (2026-09-27).**
+- **Where the time goes** (gates 2 and 3, 1,500 answers each):
+  - ≈ 95% of an answer is the Fireworks call: P50 1.32s / 1.49s of 1.36s / 1.58s;
+  - local SQL execution is 1–3 ms at P50;
+  - prompts are ≈ 1,690 tokens (81–88% served from cache), and outputs ≈ 66 tokens.
+  - So latency is per-request overhead (connection setup, time to first token), not
+    generation length.
+  - Facts add ≈ 7 prompt tokens at P50.
+- **Fix: one reused HTTPS client per event loop** (`src/llm.py:shared_client`). Before,
+  every call built a new `AsyncOpenAI` client, paying a TCP + TLS handshake each time;
+  the timeout is now passed per request. The CLI keeps one loop per session, so it
+  benefits too.
+- **Interleaved A/B**: 60 `train_dev` questions at concurrency 1, arm order shuffled per
+  question, 2 warm-up questions dropped, ≈ $0.03.
+
+  | Arm | P50 | Mean | P90 |
+  |---|---:|---:|---:|
+  | New client per call, facts on (old behaviour) | 1.46s | 1.57s | 2.28s |
+  | **Reused client, facts on** | **1.22s** | **1.42s** | **2.19s** |
+  | Reused client, facts off | 1.35s | 1.55s | 2.57s |
+
+- **−0.24s at P50 (−16%)** from connection reuse. **Facts add no measurable latency**
+  (facts on vs off is within noise).
+- **JSON mode vs JSON schema** (interleaved A/B, 100 `train_dev` questions, reused
+  client, facts on, ≈ $0.03):
+  - P50 1.36s vs 1.36s, mean 1.64s → 1.45s, P90 2.67s → 2.26s;
+  - 0/100 malformed in either arm; 95/100 identical results.
+  - It trims the slow tail, not the typical answer. **Not adopted** pending a paired
+    accuracy check (100 × 2, ≈ $0.10).
+- Priority tier: skipped by owner decision.
+- Further levers, untested:
+  - compact single-line SQL output (small);
+  - P90 is driven by the ≈ 5% of answers that need a second call (repair or
+    empty-result retry, P50 3–4s).
+
 ### 6.3 Historical Phase 3 proposal and log (completed)
 
 This log predates the later 65.3% Mini-Dev gate and 67.6% dev_untouched

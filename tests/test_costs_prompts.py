@@ -244,3 +244,23 @@ def test_deepseek_snapshots_run_without_reasoning_and_the_default_is_priced() ->
     for model in (MODEL_DEEPSEEK, MODEL_DEEPSEEK_V4P1):
         # Reasoning tokens would be billed and can truncate the 400-token JSON answer.
         assert model_request_options(model) == {"reasoning_effort": "none"}
+
+
+def test_shared_client_is_reused_within_a_loop_and_not_across_loops(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import asyncio
+
+    from src import llm
+
+    monkeypatch.setenv("FIREWORKS_API_KEY", "test-key-not-real")
+    monkeypatch.setattr(llm, "_CLIENTS", {})
+
+    async def two_calls() -> tuple[object, object]:
+        return llm.shared_client(), llm.shared_client()
+
+    first, again = asyncio.run(two_calls())
+    assert first is again  # one pooled connection set per loop
+    other, _ = asyncio.run(two_calls())
+    assert other is not first  # a new loop gets its own client
+    assert len(llm._CLIENTS) == 1  # the finished loop's client was dropped

@@ -83,6 +83,28 @@ def _cached_tokens(usage: Any) -> int:
     return int((raw.get("prompt_tokens_details") or {}).get("cached_tokens", 0) or 0)
 
 
+FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
+# One client (and so one pooled HTTPS connection set) per event loop. A fresh client per
+# call paid a new TCP + TLS handshake on every request; the per-request timeout is passed
+# on each call instead. Keyed by loop because an httpx client can't cross event loops.
+_CLIENTS: dict[int, tuple[asyncio.AbstractEventLoop, AsyncOpenAI]] = {}
+
+
+def shared_client() -> AsyncOpenAI:
+    loop = asyncio.get_running_loop()
+    entry = _CLIENTS.get(id(loop))
+    if entry is None or entry[0] is not loop:
+        for key, (old_loop, _) in list(_CLIENTS.items()):
+            if old_loop.is_closed():
+                del _CLIENTS[key]  # drop clients of finished loops (e.g. asyncio.run in tests)
+        entry = (
+            loop,
+            AsyncOpenAI(api_key=os.environ.get("FIREWORKS_API_KEY"), base_url=FIREWORKS_BASE_URL),
+        )
+        _CLIENTS[id(loop)] = entry
+    return entry[1]
+
+
 async def complete(
     messages: list[dict[str, str]],
     model: str,
@@ -98,11 +120,7 @@ async def complete(
     guard = budget or get_shared_budget(float(os.getenv("FIREWORKS_BUDGET_USD", "6.00")))
     estimated_input = sum(len(message["content"]) for message in messages) // 3 + 256
     reservation = await guard.reserve(model, estimated_input, max_tokens)
-    client = AsyncOpenAI(
-        api_key=os.environ.get("FIREWORKS_API_KEY"),
-        base_url="https://api.fireworks.ai/inference/v1",
-        timeout=timeout_s,
-    )
+    client = shared_client()
     options = model_request_options(model)
     options.update(request_options or {})
     started = time.perf_counter()
@@ -118,6 +136,7 @@ async def complete(
                     response_format=response_format,
                     max_tokens=max_tokens,
                     temperature=temperature,
+                    timeout=timeout_s,
                     **options,
                 )
                 break
@@ -155,5 +174,3 @@ async def complete(
     except Exception:
         await guard.settle(reservation, None)
         raise
-    finally:
-        await client.close()
