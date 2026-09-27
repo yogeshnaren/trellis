@@ -640,3 +640,22 @@ stays as a named constant for provenance and pricing.
 - It now reuses one client per event loop and passes the timeout per request.
 - An interleaved A/B (60 questions, concurrency 1) gave P50 1.46s → 1.22s (−16%) with
   facts on. Facts on vs off showed no latency difference.
+
+## 2026-09-27 — JSON mode not adopted
+- JSON mode (`json_object`) vs the strict JSON schema: same P50 (1.36s), P90 2.67s →
+  2.26s, 0 malformed.
+- Paired accuracy pilot (100 `train_dev` rows × 2): −1.0 [−3.5, +1.0]. It fails the
+  non-inferiority margin for a speed swap.
+- Owner decision: stick to the strict JSON schema. The temporary `--json-mode`
+  switch used for the pilot was removed rather than kept as an opt-in.
+
+## 2026-09-27 — Rank G priced: small-model SFT ≈ $20–30, larger far more; submit first
+- Managed SFT: ≤ 16B $0.50/M tokens, ≤ 80B $3/M, ≤ 300B $6/M.
+- Trained LoRAs serve only on dedicated GPUs ($8/hour H100, scale-to-zero available).
+- Training pool: 5,115 examples (4,146 with local databases).
+- A 14B pilot ≈ $20–30 all-in. 27–35B ≈ $70–170. Fine-tuning `deepseek-v4-flash` itself
+  is ≈ $114+ training plus multi-GPU serving.
+- Comparable 14B specialists reach ≈ 70–71 dev with RL and many samples, about where we
+  already are.
+- Recommendation: get the hidden-test number of the current system first (≈ $1 if API
+  submissions are accepted), then decide on training.

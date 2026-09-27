@@ -862,13 +862,56 @@ $0.31 ($0.000205/answer measured, $0.000491 uncached-equivalent); P50 0.97s, P90
   client, facts on, ≈ $0.03):
   - P50 1.36s vs 1.36s, mean 1.64s → 1.45s, P90 2.67s → 2.26s;
   - 0/100 malformed in either arm; 95/100 identical results.
-  - It trims the slow tail, not the typical answer. **Not adopted** pending a paired
-    accuracy check (100 × 2, ≈ $0.10).
+  - It trims the slow tail, not the typical answer.
+  - **Accuracy check** (temporary `--json-mode` switch, the same 100
+    `train_dev` rows × 2 vs the facts-on run `20260927T060549Z`): **−1.0 pts
+    [−3.5, +1.0]** (row = macro); 0 malformed answers; 2 consistent regressions, 1 fix;
+    ≈ $0.04.
+  - As a speed swap it must pass non-inferiority (CI lower bound ≥ −1.5), and −3.5
+    fails.
+  - **Not adopted, and the switch was removed** (owner decision): the strict JSON schema
+    is the only structured-output mode. Proving JSON mode harmless needs the full
+    501 × 2 (≈ $0.30), not worth it for a tail-only gain. The pilot's run files are
+    not kept in the repository (owner decision); the figures above are the record.
 - Priority tier: skipped by owner decision.
 - Further levers, untested:
   - compact single-line SQL output (small);
   - P90 is driven by the ≈ 5% of answers that need a second call (repair or
     empty-result retry, P50 3–4s).
+
+**Rank G pricing and data sizing (2026-09-27, free).** Sources: Fireworks docs
+(training cost estimator, models catalog, deploying trained models) and fireworks.ai/pricing.
+- **Training (managed SFT, LoRA), per training token:** ≤ 16B $0.50/M; ≤ 80B $3.00/M;
+  ≤ 300B $6.00/M; > 300B $10.00/M. Cost = examples × epochs × (prompt + response
+  tokens). RL pricing is by quote only.
+- **35 base models support managed SFT**, including `qwen3-14b`, `qwen3p5-9b`,
+  `qwen3p8-27b`, `qwen3p6-35b-a3b` and `deepseek-v4-flash` (284B).
+- **Serving is the catch:** trained LoRA models **cannot be served serverless**, only on
+  dedicated deployments billed per GPU-second (H100/H200 $8/hour, B200 $13/hour).
+  Deployments can scale to zero after an idle window (minimum 5 min) and cold-start
+  when called. A 14–35B model fits one H100; `deepseek-v4-flash` needs a multi-GPU
+  node.
+- **Training data:**
+  - `bird23-train-filtered` minus every evaluation/iteration database leaves 5,115
+    examples on 54 databases; 4,146 of them are on the 43 locally available
+    databases.
+  - With our benchmark prompt an example is ≈ 2,270 tokens at the median, but the mean
+    is ≈ 6,370 because a few very wide schemas (e.g. `works_cycles`) dominate.
+  - Uncapped, 2 epochs over the on-disk pool ≈ 53M tokens: 14B ≈ $26, 27–35B
+    ≈ $158, `deepseek-v4-flash` ≈ $317.
+  - Capping prompts at ≈ 2.3k tokens (question-relevant tables only, or dropping the
+    widest schemas) brings 2 epochs to ≈ 19M tokens: 14B ≈ $10, 27–35B ≈ $57,
+    `deepseek-v4-flash` ≈ $114.
+- **Smallest realistic pilot:** a 14B SFT (≈ $10), then 2–3 evaluation sessions on one
+  H100 at ≈ $5–10 each (cold start + 1,000 answers + idle window) ≈ **$20–30 total**.
+- **Expected upside is uncertain.** Comparable 14B BIRD specialists (Arctic-R1-14B,
+  Kwai-AutoSQL-14B) sit at ≈ 70–71 dev, and they used RL plus many samples. That is
+  about where v4p1-flash already is, so SFT alone on a 14B is unlikely to beat the
+  current system. Fine-tuning `deepseek-v4-flash` itself (≈ $114+ training plus
+  multi-GPU serving) is out of the frugal envelope.
+- **Implication:** before any paid training, measure the real target. A hidden-test
+  submission of the current system costs ≈ $1 of inference if BIRD accepts API
+  submissions (answer pending), and it answers how much dev label noise understates us.
 
 ### 6.3 Historical Phase 3 proposal and log (completed)
 
