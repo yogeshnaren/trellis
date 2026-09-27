@@ -52,9 +52,10 @@ available to the live inference path.
 |---|---|---:|---:|---|
 | Mini-Dev gate 2 | `deepseek-v4p1-flash` | 500 × 3 | **65.3%** (979/1,500 outputs) | 2 of 4 gate looks used; macro 64.2% |
 | `dev_untouched` | `deepseek-v4p1-flash` | 1,036 × 1 | **67.6%** (700/1,036) | Reporting only; macro 68.1% |
-| `train_dev` clean reproduction | `deepseek-v4p1-flash` | 501 × 2 | **69.4%** | Iteration set; macro 70.8% |
+| `train_dev` clean reproduction | `deepseek-v4p1-flash` | 501 × 2 | **69.4%** | Control on the iteration set; macro 70.8% |
+| `train_dev` + adopted rank 1b facts | `deepseek-v4p1-flash` | 501 × 2 | **70.2%** | Owner-adopted benchmark candidate; paired +0.8 pts [−0.3, +2.0] |
 | **Cleaned Nov 2025 dev (primary)** | `deepseek-v4p1-flash` | 1,534 × 1 | **66.0%** (1,012/1,534) | Look 2 of 4 (the 99-row pilot was look 1); macro 64.1%; simple 75.3 / moderate 65.0 / challenging 32.9 |
-| `train_lockbox` | — | 974 questions | **Unopened** | 0 of 2 looks used |
+| `train_lockbox` midpoint | `deepseek-v4p1-flash` | 175 × 3 per arm | **79.24% → 81.14%** | 7 databases, paired +1.90 pts [−0.19, +4.19]; safety screen passed, transfer unproven; 1 of 2 looks used, 799 rows sealed |
 
 The exact current run IDs are `20260926T211555Z` (Mini-Dev),
 `20260926T212111Z` (`dev_untouched`) and `20260926T212754Z`
@@ -73,10 +74,10 @@ format oracle (§2) are historical diagnosis, not current improvement estimates.
 
 **Leaderboard context (v2.7):**
 - Trellis has **no test score**, and no public dev number converts into one.
-- Measured: Mini-Dev **65.3%**, `dev_untouched` **67.6%**, `train_dev` **69.4%** (§0.1
-  table).
-- Not measured: the cleaned 1,534-row dev (the primary checkpoint, §4), `train_lockbox`
-  and `train_dev2`.
+- Measured: Mini-Dev **65.3%**, `dev_untouched` **67.6%**, cleaned dev **66.0%**,
+  and `train_dev` control **69.4%** / rank 1b candidate **70.2%** (§0.1 table).
+- The first `train_lockbox` look is a 175-row stratified sample: +1.90 pts for rank 1b,
+  with a CI including zero. `train_dev2` remains unrun.
 - The v2.6 "≈ 66.9% full dev" pooled different question and database versions, so it is
   withdrawn, together with the rank estimate built on it.
 - For reference, BIRD's main board lists single-model baselines such as Claude Opus 4.6
@@ -446,7 +447,8 @@ a conversion rule for Trellis.
    result.
 4. **Protect the gates:** Mini-Dev has **2 of 4** looks used; next looks are
    for a bundled candidate and final freeze, each with three repeats.
-   `train_lockbox` has **0 of 2** looks used; a Verified lockbox run also
+   `train_lockbox` has **1 of 2** looks used (175-row rank 1b midpoint screen);
+   799 original rows are sealed for the final gate. A Verified lockbox run also
    counts. `dev_untouched` and the cleaned dev version are for aggregate
    reporting, not prompt examples, threshold fitting or question-specific
    repair design. Report per-database, difficulty, corrected-label and
@@ -1150,8 +1152,8 @@ use is a separate review.
    `bird23-train-filtered` download (CC BY-SA 4.0).
 4. The cleaned-dev baseline pilot, repriced first (full run ≈ $0.98 uncached).
 
-Preserve the remaining Mini-Dev (2 of 4) and lockbox (2 of 2) looks for bundled
-checkpoints.
+Preserve the remaining Mini-Dev (2 of 4) and lockbox (1 of 2; 799 unused rows)
+looks for bundled checkpoints.
 
 **Owner approved all four (2026-09-26). Status:**
 1. **Two-track rule adopted and implemented.** `analyze flips --track submission` uses the
@@ -1324,12 +1326,23 @@ checkpoints.
      benchmark profile (product unchanged); `--no-profile-facts` remains the
      control. This is not yet evidence of transfer: the four-database bootstrap
      holds databases fixed. Two consistent flips occurred on questions receiving
-     no fact, showing T=0 variation. The next step is a preregistered first
-     lockbox look across seven unseen domains, without per-question tuning.
-     The pilots and full variant added about $0.220; shared spend ended at
-     $6.495 of the approved $7. See benchmark/results/rank1b_outcome.md,
-     benchmark/results/profile_facts_failure_analysis.md and
-     benchmark/results/rank1b_full_comparison.md.
+     no fact, showing T=0 variation. The pilots and full variant added about
+     $0.220. See benchmark/results/rank1b_outcome.md and
+     benchmark/results/profile_facts_failure_analysis.md.
+
+   - **Rank 1b first holdout look (2026-09-26 local / 2026-09-27 UTC).** A
+     preregistered 25-question sample from each of seven `train_lockbox`
+     databases, three repeats per arm, compared the same frozen code with and
+     without facts. EX was 79.24% → 81.14%, paired +1.90 pts
+     [−0.19, +4.19] by both row and macro weighting (equal 25/db). No
+     database collapsed; the prespecified safety screen passed. The confidence
+     interval includes zero, so a transfer gain is **not established** and this
+     sample's 81.14% is not a full-lockbox or dev score. No individual lockbox
+     mistakes were inspected or used to revise the feature. This used one of
+     two looks; the remaining 799 rows are sealed for the final gate. Shared
+     spend ended at $6.6765 of the approved $7. See
+     benchmark/results/rank1b_lockbox_midpoint_outcome.md and the frozen
+     manifests in benchmark/results/.
 
 ---
 
