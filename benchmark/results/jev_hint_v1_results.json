@@ -1,0 +1,388 @@
+{
+  "source_sha256_16": "e5503cce83be1678",
+  "results": [
+    {
+      "row_index": 61,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "no Bakers Square Restaurant & Pie Shop refers to label <> 'bakers square restaurant & pie shop'",
+      "role": "filter",
+      "jev_role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.037e-05,
+      "latency_ms": 239.16963899682742,
+      "rule_role": "filter"
+    },
+    {
+      "row_index": 82,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "the most popular refers to max(review)",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.99,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9824e-05,
+      "latency_ms": 316.49112200102536,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 83,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "unpopular refers to min(review)",
+      "role": "rank",
+      "jev_role": "filter",
+      "confidence": 0.44,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9992e-05,
+      "latency_ms": 210.37874900503084,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 98,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "the most restaurants refers to max(count(street_name))",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.97,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9446e-05,
+      "latency_ms": 170.96468900126638,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 114,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "percentage = divide(count(id_restaurant where region = 'bay area'), count(id_restaurant)) * 100%",
+      "role": "return",
+      "jev_role": "return",
+      "confidence": 0.93,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.1084e-05,
+      "latency_ms": 163.68799000338186,
+      "rule_role": "return"
+    },
+    {
+      "row_index": 138,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "street number below 500 refers to street_num < 500",
+      "role": "filter",
+      "jev_role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.0706e-05,
+      "latency_ms": 145.98880500125233,
+      "rule_role": "filter"
+    },
+    {
+      "row_index": 145,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "percentage = divide(count(id_restaurant where food_type = 'afghani'), count(id_restaurant)) * 100%",
+      "role": "return",
+      "jev_role": "return",
+      "confidence": 0.97,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.3856e-05,
+      "latency_ms": 201.11709900083952,
+      "rule_role": "return"
+    },
+    {
+      "row_index": 148,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "review rating of 2 or more refers to review > 2",
+      "role": "filter",
+      "jev_role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.037e-05,
+      "latency_ms": 185.12027700489853,
+      "rule_role": "filter"
+    },
+    {
+      "row_index": 156,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "the highest number refers to max(count(city))",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.96,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9992e-05,
+      "latency_ms": 158.9875919962651,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 198,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "born in the 90s refers to DOB > = '1990-01-01' AND DOB < = '1999-12-31'",
+      "role": "filter",
+      "jev_role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.184e-05,
+      "latency_ms": 166.82703399419552,
+      "rule_role": "filter"
+    },
+    {
+      "row_index": 250,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "percent = divide(count(Toss_Id where Toss_Name = 'field'), count(Toss_Id)) * 100%",
+      "role": "return",
+      "jev_role": "return",
+      "confidence": 0.99,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.4948e-05,
+      "latency_ms": 162.4931460028165,
+      "rule_role": "return"
+    },
+    {
+      "row_index": 266,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "most number of balls refers to max(Ball_Id)",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.98,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.1588e-05,
+      "latency_ms": 191.9500430012704,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 272,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "most umpires refers to max(count(Umpire_Id))",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.86,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.016e-05,
+      "latency_ms": 154.86712100391742,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 305,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "born before 10/16/1975 refers to DOB < 1975-10-16",
+      "role": "filter",
+      "jev_role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.2176e-05,
+      "latency_ms": 155.6687129996135,
+      "rule_role": "filter"
+    },
+    {
+      "row_index": 322,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "run rate = divide(sum(Runs_Scored) when Toss_Name = 'bat', sum(Over_Id) when Toss_Name = 'field')",
+      "role": "return",
+      "jev_role": "return",
+      "confidence": 0.98,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.4108e-05,
+      "latency_ms": 192.05676799901994,
+      "rule_role": "return"
+    },
+    {
+      "row_index": 325,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "majority of the players refers to max(count(Player_Id))",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.91,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9656e-05,
+      "latency_ms": 146.79924600204686,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 327,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "fewest number of matches refers to min(count(Match_Id))",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.91,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9572e-05,
+      "latency_ms": 240.63604600087274,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 329,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "last match of Season 9 refers to max(Match_Date) where Season_Id = 9",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.91,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.079e-05,
+      "latency_ms": 150.0952540009166,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 337,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "youngest player refers to max(DOB)",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.98,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.932e-05,
+      "latency_ms": 167.28923300252063,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 345,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "win rate refers to DIVIDE(COUNT(Toss_Winner = Match_Winner), COUNT(Match_Date like '2012%'))",
+      "role": "return",
+      "jev_role": "return",
+      "confidence": 0.98,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.2134e-05,
+      "latency_ms": 224.89622900320683,
+      "rule_role": "return"
+    },
+    {
+      "row_index": 346,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "win margins of less than 10 refers to Win_Margin < 10",
+      "role": "filter",
+      "jev_role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.1084e-05,
+      "latency_ms": 173.47747900203103,
+      "rule_role": "filter"
+    },
+    {
+      "row_index": 408,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "man of the match more than 5 times refers to COUNT(Man_of_the_Match) > 5",
+      "role": "filter",
+      "jev_role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.226e-05,
+      "latency_ms": 145.49121200252557,
+      "rule_role": "filter"
+    },
+    {
+      "row_index": 426,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "more windy refers to Max(avgspeed)",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.88,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.2806e-05,
+      "latency_ms": 149.63680900109466,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 447,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "temperature range refers to Subtract (tmax, tmin)",
+      "role": "return",
+      "jev_role": "return",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.1924e-05,
+      "latency_ms": 144.40517099865247,
+      "rule_role": "return"
+    },
+    {
+      "row_index": 452,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "max temperature refers to tmax",
+      "role": "return",
+      "jev_role": "return",
+      "confidence": 0.94,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.142e-05,
+      "latency_ms": 161.26530899782665,
+      "rule_role": "return"
+    },
+    {
+      "row_index": 463,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "item weren't sold refers to units = 0",
+      "role": "filter",
+      "jev_role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.1378e-05,
+      "latency_ms": 229.7716600005515,
+      "rule_role": "filter"
+    },
+    {
+      "row_index": 472,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "earliest sunrise Min(sunrise)",
+      "role": "return",
+      "jev_role": "rank",
+      "confidence": 0.65,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.1798e-05,
+      "latency_ms": 149.79247500014026,
+      "rule_role": "return"
+    },
+    {
+      "row_index": 476,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "highest recorded heat refers to Max(heat)",
+      "role": "rank",
+      "jev_role": "rank",
+      "confidence": 0.71,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9656e-05,
+      "latency_ms": 153.18355400086148,
+      "rule_role": "rank"
+    },
+    {
+      "row_index": 481,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "maximum average speed refers to Max(avgspeed)",
+      "role": "return",
+      "jev_role": "return",
+      "confidence": 0.43,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.911e-05,
+      "latency_ms": 209.35733700025594,
+      "rule_role": "return"
+    }
+  ],
+  "scorecard": {
+    "completed": 29,
+    "labels": {
+      "filter": 8,
+      "rank": 12,
+      "return": 9
+    },
+    "correct": 27,
+    "rule_correct": 29,
+    "accuracy": 0.9310344827586207,
+    "rule_accuracy": 1,
+    "by_role": {
+      "return": {
+        "n": 9,
+        "correct": 8
+      },
+      "filter": {
+        "n": 8,
+        "correct": 8
+      },
+      "rank": {
+        "n": 12,
+        "correct": 11
+      }
+    },
+    "confusions": {
+      "filter->filter": 8,
+      "rank->rank": 11,
+      "rank->filter": 1,
+      "return->return": 8,
+      "return->rank": 1
+    },
+    "cost_usd": 0.000613368,
+    "p50_ms": 166.82703399419552
+  }
+}

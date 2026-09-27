@@ -1,0 +1,2000 @@
+{
+  "questions_sha256_16": "e5503cce83be1678",
+  "with_fk": true,
+  "selection": "sha256(jev-table-v1:row_index), soccer_2016 only, 50 rows",
+  "results": [
+    {
+      "row_index": 295,
+      "gold_tables": [
+        "country",
+        "player"
+      ],
+      "top3": [
+        "player",
+        "country",
+        "player_match"
+      ],
+      "all8": [
+        "player",
+        "country",
+        "player_match",
+        "city",
+        "umpire",
+        "wicket_taken",
+        "extra_type",
+        "out_type"
+      ],
+      "jev_tables": [
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player": 0.96,
+        "Country": 0.31,
+        "Player_Match": 0.1,
+        "City": 0.08,
+        "Umpire": 0.07,
+        "Wicket_Taken": 0.07,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.4768e-05,
+      "latency_ms": 254.76315299601993
+    },
+    {
+      "row_index": 184,
+      "gold_tables": [
+        "match",
+        "venue"
+      ],
+      "top3": [
+        "match",
+        "win_by",
+        "venue"
+      ],
+      "all8": [
+        "match",
+        "win_by",
+        "venue",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "match",
+        "venue"
+      ],
+      "jev_probabilities": {
+        "Match": 0.96,
+        "Win_By": 0.13,
+        "Venue": 0.97,
+        "Country": 0.09,
+        "Extra_Type": 0.07,
+        "Out_Type": 0.11,
+        "Outcome": 0.1,
+        "Team": 0.11
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.3592e-05,
+      "latency_ms": 152.03585599374492
+    },
+    {
+      "row_index": 364,
+      "gold_tables": [
+        "match",
+        "team"
+      ],
+      "top3": [
+        "match",
+        "player_match",
+        "ball_by_ball"
+      ],
+      "all8": [
+        "match",
+        "player_match",
+        "ball_by_ball",
+        "team",
+        "win_by",
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken"
+      ],
+      "jev_tables": [
+        "match",
+        "team"
+      ],
+      "jev_probabilities": {
+        "Match": 0.96,
+        "Player_Match": 0.08,
+        "Ball_by_Ball": 0.08,
+        "Team": 0.96,
+        "Win_By": 0.13,
+        "Extra_Runs": 0.08,
+        "Batsman_Scored": 0.08,
+        "Wicket_Taken": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.6906e-05,
+      "latency_ms": 302.3890369950095
+    },
+    {
+      "row_index": 354,
+      "gold_tables": [
+        "country",
+        "umpire"
+      ],
+      "top3": [
+        "umpire",
+        "country",
+        "city"
+      ],
+      "all8": [
+        "umpire",
+        "country",
+        "city",
+        "player",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "umpire",
+        "country"
+      ],
+      "jev_probabilities": {
+        "Umpire": 0.97,
+        "Country": 0.91,
+        "City": 0.07,
+        "Player": 0.07,
+        "Extra_Type": 0.05,
+        "Out_Type": 0.06,
+        "Outcome": 0.05,
+        "Team": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.8888e-05,
+      "latency_ms": 191.61023299966473
+    },
+    {
+      "row_index": 388,
+      "gold_tables": [
+        "match",
+        "player",
+        "player_match",
+        "season"
+      ],
+      "top3": [
+        "season",
+        "match",
+        "country"
+      ],
+      "all8": [
+        "season",
+        "match",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team",
+        "win_by"
+      ],
+      "jev_tables": [
+        "season",
+        "match"
+      ],
+      "jev_probabilities": {
+        "Season": 0.76,
+        "Match": 0.79,
+        "Country": 0.11,
+        "Extra_Type": 0.08,
+        "Out_Type": 0.09,
+        "Outcome": 0.1,
+        "Team": 0.23,
+        "Win_By": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.334e-05,
+      "latency_ms": 148.90357699914603
+    },
+    {
+      "row_index": 214,
+      "gold_tables": [
+        "batting_style",
+        "player"
+      ],
+      "top3": [
+        "player",
+        "batting_style",
+        "player_match"
+      ],
+      "all8": [
+        "player",
+        "batting_style",
+        "player_match",
+        "wicket_taken",
+        "ball_by_ball",
+        "country",
+        "extra_type",
+        "out_type"
+      ],
+      "jev_tables": [
+        "player",
+        "batting_style"
+      ],
+      "jev_probabilities": {
+        "Player": 0.96,
+        "Batting_Style": 0.63,
+        "Player_Match": 0.11,
+        "Wicket_Taken": 0.08,
+        "Ball_by_Ball": 0.08,
+        "Country": 0.12,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.754e-05,
+      "latency_ms": 187.5745010038372
+    },
+    {
+      "row_index": 203,
+      "gold_tables": [
+        "match",
+        "player"
+      ],
+      "top3": [
+        "player_match",
+        "match",
+        "wicket_taken"
+      ],
+      "all8": [
+        "player_match",
+        "match",
+        "wicket_taken",
+        "player",
+        "extra_runs",
+        "season",
+        "batsman_scored",
+        "ball_by_ball"
+      ],
+      "jev_tables": [
+        "match",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.11,
+        "Match": 0.96,
+        "Wicket_Taken": 0.08,
+        "Player": 0.95,
+        "Extra_Runs": 0.07,
+        "Season": 0.1,
+        "Batsman_Scored": 0.08,
+        "Ball_by_Ball": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.9048e-05,
+      "latency_ms": 148.2860559990513
+    },
+    {
+      "row_index": 314,
+      "gold_tables": [
+        "country",
+        "player"
+      ],
+      "top3": [
+        "player",
+        "country",
+        "city"
+      ],
+      "all8": [
+        "player",
+        "country",
+        "city",
+        "umpire",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player": 0.96,
+        "Country": 0.26,
+        "City": 0.09,
+        "Umpire": 0.07,
+        "Extra_Type": 0.07,
+        "Out_Type": 0.07,
+        "Outcome": 0.07,
+        "Team": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.9476e-05,
+      "latency_ms": 213.46537000499666
+    },
+    {
+      "row_index": 414,
+      "gold_tables": [
+        "match",
+        "team"
+      ],
+      "top3": [
+        "match",
+        "player_match",
+        "ball_by_ball"
+      ],
+      "all8": [
+        "match",
+        "player_match",
+        "ball_by_ball",
+        "team",
+        "win_by",
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken"
+      ],
+      "jev_tables": [
+        "match",
+        "team"
+      ],
+      "jev_probabilities": {
+        "Match": 0.97,
+        "Player_Match": 0.09,
+        "Ball_by_Ball": 0.09,
+        "Team": 0.93,
+        "Win_By": 0.2,
+        "Extra_Runs": 0.08,
+        "Batsman_Scored": 0.08,
+        "Wicket_Taken": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.6612e-05,
+      "latency_ms": 198.76096100051655
+    },
+    {
+      "row_index": 212,
+      "gold_tables": [
+        "batting_style",
+        "country",
+        "player"
+      ],
+      "top3": [
+        "batting_style",
+        "player",
+        "country"
+      ],
+      "all8": [
+        "batting_style",
+        "player",
+        "country",
+        "bowling_style",
+        "city",
+        "umpire",
+        "ball_by_ball",
+        "extra_type"
+      ],
+      "jev_tables": [
+        "batting_style",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Batting_Style": 0.66,
+        "Player": 0.96,
+        "Country": 0.37,
+        "Bowling_Style": 0.16,
+        "City": 0.08,
+        "Umpire": 0.07,
+        "Ball_by_Ball": 0.08,
+        "Extra_Type": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.208e-05,
+      "latency_ms": 238.10296100418782
+    },
+    {
+      "row_index": 334,
+      "gold_tables": [
+        "match",
+        "team"
+      ],
+      "top3": [
+        "season",
+        "match",
+        "country"
+      ],
+      "all8": [
+        "season",
+        "match",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team",
+        "win_by"
+      ],
+      "jev_tables": [
+        "match",
+        "team"
+      ],
+      "jev_probabilities": {
+        "Season": 0.19,
+        "Match": 0.96,
+        "Country": 0.08,
+        "Extra_Type": 0.07,
+        "Out_Type": 0.11,
+        "Outcome": 0.11,
+        "Team": 0.71,
+        "Win_By": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.2794e-05,
+      "latency_ms": 168.62868599855574
+    },
+    {
+      "row_index": 344,
+      "gold_tables": [
+        "player"
+      ],
+      "top3": [
+        "player",
+        "player_match",
+        "wicket_taken"
+      ],
+      "all8": [
+        "player",
+        "player_match",
+        "wicket_taken",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player": 0.97,
+        "Player_Match": 0.08,
+        "Wicket_Taken": 0.07,
+        "Country": 0.11,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.06,
+        "Outcome": 0.07,
+        "Team": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.418e-05,
+      "latency_ms": 140.96069500374142
+    },
+    {
+      "row_index": 362,
+      "gold_tables": [
+        "city",
+        "country"
+      ],
+      "top3": [
+        "city",
+        "country",
+        "umpire"
+      ],
+      "all8": [
+        "city",
+        "country",
+        "umpire",
+        "venue",
+        "player",
+        "extra_type",
+        "out_type",
+        "outcome"
+      ],
+      "jev_tables": [
+        "city",
+        "country"
+      ],
+      "jev_probabilities": {
+        "City": 0.94,
+        "Country": 0.95,
+        "Umpire": 0.07,
+        "Venue": 0.09,
+        "Player": 0.09,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.06,
+        "Outcome": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.8678e-05,
+      "latency_ms": 183.61678500514245
+    },
+    {
+      "row_index": 250,
+      "gold_tables": [
+        "match",
+        "toss_decision"
+      ],
+      "top3": [
+        "match",
+        "toss_decision",
+        "player_match"
+      ],
+      "all8": [
+        "match",
+        "toss_decision",
+        "player_match",
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken",
+        "ball_by_ball",
+        "country"
+      ],
+      "jev_tables": [
+        "match",
+        "toss_decision"
+      ],
+      "jev_probabilities": {
+        "Match": 0.91,
+        "Toss_Decision": 0.88,
+        "Player_Match": 0.1,
+        "Extra_Runs": 0.07,
+        "Batsman_Scored": 0.08,
+        "Wicket_Taken": 0.08,
+        "Ball_by_Ball": 0.08,
+        "Country": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.0182e-05,
+      "latency_ms": 145.3326629998628
+    },
+    {
+      "row_index": 164,
+      "gold_tables": [
+        "match"
+      ],
+      "top3": [
+        "player_match",
+        "match",
+        "extra_runs"
+      ],
+      "all8": [
+        "player_match",
+        "match",
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken",
+        "ball_by_ball",
+        "country",
+        "extra_type"
+      ],
+      "jev_tables": [
+        "match"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.08,
+        "Match": 0.96,
+        "Extra_Runs": 0.07,
+        "Batsman_Scored": 0.07,
+        "Wicket_Taken": 0.08,
+        "Ball_by_Ball": 0.08,
+        "Country": 0.07,
+        "Extra_Type": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.6444e-05,
+      "latency_ms": 181.00392799533438
+    },
+    {
+      "row_index": 187,
+      "gold_tables": [
+        "player",
+        "season"
+      ],
+      "top3": [
+        "season",
+        "match",
+        "player_match"
+      ],
+      "all8": [
+        "season",
+        "match",
+        "player_match",
+        "player",
+        "wicket_taken",
+        "country",
+        "extra_type",
+        "out_type"
+      ],
+      "jev_tables": [
+        "season",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Season": 0.88,
+        "Match": 0.15,
+        "Player_Match": 0.11,
+        "Player": 0.91,
+        "Wicket_Taken": 0.08,
+        "Country": 0.13,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.2916e-05,
+      "latency_ms": 136.61383200087585
+    },
+    {
+      "row_index": 222,
+      "gold_tables": [
+        "city",
+        "country"
+      ],
+      "top3": [
+        "city",
+        "country",
+        "umpire"
+      ],
+      "all8": [
+        "city",
+        "country",
+        "umpire",
+        "venue",
+        "player",
+        "extra_type",
+        "out_type",
+        "outcome"
+      ],
+      "jev_tables": [
+        "city",
+        "country"
+      ],
+      "jev_probabilities": {
+        "City": 0.94,
+        "Country": 0.83,
+        "Umpire": 0.07,
+        "Venue": 0.11,
+        "Player": 0.08,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.05,
+        "Outcome": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.872e-05,
+      "latency_ms": 186.77221100369934
+    },
+    {
+      "row_index": 213,
+      "gold_tables": [
+        "player",
+        "player_match",
+        "rolee",
+        "team"
+      ],
+      "top3": [
+        "player_match",
+        "rolee",
+        "team"
+      ],
+      "all8": [
+        "player_match",
+        "rolee",
+        "team",
+        "player",
+        "wicket_taken",
+        "match",
+        "ball_by_ball",
+        "country"
+      ],
+      "jev_tables": [
+        "player_match",
+        "rolee",
+        "team",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.96,
+        "Rolee": 0.95,
+        "Team": 0.95,
+        "Player": 0.95,
+        "Wicket_Taken": 0.08,
+        "Match": 0.13,
+        "Ball_by_Ball": 0.08,
+        "Country": 0.13
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.5814e-05,
+      "latency_ms": 199.40584000141826
+    },
+    {
+      "row_index": 361,
+      "gold_tables": [
+        "wicket_taken"
+      ],
+      "top3": [
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken"
+      ],
+      "all8": [
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken",
+        "ball_by_ball",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome"
+      ],
+      "jev_tables": [],
+      "jev_probabilities": {
+        "Extra_Runs": 0.15,
+        "Batsman_Scored": 0.24,
+        "Wicket_Taken": 0.16,
+        "Ball_by_Ball": 0.46,
+        "Country": 0.1,
+        "Extra_Type": 0.1,
+        "Out_Type": 0.1,
+        "Outcome": 0.13
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.3634e-05,
+      "latency_ms": 173.59770300390664
+    },
+    {
+      "row_index": 185,
+      "gold_tables": [
+        "match",
+        "player"
+      ],
+      "top3": [
+        "player_match",
+        "match",
+        "wicket_taken"
+      ],
+      "all8": [
+        "player_match",
+        "match",
+        "wicket_taken",
+        "player",
+        "extra_runs",
+        "season",
+        "batsman_scored",
+        "ball_by_ball"
+      ],
+      "jev_tables": [
+        "match",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.24,
+        "Match": 0.96,
+        "Wicket_Taken": 0.08,
+        "Player": 0.94,
+        "Extra_Runs": 0.06,
+        "Season": 0.09,
+        "Batsman_Scored": 0.07,
+        "Ball_by_Ball": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.9426e-05,
+      "latency_ms": 172.00567599502392
+    },
+    {
+      "row_index": 246,
+      "gold_tables": [
+        "match",
+        "player",
+        "player_match",
+        "rolee"
+      ],
+      "top3": [
+        "player_match",
+        "match",
+        "rolee"
+      ],
+      "all8": [
+        "player_match",
+        "match",
+        "rolee",
+        "wicket_taken",
+        "ball_by_ball",
+        "team",
+        "player",
+        "extra_runs"
+      ],
+      "jev_tables": [
+        "player_match",
+        "match",
+        "rolee",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.95,
+        "Match": 0.96,
+        "Rolee": 0.91,
+        "Wicket_Taken": 0.08,
+        "Ball_by_Ball": 0.09,
+        "Team": 0.47,
+        "Player": 0.93,
+        "Extra_Runs": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.7872e-05,
+      "latency_ms": 136.3150209945161
+    },
+    {
+      "row_index": 359,
+      "gold_tables": [
+        "out_type",
+        "wicket_taken"
+      ],
+      "top3": [
+        "wicket_taken",
+        "extra_runs",
+        "batsman_scored"
+      ],
+      "all8": [
+        "wicket_taken",
+        "extra_runs",
+        "batsman_scored",
+        "ball_by_ball",
+        "out_type",
+        "player_match",
+        "match",
+        "country"
+      ],
+      "jev_tables": [
+        "wicket_taken",
+        "out_type",
+        "match"
+      ],
+      "jev_probabilities": {
+        "Wicket_Taken": 0.95,
+        "Extra_Runs": 0.09,
+        "Batsman_Scored": 0.14,
+        "Ball_by_Ball": 0.17,
+        "Out_Type": 0.8,
+        "Player_Match": 0.14,
+        "Match": 0.68,
+        "Country": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.6066e-05,
+      "latency_ms": 138.9550079984474
+    },
+    {
+      "row_index": 403,
+      "gold_tables": [
+        "match",
+        "player",
+        "player_match"
+      ],
+      "top3": [
+        "player_match",
+        "match",
+        "wicket_taken"
+      ],
+      "all8": [
+        "player_match",
+        "match",
+        "wicket_taken",
+        "player",
+        "extra_runs",
+        "season",
+        "batsman_scored",
+        "ball_by_ball"
+      ],
+      "jev_tables": [
+        "match",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.15,
+        "Match": 0.96,
+        "Wicket_Taken": 0.08,
+        "Player": 0.92,
+        "Extra_Runs": 0.07,
+        "Season": 0.1,
+        "Batsman_Scored": 0.08,
+        "Ball_by_Ball": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.8292e-05,
+      "latency_ms": 205.34148599836044
+    },
+    {
+      "row_index": 224,
+      "gold_tables": [
+        "match",
+        "team"
+      ],
+      "top3": [
+        "match",
+        "player_match",
+        "ball_by_ball"
+      ],
+      "all8": [
+        "match",
+        "player_match",
+        "ball_by_ball",
+        "team",
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken",
+        "country"
+      ],
+      "jev_tables": [
+        "match",
+        "team"
+      ],
+      "jev_probabilities": {
+        "Match": 0.96,
+        "Player_Match": 0.21,
+        "Ball_by_Ball": 0.08,
+        "Team": 0.8,
+        "Extra_Runs": 0.07,
+        "Batsman_Scored": 0.08,
+        "Wicket_Taken": 0.08,
+        "Country": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.7158e-05,
+      "latency_ms": 148.6537250020774
+    },
+    {
+      "row_index": 339,
+      "gold_tables": [
+        "player",
+        "season"
+      ],
+      "top3": [
+        "season",
+        "player",
+        "player_match"
+      ],
+      "all8": [
+        "season",
+        "player",
+        "player_match",
+        "wicket_taken",
+        "match",
+        "country",
+        "extra_type",
+        "out_type"
+      ],
+      "jev_tables": [
+        "season",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Season": 0.93,
+        "Player": 0.96,
+        "Player_Match": 0.14,
+        "Wicket_Taken": 0.11,
+        "Match": 0.15,
+        "Country": 0.13,
+        "Extra_Type": 0.07,
+        "Out_Type": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.2832e-05,
+      "latency_ms": 164.19863200280815
+    },
+    {
+      "row_index": 319,
+      "gold_tables": [
+        "player",
+        "season"
+      ],
+      "top3": [
+        "season",
+        "match",
+        "player_match"
+      ],
+      "all8": [
+        "season",
+        "match",
+        "player_match",
+        "player",
+        "wicket_taken",
+        "country",
+        "extra_type",
+        "out_type"
+      ],
+      "jev_tables": [
+        "season",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Season": 0.86,
+        "Match": 0.25,
+        "Player_Match": 0.21,
+        "Player": 0.87,
+        "Wicket_Taken": 0.11,
+        "Country": 0.13,
+        "Extra_Type": 0.07,
+        "Out_Type": 0.11
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.2286e-05,
+      "latency_ms": 284.98890199989546
+    },
+    {
+      "row_index": 243,
+      "gold_tables": [
+        "country",
+        "match",
+        "player",
+        "player_match",
+        "team"
+      ],
+      "top3": [
+        "player_match",
+        "player",
+        "match"
+      ],
+      "all8": [
+        "player_match",
+        "player",
+        "match",
+        "wicket_taken",
+        "ball_by_ball",
+        "country",
+        "team",
+        "city"
+      ],
+      "jev_tables": [
+        "player_match",
+        "player",
+        "match",
+        "team"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.95,
+        "Player": 0.97,
+        "Match": 0.93,
+        "Wicket_Taken": 0.08,
+        "Ball_by_Ball": 0.09,
+        "Country": 0.31,
+        "Team": 0.8,
+        "City": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.6696e-05,
+      "latency_ms": 267.74543699866626
+    },
+    {
+      "row_index": 382,
+      "gold_tables": [
+        "city"
+      ],
+      "top3": [
+        "city",
+        "country",
+        "umpire"
+      ],
+      "all8": [
+        "city",
+        "country",
+        "umpire",
+        "venue",
+        "player",
+        "extra_type",
+        "out_type",
+        "outcome"
+      ],
+      "jev_tables": [
+        "city",
+        "country"
+      ],
+      "jev_probabilities": {
+        "City": 0.94,
+        "Country": 0.69,
+        "Umpire": 0.06,
+        "Venue": 0.1,
+        "Player": 0.08,
+        "Extra_Type": 0.05,
+        "Out_Type": 0.06,
+        "Outcome": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.8342e-05,
+      "latency_ms": 173.05899800703628
+    },
+    {
+      "row_index": 299,
+      "gold_tables": [
+        "bowling_style",
+        "country",
+        "player"
+      ],
+      "top3": [
+        "bowling_style",
+        "player",
+        "country"
+      ],
+      "all8": [
+        "bowling_style",
+        "player",
+        "country",
+        "batting_style",
+        "city",
+        "umpire",
+        "ball_by_ball",
+        "extra_type"
+      ],
+      "jev_tables": [
+        "bowling_style",
+        "player",
+        "country"
+      ],
+      "jev_probabilities": {
+        "Bowling_Style": 0.68,
+        "Player": 0.95,
+        "Country": 0.62,
+        "Batting_Style": 0.12,
+        "City": 0.1,
+        "Umpire": 0.07,
+        "Ball_by_Ball": 0.1,
+        "Extra_Type": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.271e-05,
+      "latency_ms": 158.7713709959644
+    },
+    {
+      "row_index": 237,
+      "gold_tables": [
+        "out_type",
+        "wicket_taken"
+      ],
+      "top3": [
+        "wicket_taken",
+        "out_type",
+        "player_match"
+      ],
+      "all8": [
+        "wicket_taken",
+        "out_type",
+        "player_match",
+        "match",
+        "extra_runs",
+        "batsman_scored",
+        "ball_by_ball",
+        "country"
+      ],
+      "jev_tables": [
+        "wicket_taken",
+        "out_type"
+      ],
+      "jev_probabilities": {
+        "Wicket_Taken": 0.94,
+        "Out_Type": 0.89,
+        "Player_Match": 0.1,
+        "Match": 0.16,
+        "Extra_Runs": 0.08,
+        "Batsman_Scored": 0.08,
+        "Ball_by_Ball": 0.11,
+        "Country": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.5142e-05,
+      "latency_ms": 157.023065003159
+    },
+    {
+      "row_index": 387,
+      "gold_tables": [
+        "city",
+        "venue"
+      ],
+      "top3": [
+        "venue",
+        "city",
+        "match"
+      ],
+      "all8": [
+        "venue",
+        "city",
+        "match",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "venue",
+        "city"
+      ],
+      "jev_probabilities": {
+        "Venue": 0.94,
+        "City": 0.71,
+        "Match": 0.14,
+        "Country": 0.11,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.08,
+        "Outcome": 0.08,
+        "Team": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.271e-05,
+      "latency_ms": 238.97014500107616
+    },
+    {
+      "row_index": 375,
+      "gold_tables": [
+        "player",
+        "player_match",
+        "rolee"
+      ],
+      "top3": [
+        "player_match",
+        "player",
+        "rolee"
+      ],
+      "all8": [
+        "player_match",
+        "player",
+        "rolee",
+        "wicket_taken",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome"
+      ],
+      "jev_tables": [
+        "player_match",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.97,
+        "Player": 0.94,
+        "Rolee": 0.16,
+        "Wicket_Taken": 0.09,
+        "Country": 0.12,
+        "Extra_Type": 0.07,
+        "Out_Type": 0.09,
+        "Outcome": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.5608e-05,
+      "latency_ms": 198.22773100167979
+    },
+    {
+      "row_index": 219,
+      "gold_tables": [
+        "player",
+        "player_match",
+        "team"
+      ],
+      "top3": [
+        "player_match",
+        "match",
+        "wicket_taken"
+      ],
+      "all8": [
+        "player_match",
+        "match",
+        "wicket_taken",
+        "ball_by_ball",
+        "team",
+        "player",
+        "extra_runs",
+        "batsman_scored"
+      ],
+      "jev_tables": [
+        "player_match",
+        "match",
+        "team",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.95,
+        "Match": 0.54,
+        "Wicket_Taken": 0.09,
+        "Ball_by_Ball": 0.1,
+        "Team": 0.94,
+        "Player": 0.96,
+        "Extra_Runs": 0.06,
+        "Batsman_Scored": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.8502e-05,
+      "latency_ms": 158.01438400376355
+    },
+    {
+      "row_index": 195,
+      "gold_tables": [
+        "match",
+        "venue"
+      ],
+      "top3": [
+        "match",
+        "venue",
+        "player_match"
+      ],
+      "all8": [
+        "match",
+        "venue",
+        "player_match",
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken",
+        "ball_by_ball",
+        "country"
+      ],
+      "jev_tables": [
+        "match",
+        "venue"
+      ],
+      "jev_probabilities": {
+        "Match": 0.93,
+        "Venue": 0.9,
+        "Player_Match": 0.09,
+        "Extra_Runs": 0.07,
+        "Batsman_Scored": 0.08,
+        "Wicket_Taken": 0.08,
+        "Ball_by_Ball": 0.09,
+        "Country": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.8586e-05,
+      "latency_ms": 243.72633999882964
+    },
+    {
+      "row_index": 371,
+      "gold_tables": [
+        "match",
+        "team"
+      ],
+      "top3": [
+        "match",
+        "player_match",
+        "ball_by_ball"
+      ],
+      "all8": [
+        "match",
+        "player_match",
+        "ball_by_ball",
+        "team",
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken",
+        "country"
+      ],
+      "jev_tables": [
+        "match",
+        "team"
+      ],
+      "jev_probabilities": {
+        "Match": 0.95,
+        "Player_Match": 0.19,
+        "Ball_by_Ball": 0.1,
+        "Team": 0.95,
+        "Extra_Runs": 0.07,
+        "Batsman_Scored": 0.07,
+        "Wicket_Taken": 0.08,
+        "Country": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.531e-05,
+      "latency_ms": 242.04324599850224
+    },
+    {
+      "row_index": 302,
+      "gold_tables": [
+        "match",
+        "venue"
+      ],
+      "top3": [
+        "match",
+        "team",
+        "win_by"
+      ],
+      "all8": [
+        "match",
+        "team",
+        "win_by",
+        "venue",
+        "player_match",
+        "ball_by_ball",
+        "country",
+        "extra_type"
+      ],
+      "jev_tables": [
+        "match",
+        "venue"
+      ],
+      "jev_probabilities": {
+        "Match": 0.97,
+        "Team": 0.13,
+        "Win_By": 0.13,
+        "Venue": 0.9,
+        "Player_Match": 0.08,
+        "Ball_by_Ball": 0.08,
+        "Country": 0.08,
+        "Extra_Type": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.1362e-05,
+      "latency_ms": 179.0276219981024
+    },
+    {
+      "row_index": 170,
+      "gold_tables": [
+        "batting_style",
+        "player"
+      ],
+      "top3": [
+        "player",
+        "batting_style",
+        "ball_by_ball"
+      ],
+      "all8": [
+        "player",
+        "batting_style",
+        "ball_by_ball",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "player",
+        "batting_style"
+      ],
+      "jev_probabilities": {
+        "Player": 0.96,
+        "Batting_Style": 0.51,
+        "Ball_by_Ball": 0.09,
+        "Country": 0.17,
+        "Extra_Type": 0.07,
+        "Out_Type": 0.07,
+        "Outcome": 0.09,
+        "Team": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.1534e-05,
+      "latency_ms": 129.84005899488693
+    },
+    {
+      "row_index": 291,
+      "gold_tables": [
+        "player",
+        "player_match",
+        "team"
+      ],
+      "top3": [
+        "player_match",
+        "match",
+        "wicket_taken"
+      ],
+      "all8": [
+        "player_match",
+        "match",
+        "wicket_taken",
+        "ball_by_ball",
+        "team",
+        "player",
+        "rolee",
+        "extra_runs"
+      ],
+      "jev_tables": [
+        "player_match",
+        "team",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.96,
+        "Match": 0.37,
+        "Wicket_Taken": 0.09,
+        "Ball_by_Ball": 0.1,
+        "Team": 0.91,
+        "Player": 0.95,
+        "Rolee": 0.23,
+        "Extra_Runs": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.7242e-05,
+      "latency_ms": 183.14079900301294
+    },
+    {
+      "row_index": 192,
+      "gold_tables": [
+        "city",
+        "venue"
+      ],
+      "top3": [
+        "venue",
+        "city",
+        "match"
+      ],
+      "all8": [
+        "venue",
+        "city",
+        "match",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "venue",
+        "city"
+      ],
+      "jev_probabilities": {
+        "Venue": 0.96,
+        "City": 0.96,
+        "Match": 0.12,
+        "Country": 0.1,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.06,
+        "Outcome": 0.07,
+        "Team": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.3046e-05,
+      "latency_ms": 134.55196599534247
+    },
+    {
+      "row_index": 298,
+      "gold_tables": [
+        "country",
+        "umpire"
+      ],
+      "top3": [
+        "umpire",
+        "country",
+        "city"
+      ],
+      "all8": [
+        "umpire",
+        "country",
+        "city",
+        "player",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "umpire",
+        "country"
+      ],
+      "jev_probabilities": {
+        "Umpire": 0.96,
+        "Country": 0.81,
+        "City": 0.08,
+        "Player": 0.08,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.06,
+        "Outcome": 0.07,
+        "Team": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.83e-05,
+      "latency_ms": 175.61611699784407
+    },
+    {
+      "row_index": 275,
+      "gold_tables": [
+        "batting_style",
+        "player"
+      ],
+      "top3": [
+        "player",
+        "batting_style",
+        "country"
+      ],
+      "all8": [
+        "player",
+        "batting_style",
+        "country",
+        "player_match",
+        "city",
+        "umpire",
+        "wicket_taken",
+        "ball_by_ball"
+      ],
+      "jev_tables": [
+        "player",
+        "batting_style"
+      ],
+      "jev_probabilities": {
+        "Player": 0.96,
+        "Batting_Style": 0.7,
+        "Country": 0.35,
+        "Player_Match": 0.09,
+        "City": 0.08,
+        "Umpire": 0.07,
+        "Wicket_Taken": 0.07,
+        "Ball_by_Ball": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.8884e-05,
+      "latency_ms": 143.2514780026395
+    },
+    {
+      "row_index": 259,
+      "gold_tables": [
+        "match",
+        "venue"
+      ],
+      "top3": [
+        "match",
+        "venue",
+        "season"
+      ],
+      "all8": [
+        "match",
+        "venue",
+        "season",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "match",
+        "venue"
+      ],
+      "jev_probabilities": {
+        "Match": 0.86,
+        "Venue": 0.97,
+        "Season": 0.26,
+        "Country": 0.08,
+        "Extra_Type": 0.05,
+        "Out_Type": 0.07,
+        "Outcome": 0.07,
+        "Team": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.3634e-05,
+      "latency_ms": 188.57965499773854
+    },
+    {
+      "row_index": 165,
+      "gold_tables": [
+        "match"
+      ],
+      "top3": [
+        "player_match",
+        "match",
+        "wicket_taken"
+      ],
+      "all8": [
+        "player_match",
+        "match",
+        "wicket_taken",
+        "player",
+        "extra_runs",
+        "season",
+        "batsman_scored",
+        "ball_by_ball"
+      ],
+      "jev_tables": [
+        "match"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.14,
+        "Match": 0.94,
+        "Wicket_Taken": 0.08,
+        "Player": 0.21,
+        "Extra_Runs": 0.07,
+        "Season": 0.09,
+        "Batsman_Scored": 0.08,
+        "Ball_by_Ball": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.8922e-05,
+      "latency_ms": 211.09184899978573
+    },
+    {
+      "row_index": 415,
+      "gold_tables": [
+        "match",
+        "team",
+        "win_by"
+      ],
+      "top3": [
+        "player_match",
+        "extra_runs",
+        "match"
+      ],
+      "all8": [
+        "player_match",
+        "extra_runs",
+        "match",
+        "batsman_scored",
+        "ball_by_ball",
+        "team",
+        "wicket_taken",
+        "country"
+      ],
+      "jev_tables": [
+        "match",
+        "team"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.09,
+        "Extra_Runs": 0.08,
+        "Match": 0.96,
+        "Batsman_Scored": 0.09,
+        "Ball_by_Ball": 0.08,
+        "Team": 0.95,
+        "Wicket_Taken": 0.07,
+        "Country": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.4722e-05,
+      "latency_ms": 140.93634500022745
+    },
+    {
+      "row_index": 205,
+      "gold_tables": [
+        "player",
+        "season"
+      ],
+      "top3": [
+        "season",
+        "player_match",
+        "player"
+      ],
+      "all8": [
+        "season",
+        "player_match",
+        "player",
+        "wicket_taken",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome"
+      ],
+      "jev_tables": [
+        "season",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Season": 0.86,
+        "Player_Match": 0.48,
+        "Player": 0.82,
+        "Wicket_Taken": 0.11,
+        "Country": 0.23,
+        "Extra_Type": 0.08,
+        "Out_Type": 0.09,
+        "Outcome": 0.12
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.3802e-05,
+      "latency_ms": 157.14228499564342
+    },
+    {
+      "row_index": 368,
+      "gold_tables": [
+        "match",
+        "team"
+      ],
+      "top3": [
+        "match",
+        "player_match",
+        "ball_by_ball"
+      ],
+      "all8": [
+        "match",
+        "player_match",
+        "ball_by_ball",
+        "team",
+        "win_by",
+        "extra_runs",
+        "batsman_scored",
+        "wicket_taken"
+      ],
+      "jev_tables": [
+        "match",
+        "team"
+      ],
+      "jev_probabilities": {
+        "Match": 0.96,
+        "Player_Match": 0.13,
+        "Ball_by_Ball": 0.08,
+        "Team": 0.87,
+        "Win_By": 0.14,
+        "Extra_Runs": 0.08,
+        "Batsman_Scored": 0.08,
+        "Wicket_Taken": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.5604e-05,
+      "latency_ms": 157.0960879980703
+    },
+    {
+      "row_index": 351,
+      "gold_tables": [
+        "batting_style",
+        "player"
+      ],
+      "top3": [
+        "batting_style",
+        "player",
+        "ball_by_ball"
+      ],
+      "all8": [
+        "batting_style",
+        "player",
+        "ball_by_ball",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "batting_style",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Batting_Style": 0.55,
+        "Player": 0.81,
+        "Ball_by_Ball": 0.12,
+        "Country": 0.11,
+        "Extra_Type": 0.07,
+        "Out_Type": 0.07,
+        "Outcome": 0.08,
+        "Team": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.1408e-05,
+      "latency_ms": 155.1649289976922
+    },
+    {
+      "row_index": 227,
+      "gold_tables": [
+        "match",
+        "venue"
+      ],
+      "top3": [
+        "venue",
+        "match",
+        "country"
+      ],
+      "all8": [
+        "venue",
+        "match",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team",
+        "win_by"
+      ],
+      "jev_tables": [
+        "venue",
+        "match"
+      ],
+      "jev_probabilities": {
+        "Venue": 0.91,
+        "Match": 0.97,
+        "Country": 0.08,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.09,
+        "Outcome": 0.1,
+        "Team": 0.11,
+        "Win_By": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.2836e-05,
+      "latency_ms": 140.99384599830955
+    },
+    {
+      "row_index": 176,
+      "gold_tables": [
+        "player",
+        "player_match",
+        "rolee"
+      ],
+      "top3": [
+        "player_match",
+        "match",
+        "rolee"
+      ],
+      "all8": [
+        "player_match",
+        "match",
+        "rolee",
+        "wicket_taken",
+        "ball_by_ball",
+        "team",
+        "player",
+        "extra_runs"
+      ],
+      "jev_tables": [
+        "player_match",
+        "rolee",
+        "player"
+      ],
+      "jev_probabilities": {
+        "Player_Match": 0.96,
+        "Match": 0.2,
+        "Rolee": 0.93,
+        "Wicket_Taken": 0.08,
+        "Ball_by_Ball": 0.08,
+        "Team": 0.16,
+        "Player": 0.92,
+        "Extra_Runs": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.6276e-05,
+      "latency_ms": 159.00092200172367
+    },
+    {
+      "row_index": 206,
+      "gold_tables": [
+        "match",
+        "venue"
+      ],
+      "top3": [
+        "match",
+        "venue",
+        "season"
+      ],
+      "all8": [
+        "match",
+        "venue",
+        "season",
+        "country",
+        "extra_type",
+        "out_type",
+        "outcome",
+        "team"
+      ],
+      "jev_tables": [
+        "match",
+        "venue"
+      ],
+      "jev_probabilities": {
+        "Match": 0.96,
+        "Venue": 0.96,
+        "Season": 0.16,
+        "Country": 0.08,
+        "Extra_Type": 0.06,
+        "Out_Type": 0.09,
+        "Outcome": 0.09,
+        "Team": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 5.4852e-05,
+      "latency_ms": 187.3275520047173
+    }
+  ],
+  "scorecard": {
+    "completed": 50,
+    "top3": {
+      "all_gold_present": 29,
+      "table_precision": 0.5733333333333334,
+      "table_recall": 0.7678571428571429,
+      "table_f1": 0.6564885496183206,
+      "selected_tables_per_question": 3.0
+    },
+    "all8": {
+      "all_gold_present": 48,
+      "table_precision": 0.2725,
+      "table_recall": 0.9732142857142857,
+      "table_f1": 0.42578125,
+      "selected_tables_per_question": 8.0
+    },
+    "jev_threshold_0_5": {
+      "all_gold_present": 41,
+      "table_precision": 0.9714285714285714,
+      "table_recall": 0.9107142857142857,
+      "table_f1": 0.9400921658986175,
+      "selected_tables_per_question": 2.1
+    },
+    "cost_usd": 0.002975574,
+    "p50_ms": 173.32835050547146
+  },
+  "database_sha256_16": "84651eed21dbfae9"
+}

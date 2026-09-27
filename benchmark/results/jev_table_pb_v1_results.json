@@ -1,0 +1,1987 @@
+{
+  "questions_sha256_16": "be836564c8deb757",
+  "db_id": "professional_basketball",
+  "with_fk": true,
+  "selection": "sha256(jev-table-v1:row_index), professional_basketball, 50 rows",
+  "results": [
+    {
+      "row_index": 295,
+      "gold_tables": [
+        "awards_players",
+        "players"
+      ],
+      "top3": [
+        "awards_players",
+        "players",
+        "player_allstar"
+      ],
+      "all8": [
+        "awards_players",
+        "players",
+        "player_allstar",
+        "awards_coaches",
+        "coaches",
+        "draft",
+        "teams",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "awards_players",
+        "players"
+      ],
+      "jev_probabilities": {
+        "awards_players": 0.96,
+        "players": 0.97,
+        "player_allstar": 0.09,
+        "awards_coaches": 0.08,
+        "coaches": 0.08,
+        "draft": 0.08,
+        "teams": 0.09,
+        "players_teams": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.14e-05,
+      "latency_ms": 273.93817900156137
+    },
+    {
+      "row_index": 364,
+      "gold_tables": [
+        "coaches",
+        "teams"
+      ],
+      "top3": [
+        "awards_coaches",
+        "coaches",
+        "players"
+      ],
+      "all8": [
+        "awards_coaches",
+        "coaches",
+        "players",
+        "series_post",
+        "awards_players",
+        "draft",
+        "teams",
+        "player_allstar"
+      ],
+      "jev_tables": [
+        "coaches",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "awards_coaches": 0.09,
+        "coaches": 0.96,
+        "players": 0.1,
+        "series_post": 0.07,
+        "awards_players": 0.07,
+        "draft": 0.08,
+        "teams": 0.85,
+        "player_allstar": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.9636e-05,
+      "latency_ms": 156.95312000025297
+    },
+    {
+      "row_index": 354,
+      "gold_tables": [
+        "draft",
+        "players",
+        "teams"
+      ],
+      "top3": [
+        "draft",
+        "players",
+        "players_teams"
+      ],
+      "all8": [
+        "draft",
+        "players",
+        "players_teams",
+        "player_allstar",
+        "awards_players",
+        "teams",
+        "awards_coaches",
+        "series_post"
+      ],
+      "jev_tables": [
+        "draft",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "draft": 0.97,
+        "players": 0.22,
+        "players_teams": 0.11,
+        "player_allstar": 0.06,
+        "awards_players": 0.06,
+        "teams": 0.95,
+        "awards_coaches": 0.04,
+        "series_post": 0.05
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.4844e-05,
+      "latency_ms": 180.56569100008346
+    },
+    {
+      "row_index": 388,
+      "gold_tables": [
+        "draft",
+        "players",
+        "players_teams"
+      ],
+      "top3": [
+        "players",
+        "awards_players",
+        "draft"
+      ],
+      "all8": [
+        "players",
+        "awards_players",
+        "draft",
+        "players_teams",
+        "awards_coaches",
+        "series_post",
+        "coaches",
+        "teams"
+      ],
+      "jev_tables": [
+        "players",
+        "draft"
+      ],
+      "jev_probabilities": {
+        "players": 0.96,
+        "awards_players": 0.12,
+        "draft": 0.96,
+        "players_teams": 0.11,
+        "awards_coaches": 0.06,
+        "series_post": 0.06,
+        "coaches": 0.06,
+        "teams": 0.18
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.4508e-05,
+      "latency_ms": 286.409767002624
+    },
+    {
+      "row_index": 314,
+      "gold_tables": [
+        "player_allstar",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "awards_players",
+        "players_teams"
+      ],
+      "all8": [
+        "players",
+        "awards_players",
+        "players_teams",
+        "player_allstar",
+        "awards_coaches",
+        "series_post",
+        "coaches",
+        "draft"
+      ],
+      "jev_tables": [
+        "players",
+        "player_allstar"
+      ],
+      "jev_probabilities": {
+        "players": 0.92,
+        "awards_players": 0.13,
+        "players_teams": 0.16,
+        "player_allstar": 0.94,
+        "awards_coaches": 0.07,
+        "series_post": 0.06,
+        "coaches": 0.07,
+        "draft": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.3038e-05,
+      "latency_ms": 160.90345400152728
+    },
+    {
+      "row_index": 414,
+      "gold_tables": [
+        "players_teams",
+        "teams"
+      ],
+      "top3": [
+        "player_allstar",
+        "players_teams",
+        "awards_players"
+      ],
+      "all8": [
+        "player_allstar",
+        "players_teams",
+        "awards_players",
+        "draft",
+        "players",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players_teams"
+      ],
+      "jev_probabilities": {
+        "player_allstar": 0.15,
+        "players_teams": 0.95,
+        "awards_players": 0.09,
+        "draft": 0.08,
+        "players": 0.11,
+        "awards_coaches": 0.08,
+        "series_post": 0.07,
+        "coaches": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.266e-05,
+      "latency_ms": 147.4112409996451
+    },
+    {
+      "row_index": 334,
+      "gold_tables": [
+        "players",
+        "players_teams"
+      ],
+      "top3": [
+        "player_allstar",
+        "players",
+        "awards_players"
+      ],
+      "all8": [
+        "player_allstar",
+        "players",
+        "awards_players",
+        "players_teams",
+        "draft",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players",
+        "players_teams"
+      ],
+      "jev_probabilities": {
+        "player_allstar": 0.49,
+        "players": 0.82,
+        "awards_players": 0.12,
+        "players_teams": 0.75,
+        "draft": 0.13,
+        "awards_coaches": 0.06,
+        "series_post": 0.07,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.161e-05,
+      "latency_ms": 158.45144299964886
+    },
+    {
+      "row_index": 344,
+      "gold_tables": [
+        "players",
+        "players_teams",
+        "teams"
+      ],
+      "top3": [
+        "players",
+        "players_teams",
+        "awards_players"
+      ],
+      "all8": [
+        "players",
+        "players_teams",
+        "awards_players",
+        "teams",
+        "player_allstar",
+        "draft",
+        "awards_coaches",
+        "series_post"
+      ],
+      "jev_tables": [
+        "players",
+        "players_teams",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "players": 0.97,
+        "players_teams": 0.94,
+        "awards_players": 0.08,
+        "teams": 0.96,
+        "player_allstar": 0.08,
+        "draft": 0.09,
+        "awards_coaches": 0.06,
+        "series_post": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2786e-05,
+      "latency_ms": 169.02957599813817
+    },
+    {
+      "row_index": 362,
+      "gold_tables": [
+        "player_allstar",
+        "players_teams"
+      ],
+      "top3": [
+        "players_teams",
+        "awards_players",
+        "players"
+      ],
+      "all8": [
+        "players_teams",
+        "awards_players",
+        "players",
+        "player_allstar",
+        "awards_coaches",
+        "series_post",
+        "coaches",
+        "draft"
+      ],
+      "jev_tables": [
+        "players_teams"
+      ],
+      "jev_probabilities": {
+        "players_teams": 0.86,
+        "awards_players": 0.08,
+        "players": 0.12,
+        "player_allstar": 0.27,
+        "awards_coaches": 0.07,
+        "series_post": 0.06,
+        "coaches": 0.07,
+        "draft": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2324e-05,
+      "latency_ms": 162.97564600245096
+    },
+    {
+      "row_index": 361,
+      "gold_tables": [
+        "draft",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "draft",
+        "player_allstar"
+      ],
+      "all8": [
+        "players",
+        "draft",
+        "player_allstar",
+        "awards_players",
+        "players_teams",
+        "series_post",
+        "awards_coaches",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players",
+        "draft"
+      ],
+      "jev_probabilities": {
+        "players": 0.96,
+        "draft": 0.96,
+        "player_allstar": 0.08,
+        "awards_players": 0.08,
+        "players_teams": 0.09,
+        "series_post": 0.06,
+        "awards_coaches": 0.06,
+        "coaches": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2786e-05,
+      "latency_ms": 232.8919890060206
+    },
+    {
+      "row_index": 359,
+      "gold_tables": [
+        "awards_players",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "awards_players",
+        "player_allstar"
+      ],
+      "all8": [
+        "players",
+        "awards_players",
+        "player_allstar",
+        "awards_coaches",
+        "coaches",
+        "draft",
+        "teams",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "players",
+        "awards_players"
+      ],
+      "jev_probabilities": {
+        "players": 0.94,
+        "awards_players": 0.94,
+        "player_allstar": 0.09,
+        "awards_coaches": 0.1,
+        "coaches": 0.09,
+        "draft": 0.12,
+        "teams": 0.09,
+        "players_teams": 0.11
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2114e-05,
+      "latency_ms": 190.27993900090223
+    },
+    {
+      "row_index": 403,
+      "gold_tables": [
+        "players_teams",
+        "teams"
+      ],
+      "top3": [
+        "players_teams",
+        "series_post",
+        "coaches"
+      ],
+      "all8": [
+        "players_teams",
+        "series_post",
+        "coaches",
+        "player_allstar",
+        "awards_coaches",
+        "awards_players",
+        "draft",
+        "teams"
+      ],
+      "jev_tables": [
+        "players_teams",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "players_teams": 0.88,
+        "series_post": 0.19,
+        "coaches": 0.11,
+        "player_allstar": 0.2,
+        "awards_coaches": 0.09,
+        "awards_players": 0.09,
+        "draft": 0.09,
+        "teams": 0.84
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1988e-05,
+      "latency_ms": 147.10946199920727
+    },
+    {
+      "row_index": 339,
+      "gold_tables": [
+        "draft",
+        "teams"
+      ],
+      "top3": [
+        "teams",
+        "players_teams",
+        "players"
+      ],
+      "all8": [
+        "teams",
+        "players_teams",
+        "players",
+        "awards_coaches",
+        "series_post",
+        "awards_players",
+        "coaches",
+        "draft"
+      ],
+      "jev_tables": [
+        "teams",
+        "draft"
+      ],
+      "jev_probabilities": {
+        "teams": 0.95,
+        "players_teams": 0.24,
+        "players": 0.24,
+        "awards_coaches": 0.08,
+        "series_post": 0.07,
+        "awards_players": 0.1,
+        "coaches": 0.11,
+        "draft": 0.88
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.9426e-05,
+      "latency_ms": 145.12600300076883
+    },
+    {
+      "row_index": 319,
+      "gold_tables": [
+        "players",
+        "players_teams",
+        "teams"
+      ],
+      "top3": [
+        "players",
+        "draft",
+        "player_allstar"
+      ],
+      "all8": [
+        "players",
+        "draft",
+        "player_allstar",
+        "awards_players",
+        "players_teams",
+        "teams",
+        "awards_coaches",
+        "series_post"
+      ],
+      "jev_tables": [
+        "players",
+        "player_allstar",
+        "players_teams",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "players": 0.58,
+        "draft": 0.1,
+        "player_allstar": 0.92,
+        "awards_players": 0.29,
+        "players_teams": 0.82,
+        "teams": 0.95,
+        "awards_coaches": 0.07,
+        "series_post": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.4886e-05,
+      "latency_ms": 177.95921200013254
+    },
+    {
+      "row_index": 382,
+      "gold_tables": [
+        "awards_coaches",
+        "coaches"
+      ],
+      "top3": [
+        "awards_coaches",
+        "coaches",
+        "awards_players"
+      ],
+      "all8": [
+        "awards_coaches",
+        "coaches",
+        "awards_players",
+        "series_post",
+        "draft",
+        "teams",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "awards_coaches",
+        "coaches"
+      ],
+      "jev_probabilities": {
+        "awards_coaches": 0.95,
+        "coaches": 0.92,
+        "awards_players": 0.08,
+        "series_post": 0.07,
+        "draft": 0.07,
+        "teams": 0.15,
+        "player_allstar": 0.06,
+        "players_teams": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1358e-05,
+      "latency_ms": 196.22473799972795
+    },
+    {
+      "row_index": 299,
+      "gold_tables": [
+        "awards_players",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "awards_players",
+        "players_teams"
+      ],
+      "all8": [
+        "players",
+        "awards_players",
+        "players_teams",
+        "player_allstar",
+        "awards_coaches",
+        "coaches",
+        "draft",
+        "teams"
+      ],
+      "jev_tables": [
+        "players",
+        "awards_players"
+      ],
+      "jev_probabilities": {
+        "players": 0.95,
+        "awards_players": 0.96,
+        "players_teams": 0.09,
+        "player_allstar": 0.09,
+        "awards_coaches": 0.08,
+        "coaches": 0.08,
+        "draft": 0.15,
+        "teams": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2702e-05,
+      "latency_ms": 197.9224009992322
+    },
+    {
+      "row_index": 387,
+      "gold_tables": [
+        "players_teams"
+      ],
+      "top3": [
+        "player_allstar",
+        "players_teams",
+        "awards_players"
+      ],
+      "all8": [
+        "player_allstar",
+        "players_teams",
+        "awards_players",
+        "draft",
+        "players",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players_teams"
+      ],
+      "jev_probabilities": {
+        "player_allstar": 0.17,
+        "players_teams": 0.92,
+        "awards_players": 0.09,
+        "draft": 0.08,
+        "players": 0.14,
+        "awards_coaches": 0.07,
+        "series_post": 0.07,
+        "coaches": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.3248e-05,
+      "latency_ms": 144.36441799625754
+    },
+    {
+      "row_index": 375,
+      "gold_tables": [
+        "awards_players",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "awards_players",
+        "awards_coaches"
+      ],
+      "all8": [
+        "players",
+        "awards_players",
+        "awards_coaches",
+        "players_teams",
+        "series_post",
+        "coaches",
+        "draft",
+        "teams"
+      ],
+      "jev_tables": [
+        "players",
+        "awards_players"
+      ],
+      "jev_probabilities": {
+        "players": 0.94,
+        "awards_players": 0.95,
+        "awards_coaches": 0.1,
+        "players_teams": 0.11,
+        "series_post": 0.06,
+        "coaches": 0.1,
+        "draft": 0.11,
+        "teams": 0.11
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.0686e-05,
+      "latency_ms": 138.97738399828086
+    },
+    {
+      "row_index": 371,
+      "gold_tables": [
+        "awards_players"
+      ],
+      "top3": [
+        "awards_players",
+        "player_allstar",
+        "players_teams"
+      ],
+      "all8": [
+        "awards_players",
+        "player_allstar",
+        "players_teams",
+        "players",
+        "awards_coaches",
+        "draft",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "awards_players"
+      ],
+      "jev_probabilities": {
+        "awards_players": 0.96,
+        "player_allstar": 0.09,
+        "players_teams": 0.09,
+        "players": 0.19,
+        "awards_coaches": 0.07,
+        "draft": 0.07,
+        "series_post": 0.06,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.3416e-05,
+      "latency_ms": 186.0456089998479
+    },
+    {
+      "row_index": 302,
+      "gold_tables": [
+        "coaches"
+      ],
+      "top3": [
+        "coaches",
+        "awards_coaches",
+        "teams"
+      ],
+      "all8": [
+        "coaches",
+        "awards_coaches",
+        "teams",
+        "series_post",
+        "awards_players",
+        "draft",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "coaches",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "coaches": 0.95,
+        "awards_coaches": 0.1,
+        "teams": 0.88,
+        "series_post": 0.08,
+        "awards_players": 0.06,
+        "draft": 0.07,
+        "player_allstar": 0.07,
+        "players_teams": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1316e-05,
+      "latency_ms": 208.02864800498355
+    },
+    {
+      "row_index": 291,
+      "gold_tables": [
+        "players",
+        "players_teams"
+      ],
+      "top3": [
+        "players",
+        "awards_players",
+        "player_allstar"
+      ],
+      "all8": [
+        "players",
+        "awards_players",
+        "player_allstar",
+        "players_teams",
+        "draft",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players",
+        "awards_players"
+      ],
+      "jev_probabilities": {
+        "players": 0.92,
+        "awards_players": 0.5,
+        "player_allstar": 0.1,
+        "players_teams": 0.24,
+        "draft": 0.1,
+        "awards_coaches": 0.11,
+        "series_post": 0.06,
+        "coaches": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1652e-05,
+      "latency_ms": 186.17083999561146
+    },
+    {
+      "row_index": 298,
+      "gold_tables": [
+        "awards_players",
+        "players"
+      ],
+      "top3": [
+        "awards_players",
+        "players",
+        "players_teams"
+      ],
+      "all8": [
+        "awards_players",
+        "players",
+        "players_teams",
+        "player_allstar",
+        "awards_coaches",
+        "coaches",
+        "draft",
+        "teams"
+      ],
+      "jev_tables": [
+        "awards_players",
+        "players"
+      ],
+      "jev_probabilities": {
+        "awards_players": 0.97,
+        "players": 0.97,
+        "players_teams": 0.09,
+        "player_allstar": 0.07,
+        "awards_coaches": 0.08,
+        "coaches": 0.07,
+        "draft": 0.07,
+        "teams": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1736e-05,
+      "latency_ms": 187.41109099937603
+    },
+    {
+      "row_index": 275,
+      "gold_tables": [
+        "awards_coaches",
+        "coaches",
+        "teams"
+      ],
+      "top3": [
+        "awards_coaches",
+        "coaches",
+        "awards_players"
+      ],
+      "all8": [
+        "awards_coaches",
+        "coaches",
+        "awards_players",
+        "teams",
+        "series_post",
+        "draft",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "awards_coaches",
+        "coaches"
+      ],
+      "jev_probabilities": {
+        "awards_coaches": 0.92,
+        "coaches": 0.87,
+        "awards_players": 0.09,
+        "teams": 0.45,
+        "series_post": 0.08,
+        "draft": 0.07,
+        "player_allstar": 0.08,
+        "players_teams": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.3164e-05,
+      "latency_ms": 161.08648299996275
+    },
+    {
+      "row_index": 415,
+      "gold_tables": [
+        "players_teams",
+        "teams"
+      ],
+      "top3": [
+        "players_teams",
+        "players",
+        "awards_players"
+      ],
+      "all8": [
+        "players_teams",
+        "players",
+        "awards_players",
+        "player_allstar",
+        "teams",
+        "draft",
+        "awards_coaches",
+        "series_post"
+      ],
+      "jev_tables": [
+        "players_teams",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "players_teams": 0.95,
+        "players": 0.14,
+        "awards_players": 0.08,
+        "player_allstar": 0.1,
+        "teams": 0.95,
+        "draft": 0.08,
+        "awards_coaches": 0.07,
+        "series_post": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2996e-05,
+      "latency_ms": 143.2908650022
+    },
+    {
+      "row_index": 368,
+      "gold_tables": [
+        "player_allstar",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "player_allstar",
+        "awards_players"
+      ],
+      "all8": [
+        "players",
+        "player_allstar",
+        "awards_players",
+        "players_teams",
+        "awards_coaches",
+        "series_post",
+        "coaches",
+        "draft"
+      ],
+      "jev_tables": [
+        "players",
+        "player_allstar"
+      ],
+      "jev_probabilities": {
+        "players": 0.94,
+        "player_allstar": 0.88,
+        "awards_players": 0.13,
+        "players_teams": 0.17,
+        "awards_coaches": 0.07,
+        "series_post": 0.06,
+        "coaches": 0.06,
+        "draft": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.161e-05,
+      "latency_ms": 225.60120400157757
+    },
+    {
+      "row_index": 351,
+      "gold_tables": [
+        "coaches"
+      ],
+      "top3": [
+        "coaches",
+        "teams",
+        "awards_coaches"
+      ],
+      "all8": [
+        "coaches",
+        "teams",
+        "awards_coaches",
+        "series_post",
+        "awards_players",
+        "draft",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "coaches"
+      ],
+      "jev_probabilities": {
+        "coaches": 0.94,
+        "teams": 0.14,
+        "awards_coaches": 0.11,
+        "series_post": 0.09,
+        "awards_players": 0.07,
+        "draft": 0.06,
+        "player_allstar": 0.06,
+        "players_teams": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1652e-05,
+      "latency_ms": 183.56567000591895
+    },
+    {
+      "row_index": 290,
+      "gold_tables": [
+        "players",
+        "players_teams"
+      ],
+      "top3": [
+        "awards_players",
+        "players",
+        "player_allstar"
+      ],
+      "all8": [
+        "awards_players",
+        "players",
+        "player_allstar",
+        "players_teams",
+        "draft",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players",
+        "players_teams"
+      ],
+      "jev_probabilities": {
+        "awards_players": 0.15,
+        "players": 0.91,
+        "player_allstar": 0.11,
+        "players_teams": 0.5,
+        "draft": 0.08,
+        "awards_coaches": 0.07,
+        "series_post": 0.1,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1862e-05,
+      "latency_ms": 144.2736800017883
+    },
+    {
+      "row_index": 380,
+      "gold_tables": [
+        "player_allstar",
+        "players_teams"
+      ],
+      "top3": [
+        "players_teams",
+        "player_allstar",
+        "awards_players"
+      ],
+      "all8": [
+        "players_teams",
+        "player_allstar",
+        "awards_players",
+        "players",
+        "awards_coaches",
+        "series_post",
+        "coaches",
+        "draft"
+      ],
+      "jev_tables": [
+        "players_teams",
+        "player_allstar",
+        "awards_players"
+      ],
+      "jev_probabilities": {
+        "players_teams": 0.84,
+        "player_allstar": 0.69,
+        "awards_players": 0.75,
+        "players": 0.22,
+        "awards_coaches": 0.09,
+        "series_post": 0.07,
+        "coaches": 0.07,
+        "draft": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.3878e-05,
+      "latency_ms": 181.0962000017753
+    },
+    {
+      "row_index": 327,
+      "gold_tables": [
+        "teams"
+      ],
+      "top3": [
+        "teams",
+        "coaches",
+        "awards_coaches"
+      ],
+      "all8": [
+        "teams",
+        "coaches",
+        "awards_coaches",
+        "series_post",
+        "awards_players",
+        "draft",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "teams"
+      ],
+      "jev_probabilities": {
+        "teams": 0.97,
+        "coaches": 0.07,
+        "awards_coaches": 0.06,
+        "series_post": 0.07,
+        "awards_players": 0.06,
+        "draft": 0.06,
+        "player_allstar": 0.07,
+        "players_teams": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.0686e-05,
+      "latency_ms": 157.71406799467513
+    },
+    {
+      "row_index": 270,
+      "gold_tables": [
+        "coaches",
+        "teams"
+      ],
+      "top3": [
+        "coaches",
+        "awards_coaches",
+        "teams"
+      ],
+      "all8": [
+        "coaches",
+        "awards_coaches",
+        "teams",
+        "series_post",
+        "awards_players",
+        "draft",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "coaches",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "coaches": 0.96,
+        "awards_coaches": 0.09,
+        "teams": 0.94,
+        "series_post": 0.07,
+        "awards_players": 0.06,
+        "draft": 0.06,
+        "player_allstar": 0.05,
+        "players_teams": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2198e-05,
+      "latency_ms": 251.02871999843046
+    },
+    {
+      "row_index": 363,
+      "gold_tables": [
+        "coaches",
+        "teams"
+      ],
+      "top3": [
+        "teams",
+        "coaches",
+        "players_teams"
+      ],
+      "all8": [
+        "teams",
+        "coaches",
+        "players_teams",
+        "awards_coaches",
+        "series_post",
+        "awards_players",
+        "draft",
+        "player_allstar"
+      ],
+      "jev_tables": [
+        "teams",
+        "coaches"
+      ],
+      "jev_probabilities": {
+        "teams": 0.94,
+        "coaches": 0.93,
+        "players_teams": 0.08,
+        "awards_coaches": 0.09,
+        "series_post": 0.08,
+        "awards_players": 0.07,
+        "draft": 0.06,
+        "player_allstar": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1526e-05,
+      "latency_ms": 182.6371110000764
+    },
+    {
+      "row_index": 358,
+      "gold_tables": [
+        "players",
+        "players_teams",
+        "series_post"
+      ],
+      "top3": [
+        "players",
+        "draft",
+        "player_allstar"
+      ],
+      "all8": [
+        "players",
+        "draft",
+        "player_allstar",
+        "awards_players",
+        "players_teams",
+        "series_post",
+        "coaches",
+        "teams"
+      ],
+      "jev_tables": [
+        "players",
+        "players_teams",
+        "series_post",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "players": 0.94,
+        "draft": 0.09,
+        "player_allstar": 0.11,
+        "awards_players": 0.19,
+        "players_teams": 0.51,
+        "series_post": 0.83,
+        "coaches": 0.13,
+        "teams": 0.54
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.392e-05,
+      "latency_ms": 144.456841997453
+    },
+    {
+      "row_index": 313,
+      "gold_tables": [
+        "player_allstar",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "awards_players",
+        "players_teams"
+      ],
+      "all8": [
+        "players",
+        "awards_players",
+        "players_teams",
+        "player_allstar",
+        "draft",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players",
+        "player_allstar"
+      ],
+      "jev_probabilities": {
+        "players": 0.96,
+        "awards_players": 0.32,
+        "players_teams": 0.09,
+        "player_allstar": 0.93,
+        "draft": 0.08,
+        "awards_coaches": 0.08,
+        "series_post": 0.06,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1148e-05,
+      "latency_ms": 194.7726669968688
+    },
+    {
+      "row_index": 367,
+      "gold_tables": [
+        "awards_players",
+        "draft"
+      ],
+      "top3": [
+        "draft",
+        "awards_players",
+        "player_allstar"
+      ],
+      "all8": [
+        "draft",
+        "awards_players",
+        "player_allstar",
+        "awards_coaches",
+        "series_post",
+        "coaches",
+        "teams",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "draft",
+        "awards_players"
+      ],
+      "jev_probabilities": {
+        "draft": 0.94,
+        "awards_players": 0.94,
+        "player_allstar": 0.09,
+        "awards_coaches": 0.08,
+        "series_post": 0.07,
+        "coaches": 0.09,
+        "teams": 0.33,
+        "players_teams": 0.13
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2366e-05,
+      "latency_ms": 208.8007100028335
+    },
+    {
+      "row_index": 348,
+      "gold_tables": [
+        "players",
+        "players_teams",
+        "teams"
+      ],
+      "top3": [
+        "teams",
+        "players_teams",
+        "coaches"
+      ],
+      "all8": [
+        "teams",
+        "players_teams",
+        "coaches",
+        "awards_players",
+        "players",
+        "awards_coaches",
+        "series_post",
+        "draft"
+      ],
+      "jev_tables": [
+        "teams",
+        "players_teams",
+        "players"
+      ],
+      "jev_probabilities": {
+        "teams": 0.95,
+        "players_teams": 0.95,
+        "coaches": 0.14,
+        "awards_players": 0.08,
+        "players": 0.73,
+        "awards_coaches": 0.08,
+        "series_post": 0.1,
+        "draft": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1316e-05,
+      "latency_ms": 184.85546900046756
+    },
+    {
+      "row_index": 289,
+      "gold_tables": [
+        "coaches"
+      ],
+      "top3": [
+        "coaches",
+        "teams",
+        "awards_coaches"
+      ],
+      "all8": [
+        "coaches",
+        "teams",
+        "awards_coaches",
+        "players_teams",
+        "player_allstar",
+        "series_post",
+        "awards_players",
+        "draft"
+      ],
+      "jev_tables": [
+        "coaches"
+      ],
+      "jev_probabilities": {
+        "coaches": 0.94,
+        "teams": 0.27,
+        "awards_coaches": 0.12,
+        "players_teams": 0.09,
+        "player_allstar": 0.09,
+        "series_post": 0.16,
+        "awards_players": 0.09,
+        "draft": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2114e-05,
+      "latency_ms": 171.5937710032449
+    },
+    {
+      "row_index": 274,
+      "gold_tables": [
+        "awards_coaches",
+        "coaches",
+        "teams"
+      ],
+      "top3": [
+        "awards_coaches",
+        "awards_players",
+        "coaches"
+      ],
+      "all8": [
+        "awards_coaches",
+        "awards_players",
+        "coaches",
+        "series_post",
+        "draft",
+        "teams",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "awards_coaches",
+        "coaches",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "awards_coaches": 0.94,
+        "awards_players": 0.09,
+        "coaches": 0.9,
+        "series_post": 0.08,
+        "draft": 0.08,
+        "teams": 0.96,
+        "player_allstar": 0.07,
+        "players_teams": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2576e-05,
+      "latency_ms": 173.03417800576426
+    },
+    {
+      "row_index": 325,
+      "gold_tables": [
+        "player_allstar"
+      ],
+      "top3": [
+        "player_allstar",
+        "draft",
+        "players_teams"
+      ],
+      "all8": [
+        "player_allstar",
+        "draft",
+        "players_teams",
+        "awards_coaches",
+        "series_post",
+        "awards_players",
+        "coaches",
+        "teams"
+      ],
+      "jev_tables": [
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_probabilities": {
+        "player_allstar": 0.64,
+        "draft": 0.14,
+        "players_teams": 0.62,
+        "awards_coaches": 0.08,
+        "series_post": 0.08,
+        "awards_players": 0.12,
+        "coaches": 0.09,
+        "teams": 0.21
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1148e-05,
+      "latency_ms": 160.11769299802836
+    },
+    {
+      "row_index": 394,
+      "gold_tables": [
+        "awards_players",
+        "player_allstar"
+      ],
+      "top3": [
+        "coaches",
+        "teams",
+        "awards_coaches"
+      ],
+      "all8": [
+        "coaches",
+        "teams",
+        "awards_coaches",
+        "series_post",
+        "awards_players",
+        "draft",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "series_post",
+        "awards_players"
+      ],
+      "jev_probabilities": {
+        "coaches": 0.21,
+        "teams": 0.26,
+        "awards_coaches": 0.13,
+        "series_post": 0.56,
+        "awards_players": 0.86,
+        "draft": 0.13,
+        "player_allstar": 0.1,
+        "players_teams": 0.25
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.0266e-05,
+      "latency_ms": 154.9337780015776
+    },
+    {
+      "row_index": 303,
+      "gold_tables": [
+        "coaches"
+      ],
+      "top3": [
+        "awards_coaches",
+        "coaches",
+        "series_post"
+      ],
+      "all8": [
+        "awards_coaches",
+        "coaches",
+        "series_post",
+        "awards_players",
+        "draft",
+        "teams",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "coaches"
+      ],
+      "jev_probabilities": {
+        "awards_coaches": 0.15,
+        "coaches": 0.95,
+        "series_post": 0.07,
+        "awards_players": 0.07,
+        "draft": 0.07,
+        "teams": 0.12,
+        "player_allstar": 0.06,
+        "players_teams": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1358e-05,
+      "latency_ms": 183.22455800080206
+    },
+    {
+      "row_index": 331,
+      "gold_tables": [
+        "players",
+        "players_teams",
+        "teams"
+      ],
+      "top3": [
+        "players",
+        "awards_players",
+        "players_teams"
+      ],
+      "all8": [
+        "players",
+        "awards_players",
+        "players_teams",
+        "player_allstar",
+        "draft",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players",
+        "players_teams"
+      ],
+      "jev_probabilities": {
+        "players": 0.86,
+        "awards_players": 0.09,
+        "players_teams": 0.93,
+        "player_allstar": 0.1,
+        "draft": 0.13,
+        "awards_coaches": 0.08,
+        "series_post": 0.09,
+        "coaches": 0.12
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1526e-05,
+      "latency_ms": 152.3062639971613
+    },
+    {
+      "row_index": 273,
+      "gold_tables": [
+        "awards_players",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "player_allstar",
+        "awards_players"
+      ],
+      "all8": [
+        "players",
+        "player_allstar",
+        "awards_players",
+        "draft",
+        "awards_coaches",
+        "coaches",
+        "teams",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "players",
+        "awards_players"
+      ],
+      "jev_probabilities": {
+        "players": 0.96,
+        "player_allstar": 0.09,
+        "awards_players": 0.96,
+        "draft": 0.08,
+        "awards_coaches": 0.08,
+        "coaches": 0.07,
+        "teams": 0.08,
+        "players_teams": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.4466e-05,
+      "latency_ms": 136.9258809936582
+    },
+    {
+      "row_index": 287,
+      "gold_tables": [
+        "coaches"
+      ],
+      "top3": [
+        "teams",
+        "players_teams",
+        "awards_coaches"
+      ],
+      "all8": [
+        "teams",
+        "players_teams",
+        "awards_coaches",
+        "coaches",
+        "series_post",
+        "awards_players",
+        "draft",
+        "player_allstar"
+      ],
+      "jev_tables": [
+        "coaches"
+      ],
+      "jev_probabilities": {
+        "teams": 0.39,
+        "players_teams": 0.1,
+        "awards_coaches": 0.14,
+        "coaches": 0.88,
+        "series_post": 0.08,
+        "awards_players": 0.07,
+        "draft": 0.08,
+        "player_allstar": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.0854e-05,
+      "latency_ms": 133.69075799710117
+    },
+    {
+      "row_index": 406,
+      "gold_tables": [
+        "player_allstar",
+        "players"
+      ],
+      "top3": [
+        "player_allstar",
+        "players",
+        "players_teams"
+      ],
+      "all8": [
+        "player_allstar",
+        "players",
+        "players_teams",
+        "awards_players",
+        "draft",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "player_allstar",
+        "players"
+      ],
+      "jev_probabilities": {
+        "player_allstar": 0.96,
+        "players": 0.97,
+        "players_teams": 0.12,
+        "awards_players": 0.19,
+        "draft": 0.08,
+        "awards_coaches": 0.08,
+        "series_post": 0.07,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1148e-05,
+      "latency_ms": 208.26823000243166
+    },
+    {
+      "row_index": 341,
+      "gold_tables": [
+        "player_allstar",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "player_allstar",
+        "draft"
+      ],
+      "all8": [
+        "players",
+        "player_allstar",
+        "draft",
+        "awards_players",
+        "players_teams",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players",
+        "player_allstar"
+      ],
+      "jev_probabilities": {
+        "players": 0.95,
+        "player_allstar": 0.88,
+        "draft": 0.1,
+        "awards_players": 0.3,
+        "players_teams": 0.1,
+        "awards_coaches": 0.08,
+        "series_post": 0.07,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.119e-05,
+      "latency_ms": 186.67198500043014
+    },
+    {
+      "row_index": 405,
+      "gold_tables": [
+        "draft",
+        "teams"
+      ],
+      "top3": [
+        "draft",
+        "coaches",
+        "teams"
+      ],
+      "all8": [
+        "draft",
+        "coaches",
+        "teams",
+        "series_post",
+        "awards_coaches",
+        "awards_players",
+        "player_allstar",
+        "players_teams"
+      ],
+      "jev_tables": [
+        "draft",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "draft": 0.95,
+        "coaches": 0.13,
+        "teams": 0.97,
+        "series_post": 0.08,
+        "awards_coaches": 0.08,
+        "awards_players": 0.07,
+        "player_allstar": 0.08,
+        "players_teams": 0.11
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2786e-05,
+      "latency_ms": 191.4955620013643
+    },
+    {
+      "row_index": 330,
+      "gold_tables": [
+        "awards_players",
+        "players"
+      ],
+      "top3": [
+        "awards_players",
+        "players",
+        "players_teams"
+      ],
+      "all8": [
+        "awards_players",
+        "players",
+        "players_teams",
+        "player_allstar",
+        "awards_coaches",
+        "draft",
+        "teams",
+        "series_post"
+      ],
+      "jev_tables": [
+        "awards_players",
+        "players"
+      ],
+      "jev_probabilities": {
+        "awards_players": 0.96,
+        "players": 0.79,
+        "players_teams": 0.1,
+        "player_allstar": 0.1,
+        "awards_coaches": 0.09,
+        "draft": 0.08,
+        "teams": 0.11,
+        "series_post": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2954e-05,
+      "latency_ms": 185.73911100247642
+    },
+    {
+      "row_index": 277,
+      "gold_tables": [
+        "series_post",
+        "teams"
+      ],
+      "top3": [
+        "series_post",
+        "player_allstar",
+        "coaches"
+      ],
+      "all8": [
+        "series_post",
+        "player_allstar",
+        "coaches",
+        "draft",
+        "teams",
+        "players_teams",
+        "awards_coaches",
+        "awards_players"
+      ],
+      "jev_tables": [
+        "series_post",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "series_post": 0.95,
+        "player_allstar": 0.09,
+        "coaches": 0.11,
+        "draft": 0.09,
+        "teams": 0.95,
+        "players_teams": 0.11,
+        "awards_coaches": 0.09,
+        "awards_players": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1484e-05,
+      "latency_ms": 198.01156999892555
+    },
+    {
+      "row_index": 292,
+      "gold_tables": [
+        "player_allstar",
+        "players"
+      ],
+      "top3": [
+        "players",
+        "awards_players",
+        "players_teams"
+      ],
+      "all8": [
+        "players",
+        "awards_players",
+        "players_teams",
+        "teams",
+        "player_allstar",
+        "awards_coaches",
+        "series_post",
+        "coaches"
+      ],
+      "jev_tables": [
+        "players",
+        "players_teams",
+        "teams"
+      ],
+      "jev_probabilities": {
+        "players": 0.88,
+        "awards_players": 0.1,
+        "players_teams": 0.88,
+        "teams": 0.87,
+        "player_allstar": 0.18,
+        "awards_coaches": 0.08,
+        "series_post": 0.09,
+        "coaches": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1904e-05,
+      "latency_ms": 149.6518060012022
+    },
+    {
+      "row_index": 357,
+      "gold_tables": [
+        "coaches",
+        "series_post",
+        "teams"
+      ],
+      "top3": [
+        "awards_coaches",
+        "coaches",
+        "teams"
+      ],
+      "all8": [
+        "awards_coaches",
+        "coaches",
+        "teams",
+        "players_teams",
+        "series_post",
+        "draft",
+        "awards_players",
+        "player_allstar"
+      ],
+      "jev_tables": [
+        "coaches",
+        "teams",
+        "series_post"
+      ],
+      "jev_probabilities": {
+        "awards_coaches": 0.26,
+        "coaches": 0.87,
+        "teams": 0.95,
+        "players_teams": 0.08,
+        "series_post": 0.83,
+        "draft": 0.07,
+        "awards_players": 0.07,
+        "player_allstar": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1862e-05,
+      "latency_ms": 168.87336599756964
+    }
+  ],
+  "scorecard": {
+    "completed": 50,
+    "top3": {
+      "all_gold_present": 25,
+      "table_precision": 0.4866666666666667,
+      "table_recall": 0.7227722772277227,
+      "table_f1": 0.5816733067729084,
+      "selected_tables_per_question": 3.0
+    },
+    "all8": {
+      "all_gold_present": 48,
+      "table_precision": 0.2475,
+      "table_recall": 0.9801980198019802,
+      "table_f1": 0.39520958083832336,
+      "selected_tables_per_question": 8.0
+    },
+    "jev_threshold_0_5": {
+      "all_gold_present": 41,
+      "table_precision": 0.9108910891089109,
+      "table_recall": 0.9108910891089109,
+      "table_f1": 0.9108910891089109,
+      "selected_tables_per_question": 2.02
+    },
+    "cost_usd": 0.003606078,
+    "p50_ms": 179.262451500108
+  },
+  "database_sha256_16": "11bc18807f9209e4"
+}

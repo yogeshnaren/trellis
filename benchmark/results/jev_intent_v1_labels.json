@@ -1,0 +1,159 @@
+{
+  "source": "data/bird/splits/train_dev.json",
+  "source_sha256_16": "e5503cce83be1678",
+  "selection": "sha256(jev-intent-validation-v1:row_index), 5 movie/restaurant/sales and 10 soccer; drop one overlap with earlier development sample",
+  "labeling": "Original question only; four observable intents; labels fixed before Jev calls",
+  "items": [
+    {
+      "row_index": 1,
+      "db_id": "movie",
+      "intents": [
+        "extreme"
+      ]
+    },
+    {
+      "row_index": 10,
+      "db_id": "movie",
+      "intents": [
+        "extreme"
+      ]
+    },
+    {
+      "row_index": 20,
+      "db_id": "movie",
+      "intents": [
+        "temporal"
+      ]
+    },
+    {
+      "row_index": 22,
+      "db_id": "movie",
+      "intents": []
+    },
+    {
+      "row_index": 23,
+      "db_id": "movie",
+      "intents": []
+    },
+    {
+      "row_index": 80,
+      "db_id": "restaurant",
+      "intents": []
+    },
+    {
+      "row_index": 117,
+      "db_id": "restaurant",
+      "intents": []
+    },
+    {
+      "row_index": 121,
+      "db_id": "restaurant",
+      "intents": []
+    },
+    {
+      "row_index": 161,
+      "db_id": "restaurant",
+      "intents": [
+        "extreme"
+      ]
+    },
+    {
+      "row_index": 173,
+      "db_id": "soccer_2016",
+      "intents": [
+        "temporal",
+        "extreme"
+      ]
+    },
+    {
+      "row_index": 232,
+      "db_id": "soccer_2016",
+      "intents": [
+        "extreme"
+      ]
+    },
+    {
+      "row_index": 256,
+      "db_id": "soccer_2016",
+      "intents": []
+    },
+    {
+      "row_index": 257,
+      "db_id": "soccer_2016",
+      "intents": []
+    },
+    {
+      "row_index": 290,
+      "db_id": "soccer_2016",
+      "intents": []
+    },
+    {
+      "row_index": 297,
+      "db_id": "soccer_2016",
+      "intents": [
+        "upper_bound"
+      ]
+    },
+    {
+      "row_index": 301,
+      "db_id": "soccer_2016",
+      "intents": [
+        "upper_bound"
+      ]
+    },
+    {
+      "row_index": 364,
+      "db_id": "soccer_2016",
+      "intents": [
+        "temporal"
+      ]
+    },
+    {
+      "row_index": 382,
+      "db_id": "soccer_2016",
+      "intents": []
+    },
+    {
+      "row_index": 414,
+      "db_id": "soccer_2016",
+      "intents": [
+        "temporal"
+      ]
+    },
+    {
+      "row_index": 428,
+      "db_id": "sales_in_weather",
+      "intents": [
+        "temporal",
+        "extreme"
+      ]
+    },
+    {
+      "row_index": 451,
+      "db_id": "sales_in_weather",
+      "intents": [
+        "extreme"
+      ]
+    },
+    {
+      "row_index": 457,
+      "db_id": "sales_in_weather",
+      "intents": [
+        "temporal"
+      ]
+    },
+    {
+      "row_index": 464,
+      "db_id": "sales_in_weather",
+      "intents": [
+        "temporal",
+        "extreme"
+      ]
+    },
+    {
+      "row_index": 482,
+      "db_id": "sales_in_weather",
+      "intents": []
+    }
+  ]
+}

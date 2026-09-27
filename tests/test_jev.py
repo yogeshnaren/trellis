@@ -152,3 +152,45 @@ def test_selector_state_has_verified_schema_and_no_gold(tmp_path: Path) -> None:
     assert state["schema_shortlist"] == {"items": ["id", "city"]}
     assert mapping == {"A": "direct", "B": "plan"}
     assert spec["best"]["type"] == "choice"
+
+
+def test_hint_and_intent_requests_keep_gold_out() -> None:
+    from benchmark.bird import BirdQuestion
+    from benchmark.jev_hint_shadow import request as hint_request
+    from benchmark.jev_intent_shadow import request as intent_request
+
+    question = BirdQuestion(
+        1,
+        "sample",
+        "Which row has the highest score?",
+        "highest refers to max(score)",
+        "SELECT secret_gold",
+        "unknown",
+        0,
+    )
+    hint_state, hint_spec = hint_request(question, "highest refers to max(score)")
+    intent_state, intent_spec = intent_request(question)
+    assert "secret_gold" not in json.dumps(hint_state)
+    assert "secret_gold" not in json.dumps(intent_state)
+    assert hint_spec["role"]["type"] == "choice"
+    assert all(spec["type"] == "noul" for spec in intent_spec.values())
+
+
+def test_table_request_includes_verified_join_edges_without_gold(tmp_path: Path) -> None:
+    import sqlite3
+
+    from benchmark.bird import BirdQuestion
+    from benchmark.jev_table_shadow import request
+
+    db_path = tmp_path / "sample.sqlite"
+    with sqlite3.connect(db_path) as db:
+        db.execute("CREATE TABLE country (id INTEGER PRIMARY KEY, name TEXT)")
+        db.execute(
+            "CREATE TABLE player (id INTEGER PRIMARY KEY, country_id INTEGER "
+            "REFERENCES country(id))"
+        )
+    question = BirdQuestion(1, "sample", "Which country?", "", "SELECT secret_gold", "unknown", 0)
+    state, specs = request(question, ["player", "country"], db_path, with_fk=True)
+    assert state["verified_foreign_keys"] == ["player.country_id -> country.id"]
+    assert "secret_gold" not in json.dumps(state)
+    assert set(specs) == {"table_0", "table_1"}

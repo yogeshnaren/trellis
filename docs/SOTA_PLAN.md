@@ -27,12 +27,15 @@ paired evidence; no public dev score predicts hidden-test performance.
   - constraint checks in candidate selection.
 
 **Jev checkpoint (2026-09-27):** the typed client and independent OpenRouter
-provider/session caps are implemented. Two saved-answer shadow tests on `train_dev`
-failed the offline-to-live gate: requirement coverage found 0/5 hand-labeled defects
-in 50 calls; Jev choice lost 10 net correct answers versus result-majority on all
-102 contested old-bank questions without schema, and 11 net with a verified
-schema slice. Do not use Jev to repair or select live SQL on this
-evidence. Details and limitations: `benchmark/results/jev_shadow_outcome.md`.
+provider/session caps are implemented. Requirement coverage found 0/5 hand-labeled
+omissions; candidate choice lost 10–11 net correct answers versus result-majority
+on 102 contested old-bank questions. Neither is promoted. Separate cheap shadows
+found promising *classification* signals: foreign-key-aware table choice recovered
+all gold tables for 41/50 questions in soccer and 41/50 in the preselected
+`train_dev2` basketball database, and atomic hint-role choice scored 24/24
+versus a frozen free rule's 21/24 on a new sample. These do **not** establish an
+EX gain. Jev must not hide other schema tables; no live Jev route is enabled.
+OpenRouter spent $0.022081584. Details: `benchmark/results/jev_shadow_outcome.md`.
 
 The v2.6 changes are:
 - a two-track acceptance rule;
@@ -87,7 +90,7 @@ format oracle (§2) are historical diagnosis, not current improvement estimates.
   **66.0%** and rank 1b **66.5%** (one repeat, CI includes zero), and `train_dev`
   control **69.4%** / rank 1b candidate **70.2%** (§0.1 table).
 - The first `train_lockbox` look is a 175-row stratified sample: +1.90 pts for rank 1b,
-  with a CI including zero. `train_dev2` remains unrun.
+  with a CI including zero. `train_dev2` has no generator run; only 50 basketball rows were used in a Jev table-choice shadow.
 - The v2.6 "≈ 66.9% full dev" pooled different question and database versions, so it is
   withdrawn, together with the rank estimate built on it.
 - For reference, BIRD's main board lists single-model baselines such as Claude Opus 4.6
@@ -1257,15 +1260,21 @@ are contingent on an implemented submission path.
 Jev `choice` scored 29/102 versus result-majority's 39/102 without schema.
 After adding the verified schema slice required by this plan, Jev scored
 28/102 (10 fixes, 21 regressions), for 334/501 = 66.67% versus majority's
-345/501 = 68.86%. OpenRouter spent $0.011228532 across both selector trials,
-coverage screening and a one-call compatibility probe, within
-the $5 provider and $1 per-session limits. The bank predates bounded facts;
-its 73.5% perfect-selector ceiling cannot reach the 75% train-dev checkpoint.
-The live repair A/B and small LLM judge were not run: the Jev trigger failed
-the §6.7 gate, and another process had already taken Fireworks spend above
-the previously approved $7.15 cap. No Mini-Dev or lockbox look was used.
-Bounded metadata choices and question-intent routing remain separate untested
-hypotheses requiring verified candidate sets and labels.
+345/501 = 68.86%. The bank predates bounded facts; its 73.5%
+perfect-selector ceiling cannot reach the 75% train-dev checkpoint.
+A separate 24-question intent pilot scored 20 exact matches for Jev versus
+19 for free rules, with four false upper-bound flags. Foreign-key-aware
+table selection recovered all gold tables in 41/50 soccer and 41/50
+preselected `train_dev2` basketball questions, versus 48/50 for retaining
+all eight shortlisted tables; use it only as an annotation candidate, never
+a hard schema filter. Atomic hint-role choice scored 24/24 versus a frozen
+free rule's 21/24 on a separate development sample; it has no measured EX
+benefit yet. OpenRouter spent $0.022081584 in total, within the $5 provider
+and $1 per-session caps. The live repair A/B and small LLM judge were not
+run: the coverage and selector triggers failed the §6.7 gate, and Fireworks
+spend was above the previously approved $7.15 cap. No Mini-Dev or sealed
+lockbox look was used. Column-level choice awaits a second reliable label
+audit of look-alike columns (§5.3 of POSTMORTEM_V2).
 
 Jev's published limitations include arithmetic, counting, date
 comparison, long irrelevant state, indirection and literal readings.
