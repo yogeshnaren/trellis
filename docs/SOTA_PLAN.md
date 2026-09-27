@@ -1301,6 +1301,17 @@ checkpoints.
        these conventions, which helps dev scores but is a test-transfer risk. Weigh it
        once BIRD answers.
 
+
+   - **Rank 4 candidate-bank diagnostic (2026-09-26, no new calls for this review).**
+     Four saved candidates on all 501 train_dev questions: direct 69.5%, decompose
+     67.1%, query-plan 66.9%, glm-5p3-flash 66.9%. Oracle pass@4 is 73.5%
+     (368/501, macro 75.0%), while result-majority is 68.9%. The bank adds only
+     20 potentially fixable rows over direct; 133 rows have no correct candidate,
+     including 93 with unanimous wrong results. Perfect selection from this bank
+     remains below 75% train_dev, so generator quality is the next bottleneck to
+     test. This is one diagnostic pass, not confirmation for an SFT decision.
+     The full report is benchmark/results/candidate_bank_diagnostic.md.
+
 ---
 
 ## Sources
