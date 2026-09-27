@@ -798,6 +798,43 @@ $0.31 ($0.000205/answer measured, $0.000491 uncached-equivalent); P50 0.97s, P90
   remains, reserved for the final freeze.** No individual cleaned-dev failures were
   inspected to tune rank 1b.
 
+**Mini-Dev gate 3 of 4 (2026-09-27): full current configuration.**
+- Run `20260927T083717Z`, clean commit `5cd38e9`: benchmark profile, quoted
+  identifiers, pipeline repairs, **database facts on** (rank 1b, owner-adopted),
+  **`--truncation-retry 1200`**, v4p1-flash, reasoning off, all 500 rows × 3.
+  Complete, 1,494 of 1,500 without errors.
+- Cost $0.25 measured ($0.000170/answer; $0.000665 uncached); P50 1.58s, P90 2.96s.
+  The owner raised the ledger cap from $7.15 to $7.50 for this run; the ledger is now
+  $7.28.
+- **64.1% official EX** (simple 75.5, moderate 61.7, challenging 53.6; macro 62.8%)
+  vs gate 2 65.3%.
+- Paired vs gate 2 (`flips_minidev_gate2_vs_gate3.md`, 3 repeats each): **−1.13 pts
+  [−2.73, +0.40]**, macro −1.35 [−3.03, +0.31]. Code also differs between the gates,
+  so this is descriptive, not an isolated test.
+- **Aggregate split by whether facts fired** (no question-level reading):
+  - facts were prepended on 269 questions, which moved **−1.9 pts**; the 231 without
+    facts moved −0.3;
+  - `financial` fell 57.3% → 45.8% (−11.5 pts on 32 questions; −13.6 on its 27 with
+    facts, 0.0 on its 5 without);
+  - `card_games` −5.4 on questions with facts, 0.0 without.
+  - `financial` is below the 40-question veto size, but the concentration in
+    fact-bearing questions points at the facts, not drift.
+- **Truncation retry:** fired 0 times (no Mini-Dev answer was cut off), so it cost
+  nothing and changed nothing here.
+- **Rank 1b evidence now pooled:** `train_dev` +0.8, lockbox sample +1.9 (CI includes
+  0), cleaned dev +0.5 (CI includes 0), Mini-Dev −1.1 (−1.9 where facts fired). Net
+  effect ≈ 0 ± 2 pts, with a database-specific risk (`financial` here). It was an
+  owner exception, not a validated gain.
+- Leaderboard context: Mini-Dev SQLite 64.1% still sits #3 of 14 listed (after
+  Jitto Build 75.6 and Ontology2SQL 70.2).
+- 3 of 4 Mini-Dev looks are now used.
+- **Owner decision (2026-09-27): keep facts on for now.** A per-database facts-off switch
+  for `financial`/`card_games` was computed from existing runs (no new calls). It gives
+  Mini-Dev 65.3% (+1.1) but cleaned dev 66.2% (−0.3): the same databases *improved* with
+  facts on cleaned dev (`financial` 24.5 → 27.4, `card_games` 66.0 → 66.5). That is
+  database-level noise, can't transfer to the hidden test's different databases, and
+  would tune on the gates, so it was not adopted.
+
 ### 6.3 Historical Phase 3 proposal and log (completed)
 
 This log predates the later 65.3% Mini-Dev gate and 67.6% dev_untouched

@@ -615,3 +615,21 @@ stays as a named constant for provenance and pricing.
 - Decision: selection can add at most ≈ +4 (realistically +1–2 with a real selector), so
   generation quality and label conventions bound the score. The confirmation pass is
   still required before any paid SFT (v2.8). Cost $0.76.
+
+## 2026-09-27 — Mini-Dev gate 3: 64.1% with database facts + truncation retry
+- Full current configuration on Mini-Dev (500 × 3): 64.1% vs 65.3% at gate 2; paired
+  −1.1 [−2.7, +0.4].
+- The drop sits in questions that received database facts (−1.9 vs −0.3). `financial`
+  fell 11.5 pts, all on fact-bearing questions.
+- The truncation retry never fired.
+- The owner raised the ledger cap to $7.50 for this run (ledger now $7.28). 3 of 4
+  Mini-Dev looks used.
+- **Owner decision: keep database facts on for the benchmark profile for now.** Across
+  four measurements the effect is ≈ 0 (+0.8 / +1.9 / +0.5 / −1.1).
+- A per-database facts-off switch was checked for free from existing runs and **not**
+  adopted:
+  - it restores Mini-Dev (+1.1) but costs cleaned dev −0.3, where the same two
+    databases improved with facts;
+  - the hidden test uses different databases;
+  - choosing settings per database from evaluation results would tune on the gates.
+- Next: reduce latency with facts on.
