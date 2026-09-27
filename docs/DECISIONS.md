@@ -513,3 +513,95 @@ the 2026-09-25 "keep `deepseek-v4-flash-0731`" decision, which was made on `trai
 **Also changed:** a 404/403 from the API is now a `model-unavailable` result with a fix hint (it used
 to raise out of `Agent.ask` and crash the CLI); the SQL panel wraps long queries; `MODEL_DEEPSEEK`
 stays as a named constant for provenance and pricing.
+
+## 2026-09-26 — Plan v2.7 decisions: two-track acceptance, train_dev2, filtered train, cleaned dev
+- **Two-track acceptance adopted.**
+  - The product (CLI) track keeps +1 pt per +50% uncached cost and per +1s P50.
+  - The submission track uses the declared minimum gain plus absolute ceilings: uncached
+    ≤ $0.01/answer and P90 ≤ 30s.
+  - Both keep the paired row/macro CI rules.
+  - `analyze flips --track`.
+- **`train_dev2` preselected by a fixed rule before any run:** `professional_basketball`,
+  `regional_sales`, `ice_hockey_draft`, `movielens` (503 questions). Rule in SOTA_PLAN
+  §5.9. Download pending (≈ 7–8 GB sequential stream).
+- **Training data starts from BIRD's `bird23-train-filtered`** (CC BY-SA 4.0), restricted
+  to non-evaluation databases (5,115 rows) and audited before any paid training.
+  BIRD-Verified stays evaluation-only.
+- **Cleaned dev (Nov 2025) is the primary public checkpoint.** It runs on the original
+  dev databases (all gold queries execute).
+- **Result signatures** normalise integer-valued floats, so they agree with BIRD's set
+  comparison (`1` vs `1.0`).
+
+## 2026-09-26 — Plan v2.8 (third review)
+- **Cleaned dev:** capped at 4 looks (baseline, two milestones, final freeze); aggregate
+  scores count as looks.
+- **Candidate bank:** a diagnostic pass on the latest accepted configuration, plus a
+  separately approved confirmation pass before it can drive an SFT decision.
+- **Submission ceilings made exact:**
+  - mean ≤ $0.01/answer, including non-LLM per-question charges (`extra_cost_usd`);
+  - any single answer ≤ $0.05;
+  - one-time costs reported as a separate total;
+  - P90 ≤ 30s, with timeout rules to follow once BIRD confirms its limits.
+- **`train_dev2`** is development data only; transfer claims need the lockbox plus a
+  larger-schema check.
+- **Probe executor** gated on residual value-lookup errors after static grounding.
+- **Training data:** 5,115 examples after exclusions; stop and re-filter if a stratified
+  100-row audit shows > 15% semantic errors.
+- **Jev:** coverage flags scored first against ≈ 50 hand-labelled omissions.
+
+## 2026-09-26 — Plan v2.9 (fourth review); cleaned-dev baseline 66.0%
+- **Cleaned dev** (primary checkpoint): the 99-row pilot counts as look 1 and the full
+  baseline `20260927T025554Z` as look 2. The baseline scored **66.0%** (macro 64.1%) at
+  $0.30. Two looks remain.
+- **Truncation-only retry** replaces a global `--max-tokens` increase.
+  - `LLMResult` now records `finish_reason`.
+  - `--truncation-retry TOKENS` re-asks once with a larger cap only when the output was
+    cut off. It is off by default and leaves the config hash unchanged when off.
+  - It targets the baseline's 21 truncated answers (10 in `financial`). A pilot is next.
+- **Rank 1c** tests BIRD's supplied `column_meaning.json` before any LLM-written
+  glossary.
+- **Submission cost accounting:** the analyser is ready, but runtime emitters of
+  `extra_cost_usd` are still required. A run that doesn't reconcile with the ledger
+  fails the cost check.
+- **Candidate selection** adds question-constraint checks to result-signature agreement.
+- POSTMORTEM_V2 §7.3's projections are marked superseded.
+
+## 2026-09-26 — Truncation-only retry joins the submission package
+- A forced-truncation pilot on `train_dev` (60-token cap, retry at 400): 48 of 48
+  truncated answers recovered. 30 were correct vs 29 at the normal cap. Retried answers
+  cost ≈ 1.8× and take +1.7s.
+- It fires only on a length cut-off, which always fails, so it can't regress other
+  answers.
+- Added to the bundled submission-track package as `--truncation-retry 1200` and
+  measured at the next cleaned-dev milestone. Not a CLI default.
+
+## 2026-09-26 — Rank 1a measured: small headroom on BIRD
+- `src/db_profile.py` (formats, join cardinality, FTS5 values; cached by content hash)
+  and `benchmark/grounding.py` built and tested.
+- 95–97% of gold string literals are already in the question/evidence, so value
+  retrieval has little to add on BIRD.
+- Text-encoded money/duration columns touch 14 of 501 `train_dev` questions (46% vs
+  70%), ≤ ≈ 1.5 pts.
+- Decision: keep 1a as a cheap building block (and for the product CLI), but don't
+  expect it to close the gap. Selection/generation evidence (ranks 4, G) comes next.
+
+## 2026-09-26 — Rank 1c (supplied column meanings) not adopted
+- `--column-meaning 6` pilot: −1.5 [−5.5, +2.5] on 100 `train_dev` rows × 2, with +0.8s
+  P50.
+- It fixed the targeted money-format case but steered other answers away from BIRD's
+  literal gold.
+- The flag stays. A narrower, format-only variant (≈ 14 of 501 questions) is the only
+  remaining 1b/1c candidate.
+
+## 2026-09-26 — 47 more train databases; format gate stopped on evidence
+- **Data:** one sequential stream extracted 47 train databases (2.3 GB total on disk).
+  New splits: `train_dev2` (4 preselected databases, 503 questions, development only) and
+  `train_design` (43 databases, 5,851 questions, for fitting gates and SFT execution
+  checks). Existing fingerprints are unchanged.
+- **Format gate stopped:**
+  - On 194 design questions needing numeric use of text-stored numbers, v4p1 scores
+    30.4%. But 63 of its 135 misses are it converting correctly where the gold compares
+    raw text. Only 9 misses are fixable by a conversion note.
+  - A convert-note gate would lower EX. A don't-convert gate would game labels and
+    risks test grading.
+  - No Jev spend; the grading question goes to the BIRD team.

@@ -1,0 +1,109 @@
+
+### mini_dev/baseline(1x): rows=500 repeats={1: 500}
+row-weighted 47.6% [43.2%,52.2%]  macro 46.8% [42.4%,51.5%]
+stable-correct 238 (47.6%) | stable-wrong 262 (52.4%) | flaky 0 (0.0%) | pass@any 47.6%
+P50 1.53s P90 5.00s  $/answer 0.000485  uncached-eq 0.000495
+   california_schools          33.3%  n=30
+   financial                   37.5%  n=32
+   thrombosis_prediction       38.0%  n=50
+   formula_1                   40.9%  n=66
+   toxicology                  45.0%  n=40
+   card_games                  46.2%  n=52
+   debit_card_specializing     46.7%  n=30
+   european_football_2         49.0%  n=51
+   codebase_community          53.1%  n=49
+   student_club                56.2%  n=48
+   superhero                   69.2%  n=52
+
+### mini_dev/gate1(3x): rows=500 repeats={3: 500}
+row-weighted 59.3% [55.3%,63.7%]  macro 58.3% [54.2%,62.9%]
+stable-correct 290 (58.0%) | stable-wrong 196 (39.2%) | flaky 14 (2.8%) | pass@any 60.8%
+P50 0.97s P90 4.47s  $/answer 0.000205  uncached-eq 0.000491
+   california_schools          43.3%  n=30
+   toxicology                  48.3%  n=40
+   formula_1                   48.5%  n=66
+   financial                   50.0%  n=32
+   thrombosis_prediction       50.0%  n=50
+   card_games                  50.6%  n=52
+   debit_card_specializing     52.2%  n=30
+   codebase_community          61.9%  n=49
+   european_football_2         69.9%  n=51
+   student_club                80.6%  n=48
+   superhero                   85.9%  n=52
+
+### train_dev/baseline(2x): rows=501 repeats={2: 501}
+row-weighted 60.1% [55.8%,64.1%]  macro 58.5% [53.6%,63.4%]
+stable-correct 298 (59.5%) | stable-wrong 197 (39.3%) | flaky 6 (1.2%) | pass@any 60.7%
+P50 1.13s P90 14.85s  $/answer 0.000293  uncached-eq 0.000511
+   sales_in_weather            40.6%  n=80
+   restaurant                  58.5%  n=117
+   soccer_2016                 65.1%  n=258
+   movie                       69.6%  n=46
+
+### train_dev/1a(2x): rows=501 repeats={2: 501}
+row-weighted 67.1% [63.0%,71.3%]  macro 65.4% [60.5%,70.3%]
+stable-correct 333 (66.5%) | stable-wrong 162 (32.3%) | flaky 6 (1.2%) | pass@any 67.7%
+P50 1.22s P90 8.46s  $/answer 0.000278  uncached-eq 0.000467
+   sales_in_weather            51.9%  n=80
+   movie                       69.6%  n=46
+   soccer_2016                 70.0%  n=258
+   restaurant                  70.1%  n=117
+
+### train_dev/1abc(2x): rows=501 repeats={2: 501}
+row-weighted 68.7% [64.8%,72.7%]  macro 69.3% [64.8%,73.9%]
+stable-correct 340 (67.9%) | stable-wrong 153 (30.5%) | flaky 8 (1.6%) | pass@any 69.5%
+P50 1.05s P90 8.46s  $/answer 0.000398  uncached-eq 0.000497
+   sales_in_weather            51.9%  n=80
+   restaurant                  70.1%  n=117
+   soccer_2016                 70.3%  n=258
+   movie                       84.8%  n=46
+
+### train_dev/gptoss120b(2x): rows=501 repeats={2: 501}
+row-weighted 67.3% [63.3%,71.5%]  macro 68.2% [63.8%,72.8%]
+stable-correct 337 (67.3%) | stable-wrong 164 (32.7%) | flaky 0 (0.0%) | pass@any 67.3%
+P50 0.97s P90 1.93s  $/answer 0.000166  uncached-eq 0.000398
+   sales_in_weather            52.5%  n=80
+   restaurant                  66.7%  n=117
+   soccer_2016                 69.0%  n=258
+   movie                       84.8%  n=46
+
+### train_dev/v4p1flash(2x): rows=501 repeats={2: 501}
+row-weighted 69.1% [65.4%,73.1%]  macro 70.8% [66.6%,75.0%]
+stable-correct 340 (67.9%) | stable-wrong 149 (29.7%) | flaky 12 (2.4%) | pass@any 70.3%
+P50 1.61s P90 4.05s  $/answer 0.000185  uncached-eq 0.000696
+   sales_in_weather            60.6%  n=80
+   restaurant                  68.8%  n=117
+   soccer_2016                 69.0%  n=258
+   movie                       84.8%  n=46
+
+### dev_untouched(1x): rows=1036 repeats={1: 1036}
+row-weighted 63.6% [60.9%,66.5%]  macro 63.9% [61.0%,67.0%]
+stable-correct 659 (63.6%) | stable-wrong 377 (36.4%) | flaky 0 (0.0%) | pass@any 63.6%
+P50 0.98s P90 3.13s  $/answer 0.000431  uncached-eq 0.000465
+   california_schools          44.1%  n=59
+   thrombosis_prediction       46.0%  n=113
+   formula_1                   50.0%  n=108
+   card_games                  56.1%  n=139
+   toxicology                  61.0%  n=105
+   debit_card_specializing     64.7%  n=34
+   financial                   65.8%  n=76
+   codebase_community          72.3%  n=137
+   european_football_2         76.9%  n=78
+   student_club                78.2%  n=110
+   superhero                   88.3%  n=77
+
+### dev_untouched/gptoss120b(1x): rows=1036 repeats={1: 1036}
+row-weighted 62.7% [60.1%,65.6%]  macro 63.1% [60.1%,66.2%]
+stable-correct 650 (62.7%) | stable-wrong 386 (37.3%) | flaky 0 (0.0%) | pass@any 62.7%
+P50 0.91s P90 2.30s  $/answer 0.000206  uncached-eq 0.000393
+   california_schools          40.7%  n=59
+   formula_1                   49.1%  n=108
+   thrombosis_prediction       51.3%  n=113
+   card_games                  54.0%  n=139
+   toxicology                  59.0%  n=105
+   financial                   61.8%  n=76
+   debit_card_specializing     67.6%  n=34
+   european_football_2         70.5%  n=78
+   codebase_community          71.5%  n=137
+   student_club                76.4%  n=110
+   superhero                   92.2%  n=77

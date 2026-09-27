@@ -53,6 +53,8 @@ class LLMResult:
     model: str
     cost_usd: float
     reasoning_content: str = ""
+    # Provider stop reason ("stop", "length", ...); "length" means max_tokens cut the output.
+    finish_reason: str = ""
 
 
 def model_request_options(model: str) -> dict[str, Any]:
@@ -132,7 +134,8 @@ async def complete(
         cached_tokens = _cached_tokens(usage) if usage else 0
         actual_cost = cost_usd(model, input_tokens, cached_tokens, output_tokens)
         await guard.settle(reservation, actual_cost)
-        message = response.choices[0].message
+        choice = response.choices[0]
+        message = choice.message
         reasoning_content = getattr(message, "reasoning_content", None) or ""
         return LLMResult(
             text=message.content or "",
@@ -144,6 +147,7 @@ async def complete(
             model=model,
             cost_usd=actual_cost,
             reasoning_content=reasoning_content,
+            finish_reason=str(getattr(choice, "finish_reason", None) or ""),
         )
     except (AuthenticationError, RateLimitError, APIConnectionError, APITimeoutError):
         await guard.settle(reservation, None)

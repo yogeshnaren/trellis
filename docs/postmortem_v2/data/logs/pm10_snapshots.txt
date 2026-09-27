@@ -1,0 +1,4 @@
+0731 68.7% | v4p1 69.1% | gpt-oss 67.3%
+0731 -> v4p1: verdict changes on 36 rows (7.2%): fixes 20, regressions 16, net +4
+any of 3 runs correct: 74.3%; wrong in all three: 129 (25.7%)
+of those, all three return the same result set: 85 (66%) = 17.0% of rows

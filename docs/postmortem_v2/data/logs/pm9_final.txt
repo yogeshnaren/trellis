@@ -1,0 +1,19 @@
+Spearman(per-DB acc: Mini-Dev gate1 vs dev_untouched) = 0.85
+db                         Mini(3x)   n  DevUnt    n  delta
+california_schools            43.3%  30   44.1%   59   +0.7
+toxicology                    48.3%  40   61.0%  105  +12.6
+formula_1                     48.5%  66   50.0%  108   +1.5
+financial                     50.0%  32   65.8%   76  +15.8
+thrombosis_prediction         50.0%  50   46.0%  113   -4.0
+card_games                    50.6%  52   56.1%  139   +5.5
+debit_card_specializing       52.2%  30   64.7%   34  +12.5
+codebase_community            61.9%  49   72.3%  137  +10.4
+european_football_2           69.9%  51   76.9%   78   +7.0
+student_club                  80.6%  48   78.2%  110   -2.4
+superhero                     85.9%  52   88.3%   77   +2.4
+mini_dev/gate1(3x): mean 59.3%  majority-by-signature 59.4%  pass@any 60.8%
+train_dev/1abc(2x): mean 68.7%  majority-by-signature 68.5%  pass@any 69.5%
+ledger tables: ['reservation', 'charge', 'settlement']
+reservation ['token', 'usd', 'pid', 'at', 'ttl_s', 'label']
+charge ['id', 'token', 'usd', 'source', 'kind', 'at']
+settlement ['token', 'state', 'at']

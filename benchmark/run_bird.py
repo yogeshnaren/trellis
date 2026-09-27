@@ -43,10 +43,13 @@ from benchmark.bird import (
     load_questions,
     with_evidence,
 )
+from benchmark.column_meaning import DEFAULT_PATH as COLUMN_MEANING_PATH
+from benchmark.column_meaning import ColumnMeanings
+from benchmark.column_meaning import render as render_meanings
 from benchmark.evaluate import BIRD_OFFICIAL_TIMEOUT_S, BirdScore, score_bird
 from benchmark.fewshot import DEFAULT_POOL as FEWSHOT_POOL
 from benchmark.fewshot import FewShotIndex, render_examples
-from benchmark.splits import TRAIN_DEV_DBS, TRAIN_LOCKBOX_DBS
+from benchmark.splits import TRAIN_DEV2_DBS, TRAIN_DEV_DBS, TRAIN_LOCKBOX_DBS
 from src.agent import Agent
 from src.conversation import ConversationContext
 from src.costs import DEFAULT_MODEL, get_shared_budget
@@ -118,8 +121,14 @@ async def benchmark(args: argparse.Namespace) -> Path:
     semaphore = asyncio.Semaphore(args.concurrency)
     stop = asyncio.Event()
     records: list[dict[str, Any]] = []
+    meanings = (
+        ColumnMeanings.from_file(args.column_meaning_file) if args.column_meaning else None
+    )
     fewshot = (
-        FewShotIndex.from_file(args.fewshot_pool, set(TRAIN_DEV_DBS) | set(TRAIN_LOCKBOX_DBS))
+        FewShotIndex.from_file(
+            args.fewshot_pool,
+            set(TRAIN_DEV_DBS) | set(TRAIN_DEV2_DBS) | set(TRAIN_LOCKBOX_DBS),
+        )
         if args.fewshot
         else None
     )
@@ -150,8 +159,15 @@ async def benchmark(args: argparse.Namespace) -> Path:
                     ),
                     pipeline_repairs=args.pipeline_repairs,
                     llm_timeout_s=args.llm_timeout,
+                    truncation_retry_tokens=args.truncation_retry,
                 )
                 prompt = with_evidence(question.question, question.evidence)
+                if meanings is not None:
+                    notes = meanings.select(
+                        question.db_id, question.question, question.evidence,
+                        args.column_meaning,
+                    )
+                    prompt = render_meanings(notes) + prompt
                 if fewshot is not None:
                     shots = fewshot.examples(question.question, question.evidence, args.fewshot)
                     prompt = render_examples(shots) + prompt
@@ -287,6 +303,16 @@ def run_metadata(
         "reasoning_effort": args.reasoning_effort,
         "llm_timeout_s": args.llm_timeout,
         "max_repairs": 1,
+        # Recorded only when on, so runs without it keep the accepted config hash.
+        **({"truncation_retry_tokens": args.truncation_retry} if args.truncation_retry else {}),
+        **(
+            {
+                "column_meaning": args.column_meaning,
+                "column_meaning_sha256_16": dataset_fingerprint(args.column_meaning_file),
+            }
+            if args.column_meaning
+            else {}
+        ),
     }
     # Python sources only: result files under benchmark/results/ (including the raw file
     # this run just wrote) are outputs, not code, and must not make a clean tree look dirty.
@@ -453,6 +479,23 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Benchmark-mode repairs: did-you-mean for unknown identifiers, one refusal "
         "retry, one guarded empty-result retry, size-scaled execution timeout.",
+    )
+    parser.add_argument(
+        "--column-meaning",
+        type=int,
+        default=0,
+        metavar="N",
+        help="Add up to N question-relevant column descriptions from BIRD's "
+        "column_meaning file to the user message; 0 = off.",
+    )
+    parser.add_argument("--column-meaning-file", type=Path, default=COLUMN_MEANING_PATH)
+    parser.add_argument(
+        "--truncation-retry",
+        type=int,
+        default=0,
+        metavar="TOKENS",
+        help="Re-ask once with this max_tokens when an answer was cut off by the cap "
+        "(finish_reason 'length'); 0 = off.",
     )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(

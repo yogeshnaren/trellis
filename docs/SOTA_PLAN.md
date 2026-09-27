@@ -1,38 +1,92 @@
-# Path to BIRD SOTA: Plan v2.4 (for review)
+# Path to BIRD SOTA: Plan v2.9 (for review)
 
-**Goal:** move Trellis as close as possible to >80% execution accuracy on BIRD's hidden
-**test** set using low-cost methods first. Fine-tuning is decided only at the end, from
-measured evidence.
+**Goal:** first exceed 75% BIRD official execution accuracy on a named public dev
+evaluation, then pursue >80% on the hidden test. Start with the largest credible quality
+gains that can be tested for free or for pennies. Decide on fine-tuning from current,
+paired evidence; no public dev score predicts hidden-test performance.
 
-**Status:** v2.4, **approved 2026-09-23**. It replaces v1 after five external reviews (sol)
-and a day of measurement work. Every review finding was verified and adopted (§0.2). Items
-marked ✅ are implemented and tested. Next: Phase 1, starting with the `train_dev`
-baseline.
+**Status:** v2.9 proposal, 2026-09-26.
+- v2.5 folded in the later runs (§0.4) and the findings in §2 from
+  `docs/POSTMORTEM_V2.md`.
+- v2.6 added a principal-level review (§0.5).
+- v2.7 applies a second external review (§0.6): measured scores and decision points
+  replace projections, and several v2.6 items are corrected.
+- v2.8 applies a third review (§0.7):
+  - a cleaned-dev look budget;
+  - the candidate bank as a diagnostic run plus a confirmation run;
+  - exact submission ceilings;
+  - `train_dev2`'s role;
+  - probe-executor gating;
+  - explicit quality labels for training data and Jev.
+- v2.9 applies a fourth review (§0.8) and records the cleaned-dev baseline:
+  - the pilot counts as a look;
+  - supplied column meanings come before an LLM glossary;
+  - honest cost-accounting status;
+  - a truncation-only retry;
+  - figure corrections;
+  - constraint checks in candidate selection.
 
-**Policy:** this is a personal project. The order of work is fixed:
-1. free;
-2. pennies per pilot;
-3. single-digit dollars;
-4. everything else.
+The v2.6 changes are:
+- a two-track acceptance rule;
+- a parallel generation/training track;
+- a per-database semantic layer;
+- strategy-diverse candidates;
+- Jev reframed as a gate on expensive work.
 
-Every paid step starts with a 50–100-question pilot that measures its real cost before any
-full run. There is one spend ledger (§6.8).
+The approved v2.4 plan and its experiment logs remain below as history. A planned action
+is not an implemented feature or an approved increase in spending.
+
+**Policy:** free analysis and deterministic fixes first; then Jev and generator pilots
+priced from measured tokens; then full comparisons and only then training or costly
+model routes. Every paid experiment begins with a 50–100-question pilot and uses the
+shared spend ledger (§6.8). No gold SQL, gold result or gold-derived complexity is
+available to the live inference path.
 
 ---
 
 ## 0. Summary
 
-### 0.1 Where we are
+### 0.1 Current measured position
 
-| Scoring (existing run `bird_raw_20260923T061413Z`, 500 Mini-Dev rows) | Simple (148) | Moderate (250) | Challenging (102) | **Overall** |
-|---|---:|---:|---:|---:|
-| **BIRD official EX** (headline) | 66.2% | 42.8% | 32.4% | **47.6%** |
-| Same predictions vs **corrected labels** (Arcwise-Plat-SQL) | 66.2% | 47.6% | 32.4% | 50.0% |
-| *Oracle* output-format ceiling (an upper bound, **not a gain**, §2.1) | 78.4% | 56.4% | 51.0% | 61.8% |
+| Evaluation | Current model | Rows × repeats | Official EX | Scope |
+|---|---|---:|---:|---|
+| Mini-Dev gate 2 | `deepseek-v4p1-flash` | 500 × 3 | **65.3%** (979/1,500 outputs) | 2 of 4 gate looks used; macro 64.2% |
+| `dev_untouched` | `deepseek-v4p1-flash` | 1,036 × 1 | **67.6%** (700/1,036) | Reporting only; macro 68.1% |
+| `train_dev` clean reproduction | `deepseek-v4p1-flash` | 501 × 2 | **69.4%** | Iteration set; macro 70.8% |
+| **Cleaned Nov 2025 dev (primary)** | `deepseek-v4p1-flash` | 1,534 × 1 | **66.0%** (1,013/1,534) | Look 2 of 4 (the 99-row pilot was look 1); macro 64.1%; simple 75.3 / moderate 65.0 / challenging 32.9 |
+| `train_lockbox` | — | 974 questions | **Unopened** | 0 of 2 looks used |
 
-- The local evaluator previously reported 45.8%. It is not BIRD's comparator (§1.2).
-- Cost is $0.000485 per query, P50 is 1.5s, and the model is `deepseek-v4-flash-0731` with
-  reasoning off.
+The exact current run IDs are `20260926T211555Z` (Mini-Dev),
+`20260926T212111Z` (`dev_untouched`) and `20260926T212754Z`
+(`train_dev`); see `docs/PROVENANCE.md`. The former Mini-Dev gate was 59.3%.
+On the same Mini-Dev database hashes, v4p1 gains +5.9 points over the retired
+`deepseek-v4-flash-0731` snapshot. The old and new `dev_untouched` runs differ in
+five database content hashes, so 63.6% → 67.6% is a descriptive change, **not**
+an isolated model effect. Re-score before quoting a close comparison: timeouts
+depend on evaluator load.
+
+To exceed 75% on current `dev_untouched` requires at least **78 net additional
+correct rows** (700 → 778/1,036). To exceed 75% on Mini-Dev's 1,500 outputs
+requires **147 net additional correct outputs** (979 → 1,126). These are
+checkpoints, not forecasts. The old 47.6% baseline and +14-point gold-informed
+format oracle (§2) are historical diagnosis, not current improvement estimates.
+
+**Leaderboard context (v2.7):**
+- Trellis has **no test score**, and no public dev number converts into one.
+- Measured: Mini-Dev **65.3%**, `dev_untouched` **67.6%**, `train_dev` **69.4%** (§0.1
+  table).
+- Not measured: the cleaned 1,534-row dev (the primary checkpoint, §4), `train_lockbox`
+  and `train_dev2`.
+- The v2.6 "≈ 66.9% full dev" pooled different question and database versions, so it is
+  withdrawn, together with the rank estimate built on it.
+- For reference, BIRD's main board lists single-model baselines such as Claude Opus 4.6
+  at 68.77 dev (Nov 2025 dev) / 70.15 test. It lists GPT-5.5-xhigh with only a test
+  column value (72.55) and no linked BIRD source, so that entry is not used as an anchor.
+- No listed entry reaches 80% test with one untrained model producing one answer. The
+  entries with published designs use a trained model with many samples (Gemini-SQL2,
+  80.04 on the single-trained-model track) or several candidates plus a selector.
+  Several top entries publish no design. These are examples, not proof that any one
+  component is required.
 
 ### 0.2 What changed from v1, and why
 
@@ -65,14 +119,161 @@ full run. There is one spend ledger (§6.8).
 | Settlement "enforceable" | A late settle after a stale charge double-counted, and repeating it counted again ($0.10 recorded as **$0.40**, reproduced). **Now:** settle reconciles and is idempotent; per-reservation `ttl_s` for long batch jobs ✅. Batch savings are **not yet available**: pricing exists, but there's no batch submission path. | review 3 #4, fixed |
 | Phase 3 turns on reasoning *and* switches JSON → fenced SQL | Two variables in one trial. **Now:** reasoning on with the current JSON format first, then the format change as its own test. | review 3 #5, adopted |
 
-### 0.3 Decisions already made
+### 0.3 Existing project constraints
 
-| Decision | Status |
+The approved v2.4 spending envelope, separate product prompt profile, and
+`train_dev` / gate split remain in force. The v2.5 and v2.6 edits change experiment
+priority, acceptance tracks and measurement language. They do not execute paid runs, raise
+caps or download data; §8 lists the owner decisions v2.6 needs.
+
+### 0.4 Why the order changes in v2.5
+
+1. `POSTMORTEM_V2.md` finds the Phase 1 presentation failures mostly fixed.
+   Remaining errors cluster around value grounding, table/column choice, missing
+   constraints, aggregation and arithmetic scope.
+2. Existing empty-result retry has limited effect. In the new runs, Mini-Dev has
+   45 empty and 17 single all-NULL outputs among 1,500, none correct. On current
+   `dev_untouched`, **4/30 empty and 2/11 all-NULL answers are correct**.
+   Triggered repair must therefore protect legitimate empty/NULL answers.
+3. Global reasoning, dictionary dumping, retrieved few-shot and earlier
+   disagreement escalation missed their cost-adjusted bars. Revisit only targeted
+   variants with a demonstrated mechanism.
+4. The retired-model candidate bank's pass@K and routing ceiling do not describe
+   the new default. Rebuild comparable candidates before claiming a selection
+   ceiling or making a fine-tuning decision.
+5. Jev can make narrow semantic choices before and after SQL generation (§7).
+   It has no demonstrated BIRD accuracy gain yet. Move its **offline and targeted**
+   tests ahead of expensive selector, cascade and training work.
+
+### 0.5 v2.6 review: what changes and why
+
+**Assessment.** The measurement foundation is sound: content-pinned paired comparisons,
+rationed gates and one ledger. So is the v2.5 mechanism diagnosis. But ranks 1–4 of the
+v2.5 queue are bounded fixes:
+
+| Fix | Bound or planning range |
 |---|---|
-| Plan v2.4, including the §6.8 phase caps | **Approved 2026-09-23** |
-| Frugal track; fine-tuning decided at gate F-G | Decided 2026-09-23 |
-| Jev via OpenRouter for the BIRD path (decisions only; see DECISIONS.md) | Decided 2026-09-23; production data still needs a review |
-| `train_dev` databases are the iteration set; Mini-Dev + `train_lockbox` are the infrequent gates | Adopted in v2.1 (§5) |
+| Empty/NULL handling | ≤ 3.4 pts |
+| Value grounding | +1.1–2.0 |
+| Computation checks | +1–3 |
+| Jev | unknown |
+
+The fixes overlap, and none is a measured gain. Their stated bounds suggest the queue
+alone may not reach the >75% dev checkpoint; v2.7 treats that as a decision point to
+measure (§8), not a projection. v2.6 moved generation work earlier and made six changes
+(items 2, 3 and 6 are amended in v2.7, §0.6):
+
+1. **Two-track acceptance (§5.7).**
+   - *Why:* the §5 cost term (+1 pt per +50% uncached cost) fits the CLI product. Applied
+     to the benchmark, it would reject a +4 pt gain at 5× cost (required ≈ +9.5), which
+     every leading architecture needs.
+   - *Scale:* the whole hidden test costs about $1 at today's rate.
+   - *Change:* a **submission track** with an absolute per-answer cost ceiling and a P90
+     latency ceiling in place of the per-point cost penalty. It keeps every paired
+     quality requirement.
+2. **A parallel generation/training track (rank G, §6.6).**
+   - *Why:* evidence for it already exists: shared errors across all 5 models, the old
+     bank's pass@4 = 73%, and frontier single models plateauing in the low 70s on test.
+   - *Change (as amended in v2.7):* pricing and training-data preparation run
+     **alongside** ranks 1–4. The paid SFT pilot waits for the current candidate-bank
+     result and a label-quality audit (§0.6).
+3. **A per-database semantic layer (rank 1, §6.4).**
+   - *Why:* this is what data engineers bring and what the #1 system (DataGallery) is
+     built on.
+   - *Change:* build it offline from the database alone, never from gold, at ingestion:
+     1. column profiles (stored type vs semantic type; text-encoded numbers, dates and
+        money; units; enumerations; NULL rates);
+     2. the join graph with cardinalities and fan-out risk;
+     3. an LLM-written glossary cached by database content hash.
+   - It must also run on hidden-test databases at submission time.
+4. **Value exploration before the final SQL (rank 2).** One or two bounded exploratory
+   queries (`SELECT DISTINCT … LIMIT`, `LIKE` probes) against the `values-differ` bucket,
+   still the largest.
+5. **Strategy-diverse candidates, earlier (rank 4).** Diversity from *prompting strategies*
+   (direct, divide-and-conquer, query-plan; CHASE-SQL) on v4p1 plus one other family.
+   Model diversity alone produced shared errors. Measure pass@K first. It decides between
+   selection work and generation work.
+6. **Jev reframed (§6.4, §7).**
+   - Jev adds ≈ $0.00008 per call (≈ 12% of an uncached v4p1 answer) and a serial network
+     hop.
+   - It lowers cost or latency only when it **gates expensive work away** (extra
+     candidates, repairs, a stronger model), never as an always-on checker.
+   - No gain is projected (v2.7). Agentar's selector ablation (≈ 1.8 pts) measures
+     Agentar, not Jev in Trellis; shadow scoring and a live paired run decide.
+   - Call budget is a declared pilot variable (v2.7): one bundled call vs a two-stage
+     design, compared on net EX, false repairs, cost and P90. A post-SQL coverage check
+     needs the SQL, so it is on the critical path by nature.
+
+**Also:**
+- **Dev vs train divergence (§5.8).** The v4p1 swap gained +5.9 on Mini-Dev but +0.4 on
+  `train_dev`, so public-dev gains from newer models may overstate test gains.
+- **`train_dev` saturation.** More than 20 decisions have been made on it; soccer_2016 is
+  half its rows, and about 17% of it is unsolvable as labelled. Propose a second
+  iteration set, `train_dev2`: 3–4 more small train databases fetched by range request.
+  *Owner approval is needed for the download.* The 5 databases fetched earlier are the
+  lockbox's, not spare.
+- **Contact the BIRD team now.** Their answers are design constraints for the semantic
+  layer and the specialist: whether test-time runs may call external APIs, how much
+  per-database preprocessing is allowed, and time limits.
+
+### 0.6 v2.7: second external review (2026-09-26)
+
+Each claim was checked before adoption.
+
+| # | Finding | Check | Change in v2.7 |
+|---|---|---|---|
+| 1 | Remove projected test scores; the pooled "full dev" mixes versions | Agreed. The GPT-5.5-xhigh claim ("listed as dev") is **not** what the page shows (test column, dev blank), but it has no linked BIRD source | The trajectory table, the 66.9% estimate and the rank are withdrawn; GPT-5.5 is not used as an anchor (§0.1) |
+| 2 | Name one primary dev checkpoint; within-4-database bootstrap ignores between-database variation | Verified: the bootstrap resamples questions within databases | The cleaned Nov 2025 dev is primary after its baseline (§4). `train_dev2` databases are preselected before outcomes, database-level uncertainty is reported, and an untouched database gate is kept (§5.9) |
+| 3 | "Gold executes" is not clean labels; use BIRD's filtered train | Verified: `birdsql/bird23-train-filtered`, 6,601 of 9,428 rows, CC BY-SA 4.0, quality-filtered (not verified) | Rank G starts from it, compared with our own filter, with an evaluation-database overlap check, a stratified semantic audit and an explicit reward spec. BIRD-Verified is evaluation/diagnosis only |
+| 4 | The semantic layer bundles too much to interpret | Agreed | Split into 1a deterministic facts, 1b question-relevant slices and 1c a fact-checked glossary, each with its own measurement. "4 of 10" is a smoke test, not evidence |
+| 5 | Probes need their own bounded executor | Verified: `execute_candidate` fetches whole results; the agent protocol expects SQL/refusal per call | Rank 2 needs a probe executor (validated shape, mandatory `LIMIT`, time budget, per-question probe budget) and a tool-protocol change priced in its pilot |
+| 6a | Candidate-bank cost understated | Verified: 3 strategies × 501 × $0.000696 ≈ **$1.05 uncached**; v2.6's $0.30–0.60 assumed cache hits | Rank 4 quotes cached and uncached totals and a stop budget |
+| 6b | Result signatures can split set-equal results (`1` vs `1.0`) | Verified: `{(1,)} == {(1.0,)}`, but their reprs differ | **Fixed** in `src/db.py:result_signature`, with a test. Pre-fix signatures are comparable only within a run |
+| 7 | Jev's +1–2 is a projection; the one-call rule is too rigid; the model page loads | Verified: `openrouter.ai/typesafe/jev-1.13` returns 200 (the earlier 404 was transient) | No projected Jev gain; call design is a pilot variable; price caveat updated (§7) |
+| 8 | Leaderboard shows examples, not necessity | Half: Gemini-SQL2 reached 80.04 as a single trained model with many samples, so several model *families* aren't necessary | Necessity language removed (§0.1) |
+
+**Adopted order (§8):**
+1. Fix the benchmark claims, establish the cleaned-dev baseline, and preselect
+   `train_dev2`.
+2. Build and separately test deterministic value profiles, retrieval and join checks.
+3. Pilot targeted value and computation repairs, with controls for legitimately empty
+   answers.
+4. Build the strategy-diverse bank, with the corrected budget and signature clustering.
+5. Run Jev shadow comparisons on the bank; promote only decisions that improve a live
+   paired run.
+6. Price and prepare training data in parallel. Spend on SFT only when the bank and the
+   data audit show why it should beat the cheaper routes.
+
+### 0.7 v2.8: third external review (2026-09-26)
+
+The reviewer confirmed that v2.7 withdrew the projections correctly, and corrected their
+own earlier reading: GPT-5.5-xhigh's 72.55 *is* in the test column.
+
+| # | Finding | Check | Change in v2.8 |
+|---|---|---|---|
+| 1 | §8 says no step ran; cleaned-dev reuse needs a limit | Partly stale: §8 already recorded the 99-row pilot, and the gold-execution preflight had run (1,531/1,534 execute). The look limit is valid | **Cleaned-dev looks capped at 4** (baseline, two milestones, final freeze), each with its purpose recorded. Aggregate scores count as looks. The pilot is a cost/compatibility check, not a score estimate (§5.10) |
+| 2 | A one-pass candidate bank can't authorize paid SFT | Valid: decisions need 2 repeats (§5.3) | Rank 4 is a **diagnostic** pass on the **latest accepted cumulative configuration**. A separately priced confirmation pass is required before it drives the SFT decision, especially near the boundary |
+| 3 | Ceilings undefined: mean vs cap; only LLM calls counted | Verified in `analyze.py` | $0.01 = **mean** per answer including every per-question charge (`extra_cost_usd`); **hard cap $0.05** for any answer; one-time costs reported as a separate submission total; timeout-rate and max-latency rules added once BIRD confirms its limits. Implemented, with tests (§5.7) |
+| 4 | `train_dev2` repeats `train_dev`'s themes | Valid: 2 sports databases, 1 movie | `train_dev2` is **development data only**. Transfer claims need the 7-domain lockbox plus at least one larger-schema check. Its ≈ 7–8 GB fetch is optional (§5.9) |
+| 5 | Build the probe executor only if cheaper grounding fails | Valid, and consistent with "smallest cost first" | Rank 2 is gated on residual value-lookup errors after 1a/1b and one guarded retry (§6, §8) |
+| 6 | Training and Jev need explicit quality labels | Valid | Rank G reports **5,115 examples** after exclusions, audits a stratified 100, and stops to re-filter if the semantic error rate is > 15%. Jev's coverage test is scored first against ≈ 50 hand-labelled atomic omissions, then against live paired repairs (§6, §7) |
+
+### 0.8 v2.9: fourth external review (2026-09-26)
+
+Each point was checked against the files. All held except that the full baseline had
+since run.
+
+| # | Finding | Check | Change in v2.9 |
+|---|---|---|---|
+| 1 | The 99-row pilot is feedback; calling the baseline "look 1" was premature | Valid: its score and truncation cases were used to propose a change | The pilot is **look 1** and the full baseline **look 2** (2026-09-26). One milestone and the final freeze remain; the cap is not raised (§5.10) |
+| 2 | Use the supplied `column_meaning.json` before paying for a glossary | Verified: nothing in `src/`/`benchmark/` reads it; `train_column_meaning.json` (3,498 entries) is on disk; test supplies its own | Rank 1c tests retrieval and selective inclusion of `column_meaning` first. An LLM glossary is compared only if it adds value |
+| 3 | `extra_cost_usd` is analysed but nothing writes it | Verified | §5.7 now states the analyser is ready and runtime emitters are required. Every decision path must record its charge; a run whose per-answer totals don't reconcile with the ledger delta fails the submission-cost check |
+| 4 | Retry only length-truncated answers, not every cap | Verified: `finish_reason` was not captured. The baseline had **21 truncation failures (1.4%), 10 in `financial`** | **Implemented:** `LLMResult.finish_reason`; `--truncation-retry TOKENS` re-asks once at a larger cap only on `finish_reason == "length"` (off by default; config hash unchanged when off; tests). Pilot to measure recovered answers and added cost |
+| 5 | Wrong figures and stale references | Verified: challenging is 231/1,534 (15.1%), not 9%; 1,531 gold queries completed and 3 timed out; rank 0 said "a few hundred MB" for `train_dev2`; POSTMORTEM_V2 §7.3 still cites the withdrawn rank and projections | All corrected. POSTMORTEM_V2 §7.3 carries a superseded note |
+| — | Agreement on one local database is an imperfect proxy for SQL meaning (BIRD tests with extra test cases and values) | Agreed | Candidate selection (ranks 4, 6) checks question constraints in the SQL alongside result signatures |
+
+Fireworks/Jev submission architecture stays **conditional on BIRD's answer** about
+external APIs. The email is drafted, not yet sent.
 
 ---
 
@@ -101,7 +302,7 @@ full run. There is one spend ledger (§6.8).
 | Acceptance evidence | `analyze flips` | Row-weighted **and** macro Δ, 95% question-level bootstrap within databases, all repeats kept per question, tables by database/difficulty/complexity band, list of flips to audit |
 | Stratified + targeted pilots; database-ordered runs | `run_bird --per-db N --ids …`; jobs sorted by database | So pilots exercise every schema and each change's target cases, and the prompt cache can hit |
 
-Tests: 60 passing, and ruff and strict mypy are clean. **Uncommitted**, pending review.
+The table records Phase 0 implementation. Test counts and tree state are per-run facts in the sidecars; verify the current checkout before a new experiment.
 
 ### 1.2 Evaluator facts worth knowing
 
@@ -124,7 +325,7 @@ Tests: 60 passing, and ruff and strict mypy are clean. **Uncommitted**, pending 
 | Mini-Dev corrected (Arcwise-Plat-SQL) | 498 unique ids | same | Diagnosis only. Fixes gold SQL; does *not* fix question or evidence ambiguity. | `5927cd93…` |
 | **untouched dev** | 1,036 | BIRD dev's own 11 databases | Reported separately, never tuned on. Same schemas as Mini-Dev, so it is not a generalisation check. Skews simple (777 / 216 / 43). | `b0aed7f6…` |
 | BIRD train (other 63 databases) | 8,701 | questions only, no databases | Few-shot pool and GEPA text. Execution-based tuning would need their databases. | `abf17d3d…` |
-| BIRD dev, Nov 2025 cleaned version | — | — | *Not downloaded.* Optional extra diagnostic, tracked as its own version and never mixed. | — |
+| BIRD dev, Nov 2025 cleaned version | 1,534 | 11 dev databases | Downloaded to gitignored `data/bird/dev_cleaned/`; corrected question, evidence and SQL form a separate evaluation. First confirm its expected database package; no v4p1 score yet. | separate version |
 
 **Label-noise caveat for the train splits:**
 - BIRD train labels are noisy. ReViSQL reports correcting **61% of its sampled 2,462**
@@ -157,35 +358,26 @@ Tests: 60 passing, and ruff and strict mypy are clean. **Uncommitted**, pending 
 
 ---
 
-## 2. Diagnosis of the baseline
+## 2. Current failure diagnosis and opportunities
 
-### 2.1 Failure buckets (262 failing rows, official EX)
+The original 47.6% Mini-Dev baseline had 262 failures. Its extra-column,
+missing-column and pipeline buckets justified Phase 1 and the gold-informed
+output-format oracle (+14 points). They are **historical**; reapplying that
+oracle to today's predictions would be leakage and cannot be counted as gain.
 
-| Bucket | Share | Main cause |
-|---|---:|---|
-| Extra columns | 29% | Chinook-era rules: "return label and measure", tie-breaker columns |
-| Values differ, same shape | 34% | Wrong table/column among look-alikes, wrong join key, evidence misread, label noise |
-| Empty result | 10% | Value/format mismatch (e.g. `yearmonth.Date` is `'201309'` text), over-filtering |
-| Missing columns | 9% | Name concatenation, where gold keeps first and last separate |
-| Row count differs | 8% | DISTINCT and fan-out conventions, LIMIT/ties |
-| Pipeline: safety-rejected / repair-exhausted / "unsupported" | 8% | Unquoted `T-BIL`, 2s timeout, guardrail false positives |
+The later `POSTMORTEM_V2.md` provides the current mechanism audit (on the
+retired snapshot), and the 2026-09-26 run files update its counts:
 
-**Oracle output-format ceiling (+14 pts).** Selecting a subset of columns, removing
-`ROUND`, splitting concatenations, or dropping `DISTINCT` inside `COUNT` turns 71 failing
-rows into gold-equal results. This tells us where to look, not what we'll gain: every
-rewrite was chosen by comparing against the gold result. No transformation is applied
-automatically without measured precision (sol).
-
-### 2.2 What data engineers do that Trellis doesn't
-
-| Gap | Example | Root cause in code |
+| Residual mechanism | Evidence and bound | First intervention |
 |---|---|---|
-| Reads the data dictionary | #1166 `Diagnosis` exists in both `Patient` and `Examination` | Description CSVs are on disk for all 11 databases but never read |
-| Checks values and formats first | #1500 `'201309'`; #1057 "no Poland" | `src/schema.py` samples only the first 10 non-PK columns and only ≤50 distinct values |
-| Treats 0 rows as a bug | 26 empty results shipped | Repair fires only on *errors* |
-| Answers exactly what was asked | Extra measure and name columns | `src/prompts.py` Chinook rules |
-| Joins on real keys | `Match.league_id -> League.None` shown to the model | **Fixed ✅** |
-| Thinks before writing | Mean output is 84 tokens | `reasoning_effort="none"`, T=0, SQL embedded in a JSON string |
+| Empty / all-NULL output | Current Mini-Dev: 45 empty + 17 all-NULL of 1,500 outputs, none correct. Current `dev_untouched`: 26/30 empty and 9/11 all-NULL are wrong; even perfect handling of those 35 errors has a **3.4-point ceiling** on that run. | Relevant value profiles and FTS5 lookup, then a guarded repair; never replace every empty result blindly. |
+| Ratio, per-group aggregation, subquery scope and multi-join logic | The postmortem's pooled ratio questions scored 50.3%, `GROUP BY` 46.2%, 2+ joins 54.9% (associations, not causal effects). | Deterministic numeric/AST checks, short targeted computation plan, specialist generation only for observable classes. |
+| Wrong look-alike table/column, lost stated constraint, join fan-out | `values-differ` remained 17–19% of rows in the postmortem; the bucket mixes real errors with label defects. | Cached schema relationships, bounded candidate retrieval, semantic coverage check and a specific repair instruction. |
+| Annotation conventions and noisy labels | `COUNT(DISTINCT)` and literal-hint differences have an oracle upside but can also flip correct answers wrong. Train labels are noisier than the dev-like sets. | Audit paired flips on `train_dev` and corrected same-input labels before any convention rule or SFT data selection. |
+
+Jev's best hypothesis is **choosing among grounded alternatives and flagging
+semantic omissions**. Arithmetic, exact counts, dates, SQL parsing, joins and
+execution remain in code. No gain is assigned to Jev until a paired live test.
 
 ---
 
@@ -217,76 +409,152 @@ a conversion rule for Trellis.
 
 ## 4. Target and how we'll know
 
-- **Primary milestone:** a frozen configuration that scores strongly on `train_lockbox`
-  (unseen databases) and Mini-Dev (500 rows, 3 repeats), with **no single-database
-  collapse**.
-  Untouched dev is reported alongside.
-- **Working milestone:** 75% official EX on Mini-Dev. This is a checkpoint, not a
-  guarantee of 80% on test.
-- **The claim itself:** only the hidden-test submission establishes >80%. Submit by BIRD's
-  guidelines, after contacting the benchmark team.
+- **Near-term checkpoint (v2.7):** >75% official EX on the **Nov 2025 cleaned
+  1,534-row dev**, the single primary public checkpoint once its database package is
+  confirmed and its baseline is measured, with a frozen configuration. Mini-Dev and
+  `dev_untouched` are reported **separately** and never substituted if they cross first.
+  The current gaps are 7.4 and 9.7 points respectively. The Nov 2025 cleaned
+  1,534-row dev version is a separate benchmark once its database package is
+  confirmed and its baseline measured. Never combine versions into a headline.
+- **Generalization checkpoint:** a frozen candidate improves on
+  `train_lockbox` across databases without a large collapse. That set stays
+  unopened until the planned midpoint/final gates. Public dev sets are reported,
+  not mined for per-question rules.
+- **Ultimate claim:** only a BIRD hidden-test submission demonstrates >80%
+  test EX. Dev-to-test uplift from other systems is context, not a conversion.
 
 ---
 
 ## 5. Evaluation protocol
 
-1. **Iterate on `train_dev`** (501 rows, 4 databases) with `analyze flips`. Run 2 repeats
-   for any decision, because T=0 runs aren't deterministic. When more train databases are fetched, rotate database-level folds
-   so no single set is tuned against indefinitely.
-2. **Gates:**
-   - Mini-Dev: at most 4 looks, 3 repeats each.
-   - `train_lockbox`: **2 looks only**, a midpoint check and the final frozen configuration.
-     Every look is development feedback.
-   - Report official, corrected-label, per-difficulty (or complexity band) and per-database
-     results, plus flips vs the last gate.
-3. **Report untouched dev** at gates, separately. Never tune on it.
-4. **Acceptance rule** (fixed *before* each experiment):
-   - **Adopt only on a positive, worthwhile gain.** Each change declares its minimum gain
-     before it runs: ≥ +1.5 pts official EX on `train_dev` for a prompt or context change;
-     more for anything that adds cost or latency (≥ +1 pt per +50% $/query or +1s P50).
-   - **Two metrics, both required:** the row-weighted Δ *and* the database-macro Δ
-     (the mean of per-database Δs). Both point estimates must meet the declared minimum and
-     both 95% intervals must exclude 0. On `train_dev`, soccer_2016 is 258 of 501 rows, so
-     the row-weighted Δ alone can hide losses elsewhere. The macro Δ covers only 4
-     databases, so it is a guard, not a precise estimate.
-   - **Full vs pilot comparisons.** Acceptance uses **full** comparisons only: both runs
-     complete (no budget stop), the same expected question rows, and exactly 2 repeats of
-     every question. `analyze flips` enforces this. Pilots use `--pilot`, which permits
-     partial overlap and marks the report as not acceptance evidence.
-   - **Resampling unit = the question.** Each question is scored as its mean over repeats,
-     and questions are resampled within each database, never the 1,002 outputs as if they
-     were independent.
-   - **Audit borderline results.** If either interval's lower bound is within 1 pt of 0,
-     read the deciding flips (the list `analyze flips` prints) against gold before
-     adopting. Paired flips still score against noisy labels.
-   - **Subgroups investigate; they don't vote.** Per-database and per-difficulty flips are
-     read to understand regressions. With many small groups, a lone p < 0.05 is expected by
-     chance.
-   - **One hard veto:** a *large* collapse on one database, meaning a drop of ≥ 10 pts on a
-     database with ≥ 40 rows, is investigated before adoption, whatever the overall result.
-   - The Chinook dev set and the 16-question live suite must not regress. The `product`
-     prompt profile stays untouched.
-5. **Pilots** (≈ 100 rows) are **stratified by database** (`--per-db`) **plus targeted
-   cases** (`--ids`) that exercise the change. Example: the 30 `movie` rows whose gold uses
-   special-character columns, for the quoting fix. A pilot answers "is this worth a full
-   comparison, and what does it cost?", not "is this significant?". With ~10% run-to-run
-   flips, 100 rows only detect large effects.
-6. **Every run is pinned by content** (dataset, per-database content hashes, effective
-   prompt per database, config, code state). `analyze flips` refuses to compare runs that
-   differ in anything but the declared `--allow` variable (`prompt`, `config`, `code`,
-   `data`, `databases`). Scores from different versions are never combined.
+1. **Design on `train_dev`.** Use paired, full 501-row, two-repeat comparisons
+   against the last accepted configuration; report row-weighted and database
+   macro effects and their question-level bootstrap intervals. Where noisy gold
+   decides a flip, check corrected same-input labels and audit the case. Rotate
+   to newly fetched train databases if this four-database set becomes saturated.
+2. **Use the existing acceptance rule:** declare a minimum gain before the pilot
+   (base +1.5 points, increased for uncached-equivalent cost and P50 latency);
+   require both row and macro point estimates above it and both 95% intervals
+   above zero. Investigate any ≥10-point collapse on a database with ≥40 rows.
+   Narrow interventions may be combined into a predeclared package, with
+   ablations recorded; do not waive the full-comparison rule for a promising
+   100-row pilot. Preserve the Chinook product profile and regression suites.
+3. **Pilot first:** 50–100 stratified `train_dev` questions plus targeted cases.
+   The pilot measures cost, trigger precision and whether a full comparison is
+   promising. Full acceptance requires complete, identical question rows and
+   exactly two repeats per question. No partial-overlap score is an acceptance
+   result.
+4. **Protect the gates:** Mini-Dev has **2 of 4** looks used; next looks are
+   for a bundled candidate and final freeze, each with three repeats.
+   `train_lockbox` has **0 of 2** looks used; a Verified lockbox run also
+   counts. `dev_untouched` and the cleaned dev version are for aggregate
+   reporting, not prompt examples, threshold fitting or question-specific
+   repair design. Report per-database, difficulty, corrected-label and
+   latency/cost views at each permitted gate.
+5. **Pin and compare content:** record model snapshot, dataset, per-database
+   hashes, effective prompt, config, code state, expected rows/repeats and
+   scoring settings. The old versus new `dev_untouched` runs differ in five
+   database hashes; never present their four-point gap as a controlled model
+   A/B. Re-score under a consistent evaluator load when changes are close.
+6. **Use only live-observable features:** question and evidence, database
+   metadata, retrieved values, generated SQL AST, execution outcome and
+   candidate agreement. Gold SQL, gold result and gold-SQL complexity may
+   diagnose offline errors, but cannot drive routing, Jev state or repair at
+   inference time.
+7. **Two acceptance tracks (v2.6).** Both keep items 1–3: paired full comparisons, row
+   and macro effects, CI lower bounds > 0, and the database-collapse check.
+   - **Product track** (CLI defaults): the §5.2 rule unchanged, including +1 pt per +50%
+     uncached cost and +1 pt per +1s P50.
+   - **Submission track** (the frozen hidden-test configuration):
+     - declared base minimum gain (default +1.5 pts);
+     - **mean** uncached cost ≤ **$0.01 per answer**, counting every per-question charge:
+       LLM calls plus `extra_cost_usd` for Jev decisions, probes or hosting (≈ $18 for
+       the 1,789-question test).
+       - *Status (v2.9):* the analyser counts `extra_cost_usd`, but **no runtime path
+         writes it yet**. Every new charged decision path (Jev, probes, hosting) must emit
+         its charge.
+       - A submission-track run whose per-answer totals don't reconcile with the ledger
+         delta for that run **fails** the cost check.
+       - **hard cap:** no single answer above **$0.05**;
+       - **one-time costs** (per-database profiling or glossary builds) are reported as a
+         separate submission total, not averaged in;
+     - P90 ≤ **30s per question**. Once BIRD confirms its execution limits, add a
+       timeout-failure rate and a maximum-latency rule.
+     - Inside those ceilings, cost and latency are reported on the frontier but add no
+       points to the required gain.
+   - Declare a change's track before its pilot. A submission-track change never becomes a
+     CLI default without passing the product rule.
+8. **Treat public-dev gains with suspicion.** When a change gains much more on
+   Mini-Dev/`dev_untouched` than on train databases (v4p1: +5.9 vs +0.4), the smaller,
+   train-database effect guides expectations for test, because public dev may be in
+   newer models' training data. Record both. Resolve large divergences on `train_dev2` or
+   the corrected-input sets, not with extra Mini-Dev looks.
+9. **Uncertainty across databases (v2.7).** The question-level bootstrap within 4
+   `train_dev` databases measures question variation on *those* databases, not how a
+   change transfers to new ones.
+   - Choose `train_dev2`'s databases by a fixed rule (size, domain, no overlap with any
+     evaluation set) and record them **before** any run on them.
+   - Once ≥ 8 iteration databases exist, report a database-level interval (resample
+     databases, then questions within them) beside the current one.
+   - Keep at least one never-run database gate: the lockbox, whose 2 looks are unchanged.
+   - **`train_dev2` preselected (2026-09-26, before any download or run).**
+     - *Rule:*
+       - train databases not in `train_dev` or `train_lockbox`;
+       - uncompressed `.sqlite` ≤ 100 MB;
+       - 60–200 questions in `train.json`;
+       - ranked by `sha256("train_dev2:" + db_id)`, first four taken.
+     - 25 of 69 databases were eligible.
+     - *Selected:* `professional_basketball` (157), `regional_sales` (164),
+       `ice_hockey_draft` (84) and `movielens` (98): 503 questions, ≈ 91 MB.
+     - These four are excluded from every training and few-shot pool.
+     - **Role (v2.8): development data only.** They repeat `train_dev`'s themes (two
+       sports, one movie) and are all small. Claims about new domains or large schemas
+       come from the 7-domain lockbox plus at least one larger-schema check. Their
+       ≈ 7–8 GB fetch is optional.
+10. **Cleaned-dev look budget (v2.8; v2.9 recount).** At most **4 looks** at the
+    1,534-row cleaned dev:
+    1. **look 1:** the 99-question pricing pilot `20260927T022912Z` (59.6%); it counts,
+       because its score and failures were used;
+    2. **look 2:** the full baseline `20260927T025554Z` (66.0%);
+    3. **look 3:** one bundled milestone;
+    4. **look 4:** the final freeze.
+
+    Each look's purpose and configuration is recorded in the gate log. Aggregate scores
+    count as looks even when no question is inspected. Per-question failure reading on
+    cleaned dev is not used to design changes.
 
 ---
 
-## 6. The frugal roadmap
+## 6. Ordered roadmap: expected quality gain per cost
 
-Costs are anchored on the measured baseline: about 2,000 input and 84 output tokens per
-question, $0.000485 per query. Reasoning and multiple samples change output tokens the most,
-so each paid phase **prices itself from a pilot first**.
+The ordering below is the **current work queue**. Earlier Phase 1 and Phase 3
+sections are retained as dated experiment logs, not instructions to rerun.
+Impact ranges are bounds or hypotheses from the postmortem, **not additive
+promised gains**. Use the current v4p1 no-cache estimates ($0.000661 per
+Mini-Dev answer, $0.000638 per `dev_untouched` answer) and each pilot's
+actual tokens; cached billing alone is not the cost comparison.
 
-### 6.1 Phase 1: cheapest evidence first (pennies per pilot)
+| Rank | Experiment and decision | Evidence for quality | Initial cost and stop rule |
+|---|---|---|---|
+| 0 | **Measurement reset and logistics.** Re-score the current v4p1 runs; correct the postmortem headline; confirm the cleaned dev database package and pilot its baseline. Tag failure mechanisms. **Contact the BIRD team** about the submission environment: external API calls, per-database preprocessing, time limits. **Propose `train_dev2`:** 3–4 small train databases by range request (owner approves the download). | Prevents optimizing against stale numbers; the BIRD answers constrain ranks 1 and G. No direct accuracy gain. | Stored-run analysis free. Cleaned-dev pilot 50–100 rows, then reprice (full run ≈ $0.98 uncached). `train_dev2`: ≈ 7–8 GB sequential transfer (≈ 100 MB kept), optional since v2.8; ≈ $0.15/repeat to baseline. |
+| 1 | **Semantic layer, as three separate experiments (v2.7).** Everything is built offline from the database alone (never gold) and cached by content hash. **1a deterministic facts:** column value formats (stored vs semantic type; text-encoded numbers/dates/money), NULL rates, enumerations, the join graph with cardinalities and fan-out risk, and an FTS5 value index. Measure retrieval recall for the needed literals/columns and preprocessing time per database. **1b question-relevant slices** of 1a in the prompt (a full dictionary dump already failed, §6.1). **1c column meanings (v2.9):** first test retrieval and selective prompt inclusion of BIRD's supplied `column_meaning.json` (the test set ships one; `train_column_meaning.json` has 3,498 entries). Only if a gap remains, compare an LLM-written glossary, fact-checked against 1a because it can invent units or meanings. | Wrong empty/NULL answers (ceiling 3.4 pts on current dev) and look-alike column/format errors are concrete residual failures. DataGallery (#1) reports a semantic layer (example, not proof). | 1a free. An offline replay fixing ≥ 4 of 10 audited cases with zero false repairs is a **smoke test only**. Evidence is a stratified 100-row pilot, then a full paired comparison. 1c costs one LLM pass per database, and its fact-check rate is reported. |
+| 2 | **Value exploration before final SQL (v2.8: gated).** Built only if value-lookup errors remain after 1a/1b static facts and one guarded retry. Needs a **new bounded probe executor** (not `execute_candidate`, which fetches whole results): validated shape (single-table `SELECT DISTINCT`/`LIKE`, no joins), a mandatory `LIMIT` ≤ 20, a ≤ 2s time budget and ≤ 2 probes per question. It also needs a **tool-protocol change**: today each model call must return SQL or a refusal. | `values-differ` is still the largest bucket (17–19% of rows); probes ground literals the schema can't show. | The extra round trip is priced in the pilot (cost, P50/P90). Triggered only on literal filters over text columns. 100-row pilot; track declared first (§5.7). |
+| 3 | **Jev shadow decisions** on stored predictions: bounded table/column choice, hint-intent, dropped-constraint flags and post-SQL requirement coverage, vs deterministic rules and a small LLM judge. No SQL changes. **v2.8:** first hand-label ≈ 50 *atomic requirement omissions* on stored answers (a wrong official EX does not prove an omission). Score Jev flags against those labels, then against live paired repair outcomes. | Attacks the heterogeneous `values-differ` bucket; measures trigger precision first. | Stored answers avoid generator cost; 100 calls ≈ $0.0084 at the listed Jev rate (recheck). Stop any decision with frequent flags on correct SQL. |
+| 4 | **Strategy-diverse candidate bank: diagnostic, then confirmation (v2.8).** Built on the **latest accepted cumulative configuration**. On `train_dev`, same database hashes: v4p1 × 3 prompting strategies (direct, divide-and-conquer, query-plan) + one other family (glm-5p3-flash `low`). Measure pass@K, same-wrong consensus, majority and Jev-`choice` selection. Selection checks **question constraints in the SQL** (AST) alongside result signatures, because BIRD tests with extra cases and values, so agreement on one local database is an imperfect proxy (v2.9). Clustering uses the fixed signature (§0.6 6b), spot-checked against the official comparator. | Old model-only bank: pass@4 = 73%, errors shared across families. Strategy diversity is untested here. | **Cost (v2.7): ≈ $1.05 uncached for the 3 v4p1 strategies × 501 × 1**, plus ≈ $0.12 for glm-5p3-flash. About a third to a half of that with the observed cache. **Stop budget $1.50** for the one diagnostic pass. A **confirmation pass** (a second repeat, ≈ $1.2 uncached, priced and approved separately) is required before the bank drives the SFT decision. Decision: a high pass@K means invest in selection; a pass@K near today's accuracy means generation is the bottleneck (rank G). |
+| 5 | **Targeted generation and repair:** value/NULL retry with retrieved facts; ratio/aggregation checklist; bounded computation sanity checks; one specific semantic repair from a verified mismatch. Ablate each, then test the best package cumulatively. | Postmortem planning ranges: value grounding +1.1–2.0, computation +1–3; overlap is likely. | 50–100-row pilot per mechanism; full `train_dev` × 2 only for on-course candidates. |
+| 6 | **Jev as a gate and selector (live).** (a) Choose among differing candidate results (rank 4 bank), combined with deterministic question-constraint checks. (b) Gate expensive work: extra candidates, repair or a stronger model run only when Jev or a deterministic check flags risk. The call design (one bundled call vs two-stage) is a declared pilot variable. | **No projected gain (v2.7):** selector gains elsewhere measure those systems. Adoption follows shadow scoring (rank 3) and a live paired run only. | Pilot after ranks 3–4. Report net EX, false-repair rate, macro, $/answer, P50/P90 and trigger rate; submission track. |
+| G | **Parallel track: generation upgrade / trained specialist.** Free now: price Fireworks SFT/RFT for a ≤ 30B MoE or ≤ 16B base, LoRA serving cost, and serving under the submission track. Build training data **from BIRD's official filtered train** (`bird23-train-filtered`: 6,601 rows, CC BY-SA 4.0, quality-filtered, not verified) and compare it with our own execution filter. Remove every `train_dev`/`train_dev2`/lockbox/dev database. Audit a stratified sample for semantic errors. **v2.8:** **5,115 examples** remain after excluding every evaluation database. Hand-audit a stratified 100. If the semantic error rate is > 15%, re-filter before any SFT; report the rate either way. **Reward spec before any RLVR:** how multiple valid SQL queries, misleading or empty gold results, and use of the evidence are handled (ReViSQL reports false-positive result rewards and evidence being ignored). | Examples: Databricks RLVR-32B 75.7 test from BIRD train alone; Kwai-AutoSQL-14B 74.0; Gemini-SQL2 80.04 (single trained model, many samples); ReViSQL +8–14 pts from corrected data. | **The paid SFT pilot waits** for the rank-4 bank result and the label audit, and needs its budget approved after pricing. Gate: paired `train_dev`/`train_dev2` gain under the submission track, then the lockbox. **BIRD-Verified: evaluation and diagnosis only, never training.** |
 
-**Sequence:**
+Ranks 1–6 are sequential. Rank G's free work (pricing, data build, audit) runs in parallel
+from the start; its paid pilot waits for rank 4 and the audit.
+Each rank ends in a recorded decision: mechanism demonstrated and promoted,
+rejected, or left uncertain. A small targeted fix can join a predeclared package
+even when its individual gain is below the full-run acceptance threshold; report
+its ablation so the combined score is interpretable.
+
+### 6.1 Historical Phase 1 proposal and log (completed)
+
+**Original sequence (completed):**
 1. **Baseline first:** the current configuration on all of `train_dev`, 2 repeats
    (≈ $0.49). Every pilot's control rows are taken from this run, so each comparison is on
    the same rows, never against a separate small control sample.
@@ -508,7 +776,22 @@ $0.31 ($0.000205/answer measured, $0.000491 uncached-equivalent); P50 0.97s, P90
   midpoint and final configurations), untouched dev, and the `--dictionary` Mini-Dev
   check.
 
-### 6.3 Phase 3: reasoning and diversity, incrementally (single-digit dollars)
+**Cleaned dev, looks 1–2 of 4 (2026-09-26).**
+- Look 1: the 99-question pricing pilot `20260927T022912Z`, 59.6%, not representative
+  (stratified by database).
+- Look 2: the full baseline `20260927T025554Z`, **66.0%** (macro 64.1%), with the
+  accepted configuration on `deepseek-v4p1-flash` (reasoning off).
+- The run code state was dirty: uncommitted analyser, signature and plan edits.
+  Behaviour-relevant code (agent, prompts, schema) matched commit `77ee38b` except
+  `result_signature`, which does not affect scoring.
+- Details are in §8. Two looks remain: one milestone and the final freeze.
+
+### 6.3 Historical Phase 3 proposal and log (completed)
+
+This log predates the later 65.3% Mini-Dev gate and 67.6% dev_untouched
+run. Its conclusions about the retired default and the old candidate
+bank are dated evidence, not the current route order.
+
 
 - **3a. Reasoning on, JSON format unchanged.** Set `--reasoning-effort low`, then `high`,
   and raise `--max-tokens` as needed. This also shows whether a model accepts reasoning
@@ -645,7 +928,7 @@ price. Rules fixed in advance:
 | deepseek-v4p1-flash rerun, `none` (`20260926T203859Z`) | **+0.40** [−1.90, +2.69], macro **+1.53** [−0.69, +3.94] (sales_in_weather +8.8, restaurant −1.3, soccer_2016 −1.4); uncached $0.000696 (+40%); P50 1.61s vs 1.05s; measured $0.000185 with cache | **Not adopted:** required +2.86. The pilot's +3.5 regressed toward zero at full size |
 | `dev_untouched` × 1 (`20260925T015202Z`) | **63.6%** (simple 68.0, moderate 50.0, challenging 53.5; macro 63.9); cost $0.45 ($0.000431/answer: cold per-database cache on one repeat); P50 0.98s | Reported only |
 
-- **Full-dev estimate.** `dev_untouched` (1,036) plus Mini-Dev gate 1 (498 unique) ≈
+- **Full-dev estimate** (*withdrawn in v2.7, §0.6: it pools versions*). `dev_untouched` (1,036) plus Mini-Dev gate 1 (498 unique) ≈
   **62.2%**, approximate because 23 Mini-Dev rows use Mini-Dev's database versions. Main
   leaderboard entries with dev within ±1.6 pts of that scored 60–68 on test (median ≈
   64.5), which puts an estimated test rank around **#80–92 of 130**. That is context, not
@@ -658,130 +941,365 @@ price. Rules fixed in advance:
   escalation adds under 1 pt. The remaining lever is teaching BIRD's conventions (literal
   hints, value formats), not more models.
 
-### Phase 4R: category-based model routing (added 2026-09-25 at owner request)
+### 6.4 Semantic layer and Jev-led grounding and bounded repair
 
-A concrete, testable version of "different models for different question types":
-1. **Headroom check first (free, from the candidate bank).** The oracle over models vs the
-   best single model. *Current evidence: 73% vs 69–71% on the 100-row pilot bank*, so a
-   router is capped at ≈ +2–4 pts with today's candidates. Re-check whenever the candidate
-   set changes (e.g. a fine-tuned or few-shot-conditioned model).
-2. **Only observable categories** (no gold SQL at inference): database/domain;
-   question/hint features (superlative, ratio/percentage, temporal, count, multi-part);
-   the complexity of the fast model's own draft; schema size.
-3. **Fit on `train_dev`** with leave-one-database-out validation. Switch away from the
-   default model for a category only with enough support (≥ 20 questions and a paired gain
-   whose CI excludes 0).
-4. **Test once** on `train_lockbox` (counts as a lockbox look) plus a Mini-Dev gate,
-   against the best single model, cross-model majority vote, and the Phase 4 cascade,
-   under the same §5.4 rule.
-5. **Status:** deferred until step 1 shows ≥ 5 pts of headroom. The first candidate set
-   doesn't.
+This phase spans ranks 1–6 of the current queue. Implement it as small
+interventions rather than one opaque `Jev on` configuration.
 
-### 6.4 Phase 4: cascade and selection
+**Jev's role.**
+- Jev never *adds* value by being called. Each call adds ≈ $0.00008 and a serial network
+  hop through an alpha endpoint.
+- It pays only when a typed decision **avoids** expensive work (a second candidate, a
+  repair, a stronger model) or **picks** between grounded alternatives.
+- Design every Jev use as a gate or a selector with a deterministic fallback. The number
+  of calls per question is a pilot variable.
+- No projected lift (v2.7); shadow scoring and a live paired run decide.
 
-- **Cascade safety gate (hard requirement):** measure how often 3 agreeing samples are
-  **unanimously wrong**, per database and per difficulty, before the cascade may ship an
-  agreed answer without escalation. Difficulty comes from Mini-Dev's labels; on the train
-  splits (unlabelled) it comes from the gold-SQL complexity band.
-- **Offline vs live.** The gold-SQL complexity band is for *offline diagnosis only*:
-  hidden-test questions have no gold SQL. A live cascade rule must use signals the system
-  can observe:
-  - agreement among its own candidates;
-  - Jev confidence;
-  - the complexity of the *generated* SQL;
-  - schema size.
+1. **Catalog (the semantic layer, rank 1), cached per database content hash:** derive
+   column profiles, foreign-key paths and cardinalities, primary/bridge table roles,
+   duplicate column names, value formats and candidate literals deterministically. Add a
+   one-time LLM glossary per database. Jev may select a *bounded* table/column interpretation
+   or relevant description from that verified shortlist, with `none/ambiguous`
+   available. Cache the result by database content hash. It must not invent
+   identifiers or replace the database as the source of truth.
+2. **Question/evidence understanding:** produce observable, multi-label
+   intents (ratio, per-group filter, temporal, negation, superlative,
+   multi-part, unique count and requested projection). Preserve every
+   original question constraint when a hint paraphrases or drops one.
+   Rules handle obvious patterns; test Jev on ambiguous cases before
+   routing to a specialist generator or a different schema slice.
+3. **SQL coverage:** use `sqlglot` to extract selected columns, tables,
+   join edges, filters, grouping, aggregates, ordering and limit. Compare
+   each atomic requirement with these facts. Ask Jev narrow `noul`
+   questions only where text-to-schema meaning is uncertain, or `choice`
+   among a few verified concepts. Avoid a single "fully answers?" score.
+4. **Execution diagnostics:** code detects safety, timeout, empty/NULL,
+   implausible row count, missing join predicate, numeric-range errors
+   and text-encoded values. FTS5 supplies literal candidates; Jev may
+   rank their semantic match, but code owns lookup, arithmetic and
+   comparison. Legitimate empty and NULL outcomes must be protected.
+5. **One repair loop:** turn a high-confidence, specific finding into a
+   template for the SQL generator (wrong table, missing constraint,
+   value spelling/format, aggregation grain, ratio denominator or
+   output field). Give it the exact verified facts, not gold. Re-run
+   safety validation and execution; keep the original if the repair
+   fails, loses a requirement or does not pass the predeclared
+   acceptance policy. Bound calls and record both SQL candidates.
+6. **Offline annotation triage:** Jev may rank likely label defects or
+   shared convention errors for human review and SFT data selection.
+   It cannot certify that a public gold label is wrong.
 
-  Alternatively it uses one global threshold. It must be calibrated on `train_dev` and
-  verified per band offline.
-- Selector ladder:
-  1. majority by full-result signature;
-  2. an execution-agreement cluster, then a pairwise judge that sees only the *differing
-     rows* and the minimal SQL diff;
-  3. structural tie-breaks.
-- **Bottleneck test on the candidate bank:**
-  - pass@K high but selected accuracy low → improve the selector ($≈0).
-  - pass@K low → Phase 6.
+The first live test is post-SQL requirement coverage on stored `train_dev`
+answers in shadow mode, followed by a targeted repair A/B. Pre-generation
+Jev routing comes later if it beats the deterministic intent baseline.
+Cache a single narrow decision request when several checks share state;
+call Jev only when a semantic judgment can change a decision.
 
-### 6.5 Phase 5: Jev and GEPA, after the simple baselines exist
+### 6.5 Candidate bank, cascade and routing
 
-- **Jev** (§7): tested offline on the bank for the cascade gate, output checks,
-  answerability, relevance scoring and tie-breaks. It is adopted per decision only if it
-  beats the agreement-only rule and a small LLM judge on calibration and on the
-  unanimous-wrong rate, per tier.
-- **GEPA:** optimise the core prompt and then per-family "residual skills" on **train
-  databases outside `train_dev` and `train_lockbox`**. Execution-based rollouts need those databases,
-  so check the cost of the extra download first. Text-only reflection uses train questions.
+Rebuild pass@K and majority/selector curves for v4p1 and an actually
+distinct generator on **matched questions and database versions**. Only
+after measuring headroom, test:
+- an observable category router fitted with leave-one-database-out
+  validation on `train_dev`; gold-SQL complexity is offline only;
+- result-signature agreement, followed by a narrow Jev or small LLM
+  comparison of differing SQL/rows for contested cases;
+- a cascade whose fast exit has an acceptably low **unanimously wrong**
+  rate by database and observable complexity class.
 
-### 6.6 Phase 6: strong model on contested questions only (optional)
+Compare with the best single model and with the non-Jev deterministic
+policy. Do not escalate solely because models disagree if realized net
+gain cannot pay for extra generation. The retired bank's 73% pass@4
+and +0.8 escalation are historical, not current thresholds.
 
-Send only contested questions (Stage-1 disagreement or low confidence) to
-`deepseek-v4-pro-0813` with 2–4 samples. Price it from a pilot.
+### 6.6 Generator and training gate
 
-### 6.7 Gate F-G: fine-tuning decision (measured on the candidate bank)
+**v2.7:** the specialist's (rank G) pricing, data build and label audit run in parallel
+with ranks 1–5; its paid pilot waits for the rank-4 bank and the audit. Training data
+starts from BIRD's official filtered train. **BIRD-Verified subsets are for evaluation
+and diagnosis only.** It has no licence, and nothing from it enters training data. The
+Verified mention below refers to evaluation subsets.
 
-| Evidence | Decision |
-|---|---|
-| Frozen configuration meets §4 milestones | No fine-tuning; prepare the submission |
-| Pass@K − selected accuracy ≥ ~6 pts | Selection is the bottleneck: improve the selector, not the generator |
-| Pass@K still low after Phase 6 | Cheapest fine-tune first: LoRA SFT of a ≤16B model on verified plus execution-filtered train data (~$10–30 to train, plus GPU hours while serving). RFT only after that, with a quote. |
+After ranks 1–5, recalculate the gap to >75% on each public dev set and
+the current bank's pass@K. If pass@K is high but selected EX is low,
+work on selection. If pass@K remains near or below the desired accuracy,
+selection cannot bridge the gap; pilot corrected-data SFT of a ≤16B model,
+a stronger specialist generator on identifiable hard classes, or GEPA
+with execution rollouts on new **train** databases. Use Verified
+same-input/corrected-input subsets according to §1.3, de-duplicate,
+filter obviously erroneous gold, and keep Mini-Dev and lockbox out of
+training and prompt optimization. Measure training, serving and
+inference costs separately. Only a frozen candidate that clears the
+public and unseen-database gates proceeds toward hidden-test submission.
 
-### 6.8 One ledger
+### 6.7 Decision gates for the ordered queue
 
-All spend goes through `BudgetGuard` and the SQLite ledger
-`benchmark/results/.spend.sqlite`, enforced across processes ✅:
-- Fireworks serverless spend is reserved and settled automatically.
-- A settle with an unknown cost books a **provisional** charge (conservative, source
-  `unsettled`). A later real cost reverses it. Settlement keys never expire, so repeats
-  are no-ops forever.
-- Batch jobs, once a submission path exists: `reserve_usd(estimate, key=<batch job id>,
-  ttl_s=<deadline>)` before submission. Any process can later settle
-  `reservation(<job id>)` with `source="fireworks-batch"`.
-- Jev/OpenRouter calls do the same with `source="openrouter"`.
-- `record_charge` reconciles any invoice difference.
-- `spend_by_source()` reports the breakdown.
+- **Offline → pilot:** show a specific failure mechanism and low false-positive
+  rate on currently correct controls. No Jev or SQL rewrite is accepted merely
+  because it finds a wrong answer after looking at gold.
+- **Pilot → full comparison:** predeclare the target class and minimum gain,
+  measure actual cost and latency, and require the pilot to be on course.
+- **Full comparison → public gate:** apply §5's paired row/macro acceptance
+  rule to the *cumulative* configuration, then reserve the limited
+  Mini-Dev and lockbox looks for bundled milestones.
+- **Generator or fine-tune gate:** use the **current** matched candidate
+  bank's pass@K versus selected EX, and prefer the cheapest route that can
+  plausibly close the remaining public-dev gap.
 
-The ceiling (`FIREWORKS_BUDGET_USD`, currently **$6**, $0.28 spent) is raised one phase at a
-time.
+### 6.8 One ledger and cost controls
 
-| Phase | Proposed cap | Pilot first? |
-|---|---:|---|
-| 1 (profile, quoting, repairs, CSVs) | ≤ $2 | yes: 100 `train_dev` rows |
-| 2 | (merged into 1) | — |
-| 3 | ≤ $10 | yes: 50–100 rows per model/K |
-| 4 | ≤ $3 | offline on the bank, plus judge calls |
-| 5 | ≤ $8 | yes |
-| 6 | ≤ $15 | yes: contested rows only |
-| **Total before gate F-G** | **≤ ~$38** | Every cap is revised from pilot measurements |
+`BudgetGuard` and `benchmark/results/.spend.sqlite` remain the single
+cross-process ledger. Reserve and settle Fireworks and OpenRouter/Jev
+charges by durable key; reconcile unknown-cost provisional charges and
+invoice differences. Check live remaining balance and provider pricing
+before each pilot. The approved v2.4 phase caps are historical maximums,
+not a reason to assume the old "currently $6, $0.28 spent" line is
+still true. This edit authorizes no new spend or cap increase.
+
+A Jev request with 2,000 input tokens costs about $0.000084 at the
+listed $0.042/M input price: ≈$0.0084 per 100 calls or ≈$0.087
+per 1,036 calls, **excluding SQL repair calls, retries and latency**.
+Measure actual tokens and response time in the first pilot. Price
+generator runs at both measured and uncached-equivalent rates; prompt
+cache hits are not guaranteed. At current v4p1 train-dev prices, 100
+generator answers cost about $0.014 with the observed cache or $0.070
+uncached; a 501-question, two-repeat full arm costs about $0.14 observed
+or $0.70 uncached, before extra repair calls. Use the uncached figure
+when deciding whether a quality gain pays for itself. Batch discounts
+are contingent on an implemented submission path.
 
 ---
 
-## 7. Jev (approved for the BIRD path)
+## 7. Jev decision contract and evaluation
 
-- **What it is:** TypeSafe AI's "System One" decision model (`typesafe/jev-1.13`, called
-  through OpenRouter's alpha `POST /api/alpha/decisions`). It answers typed questions (yes/no
-  "noul", choice, score) with calibrated probabilities. The request limit is 64k tokens,
-  with 32k for the state plus the longest question. Price: $0.042 per 1M input tokens,
-  output free. It **cannot generate SQL**.
-- **Candidate uses:** the cascade gate, evidence and output checks, answerability,
-  relevance scoring, and a selection tie-break. The last is weak because Jev's reported
-  weak spots are numbers, dates and long-context reasoning.
-- **Rules:**
-  - Only the relevant schema slice goes into the state.
-  - Record the model version with every decision, and fit thresholds per version.
-  - Fall back to the agreement-only rule on any error.
-  - Key in `OPENROUTER_API_KEY`.
-  - Production-data use still needs its own review.
+- **API:** pinned `typesafe/jev-1.13` through OpenRouter's
+  `POST /api/alpha/decisions`, with typed `noul`, `choice` and `score`
+  outputs. No SQL or explanatory text generation. The OpenRouter model page (reachable
+  2026-09-26) lists $0.042 per million input tokens, output free. Endpoint behaviour and
+  latency still need a pilot; the API is alpha.
+- **Call design (v2.7):** a declared pilot variable. Compare one bundled call with a
+  two-stage design (only if justified) on net EX, false repairs, cost and P90. Calls fire
+  on triggers; a post-SQL coverage decision necessarily follows SQL generation.
+- **Jev Router (`typesafe/jev-router`, listed 2026-09-25):** it picks a model and
+  reasoning effort per chat request across OpenRouter's catalogue; the routing itself is
+  listed as free. **Not used on the benchmark path:**
+  - its choices can't be pinned or reproduced;
+  - it routes outside the pinned Fireworks models;
+  - charges for the models it picks are unclear.
+
+  A small, separately approved probe for the product CLI is possible later.
+- **State:** question and evidence kept distinct, a short verified
+  schema/value shortlist, AST-derived SQL facts and compact execution
+  diagnostics. Never send a whole database, full result set, gold SQL,
+  gold-derived complexity, or irrelevant dictionary pages.
+- **Decision examples:** "Which of these three tables represents the
+  requested entity?" (`choice` with `none`); "Is the address constraint
+  represented in this SQL?" (`noul`); "Does this projection contain an
+  unrequested measure?" (`noul`). Code computes exact counts, numerical
+  ranges, dates, joins and result comparisons. One call can contain
+  several independent, narrowly worded questions sharing the state.
+- **Policy:** validate typed output, record the exact model version and
+  per-question probabilities, and fit action thresholds on held-out
+  train databases. Jev's returned `choice.confidence` is distribution
+  concentration, not an established probability that SQL is correct.
+  On API error or low confidence, keep the deterministic baseline;
+  never turn an answer into `unsupported` simply because Jev is unsure.
+- **Scorecard before live use:** on stored `train_dev` predictions, measure flag
+  precision/recall first against ≈ 50 **hand-labelled atomic requirement omissions**
+  (v2.8; a wrong official EX is not proof of an omission), then false flags on currently correct
+  answers, Brier/calibration by decision, and leave-one-database-out
+  stability. In the live pilot, report paired fixes/regressions,
+  row-weighted and macro EX, cost, P50/P90, trigger/repair rate and
+  effect by observable question class. Compare deterministic rules,
+  Jev and a small LLM judge under the same candidate budget. A Jev
+  decision ships only if its net gain meets §5 and its failure mode is
+  understood.
+
+Jev's published limitations include arithmetic, counting, date
+comparison, long irrelevant state, indirection and literal readings.
+Use those as design constraints, **not** as evidence of SQL-judge
+accuracy. The benchmark path may use public BIRD data; production-data
+use is a separate review.
 
 ---
 
-## 8. Open items for your review
+## 8. Next checkpoints (v2.8 order)
 
-1. ~~Approve the plan~~ **Approved 2026-09-23 (v2.4).**
-2. ~~BIRD-Verified~~ **Downloaded and integrated 2026-09-23** (§1.3).
-3. **Train databases for GEPA execution rollouts** (Phase 5): decide later. Every member's
-   size is now known from the saved archive listing, and one sequential pass (~30 minutes,
-   bandwidth only) can fetch any set of them.
-4. ~~Commit and push~~ **Done 2026-09-23** (branch below).
+1. **Fix claims and measure the primary checkpoint.** Refresh `POSTMORTEM_V2.md` with
+   the current v4p1 baseline, differing dev database hashes and new empty/NULL counts.
+   Confirm the cleaned-dev database package and measure its baseline (pilot, then full).
+   **Preselect `train_dev2`** by a fixed rule and record it before any run.
+2. **Deterministic value profiles, retrieval and join checks** (rank 1a), each measured
+   separately: retrieval recall, preprocessing time, then a stratified pilot.
+3. **Targeted value and computation repairs** (ranks 1b, 5), with controls for
+   legitimately empty and NULL answers, using static facts and one guarded retry. Build
+   the bounded probe executor (rank 2) **only** if value-lookup errors remain.
+4. **Strategy-diverse candidate bank** (rank 4) on the latest accepted configuration:
+   a diagnostic pass under its $1.50 stop budget, clustered with the fixed signatures,
+   then a separately approved confirmation pass before any SFT decision.
+5. **Jev shadow comparisons on the bank** (rank 3 → 6); promote only decisions that
+   improve a live paired run.
+6. **In parallel, free:** price SFT/RFT and serving; build and audit training data from
+   `bird23-train-filtered`. The paid pilot follows step 4 and the audit.
+
+**Owner decisions needed:**
+1. The two-track acceptance rule and its ceilings (§5.7: $0.01/answer, P90 30s).
+2. Contacting the BIRD team about the submission environment (APIs, per-database
+   preprocessing, time limits).
+3. The `train_dev2` download (3–4 small train databases by range request) and the
+   `bird23-train-filtered` download (CC BY-SA 4.0).
+4. The cleaned-dev baseline pilot, repriced first (full run ≈ $0.98 uncached).
+
+Preserve the remaining Mini-Dev (2 of 4) and lockbox (2 of 2) looks for bundled
+checkpoints.
+
+**Owner approved all four (2026-09-26). Status:**
+1. **Two-track rule adopted and implemented.** `analyze flips --track submission` uses the
+   declared minimum plus ceilings of $0.01/answer uncached and P90 ≤ 30s, with a test.
+   The product track is unchanged and the default.
+2. **BIRD contact: drafted in the owner's Gmail, not sent.** The published
+   [submission guideline](https://docs.google.com/document/d/1Rs6d_pcs2vfqW4Ymub7Wb1XtBNlrc-WfH3T7U1ktuBo/edit)
+   already answers several questions:
+   - **API-call and combined submissions are accepted.** The submitter provides keys and
+     reports dev prompt-token counts in advance.
+   - **A compliance check rejects "third-party API links/packages… that could upload/leak
+     our databases".** Sending schema/value excerpts to Fireworks, and especially to Jev
+     via OpenRouter, is therefore the first question asked.
+   - **Test is scored with multiple gold-SQL pools, test cases and human review.** That
+     is less label noise than dev, a likely contributor to leaders' dev→test uplift.
+   - If more than 5% of outputs are NULL/empty, the team asks for fixes.
+   - Test includes giant databases, and `column_meaning.json` is supplied.
+   - Up to 2 checkpoints per submission, and 1–2 submissions per 2 months.
+3. **Downloads:**
+   - `bird23-train-filtered` is downloaded (3.4 MB, gitignored `data/bird/train_filtered/`).
+     - All 6,601 rows match `train.json` questions.
+     - By split: 5,115 on non-evaluation databases (the training pool), 357 `train_dev`,
+       769 lockbox, 360 `train_dev2`.
+     - Across all 501 `train_dev` questions, it removes **61% of the 117 no stored answer
+       ever solved** vs 19% of solved ones. It is enriched for bad labels but imperfect,
+       so the audit stays.
+   - **`train_dev2` is not yet fetched.** BIRD's train archive nests a deflated
+     `train_databases.zip`, so no single database can be range-fetched. The four
+     selected databases need a sequential stream of ≈ 7–8 GB (≈ 100 MB kept). That
+     transfer exceeded the owner's approved scope and awaits a separate go-ahead.
+4. **Cleaned dev (`dev_20251106.json`):**
+   - Same 1,534 question ids and databases as `dev.json`; 182 questions, 381 evidence
+     and 452 SQL changed.
+   - Its database package is the original `dev_databases`: **1,531 gold queries
+     completed** (all non-empty, 0 errors) and **3 timed out** (#518, #701, #1131).
+   - Pricing pilot `20260927T022912Z` (99 questions, 9 per database, × 1): **59.6%**,
+     with challenging questions over-represented (24 of 99 vs 231 of 1,534, 15.1%). This
+     is look 1 (§5.10).
+     Uncached $0.000700/answer, P50 1.58s, P90 4.21s.
+   - 3 structured-output failures: long SQL truncated at the 400-token cap. v2.9
+     replaces the proposed global `--max-tokens 800` with the truncation-only retry.
+   - **Full baseline (look 2, run `20260927T025554Z`, 1,534 × 1, complete):**
+     - **66.0%** official EX; macro 64.1%.
+     - By difficulty: simple 75.3%, moderate 65.0%, challenging 32.9%.
+     - Cost $0.30 measured ($0.000195/answer; $0.000668 uncached); P50 1.34s, P90 2.89s.
+     - Errors: 21 structured-output failures (all length truncation, 10 in `financial`)
+       and 2 repair-exhausted. 42 empty results, none correct.
+     - Per database: `financial` 24.5% and `california_schools` 32.6% are lowest. On
+       `financial`, scoring the same predictions against the *original* gold gives 22
+       vs 26, and the previous v4p1 run also scored 12/30 on its unchanged questions.
+       So the low score is real difficulty plus truncation, not a label or package
+       mismatch.
+     - Cost/latency sit far inside the submission ceilings (max answer $0.0029).
+   - **Truncation-only retry, mechanism pilot (2026-09-26, `train_dev`, not cleaned dev).**
+     - Truncation occurs almost only on cleaned dev (21 of 1,534). There were 0 in
+       `train_dev` and `dev_untouched` runs and 1 in Mini-Dev. Piloting on cleaned-dev
+       rows would spend a look, so truncation was forced on 100 `train_dev` rows.
+     - `--max-tokens 150 --truncation-retry 400` (`20260927T032348Z`): 1 truncation,
+       recovered.
+     - `--max-tokens 60 --truncation-retry 400` (`20260927T032603Z`): **48 truncated
+       answers, 48 recovered** (0 errors). 30 correct vs 29 for the same rows at the
+       normal cap; 44 of 48 give identical results.
+     - Retried answers cost ≈ 1.8× uncached ($0.00115 vs $0.00063) and add ≈ 1.7s.
+       At cleaned dev's 1.4% truncation rate that is ≈ +1% mean cost.
+     - Pilot cost ≈ $0.10.
+     - **Decision:** promoted to the **bundled submission-track package** as
+       `--truncation-retry 1200`. It can't change any answer that isn't cut off, and a
+       cut-off always fails.
+     - It is not a CLI default. It is measured with the package at the next cleaned-dev
+       milestone (look 3). A full `train_dev` comparison would measure only noise,
+       because nothing truncates there.
+   - **Rank 1a, deterministic facts: built and measured offline (2026-09-26, free).**
+     - Built `src/db_profile.py`: column formats/NULL rates/distincts from a bounded
+       sample, FK join cardinality and an FTS5 value index, cached by content hash under
+       gitignored `data/profiles/`.
+     - `benchmark/grounding.py` measures it; there are tests.
+     - **Build cost:** 0.10–0.33s per `train_dev` database.
+     - **Formats:** after counting only non-NULL values, it flags every known case
+       (`actor.NetWorth` and `characters.pay` money, `characters.screentime` duration)
+       plus ISO dates and `weather.sunrise/sunset` durations.
+     - **Joins:** `sales_in_weather`'s two FKs are **N:M** (the parent key isn't
+       unique), a real fan-out risk; `soccer_2016` has 26 × 1:N.
+     - **Value index, retrieval headroom is small on BIRD.** 479 of 493 `train_dev` gold
+       string literals (97%) are already written in the question or evidence; across
+       BIRD train's non-evaluation databases it is 95.4% of 7,645. The index retrieves 3
+       of the 14 literals that aren't. It stays for the product CLI, where users give
+       no hints, but it isn't a benchmark lever.
+     - **Format headroom is small too.** On the current v4p1 `train_dev` run, questions
+       whose gold touches money/duration columns score **46.4%** (28 answers) vs 70.0%
+       for the rest. That's 14 of 501 questions, ≤ ≈ 1.5 pts even if all were fixed, and
+       some are label conventions (the `screentime` gold sorts raw text).
+     - **Implication:** the deterministic semantic layer (1a) is cheap and correct, but
+       its measured upside on BIRD is ≈ 1–2 pts. It doesn't close the gap to 75%.
+       Selection (rank 4) and generation (rank G) remain the levers to test; 1b/1c pilots
+       stay small.
+   - **Rank 1c, BIRD column meanings: pilot NOT on course (2026-09-26).**
+     - `--column-meaning 6` adds up to 6 question-relevant descriptions from
+       `train_column_meaning.json` (ranked by name/description overlap with question +
+       evidence, compound names and plurals matched) to the user message. Median ≈ 920
+       characters.
+     - Pilot `20260927T034045Z` (100 `train_dev` rows × 2) vs the v4p1 run on the same
+       rows: **−1.50 [−5.50, +2.50]** (row = macro). Uncached +8%; P50 1.42s → 2.26s;
+       required +2.50. Cost ≈ $0.10.
+     - **Audit:** it fixed the targeted money-format case (#748, "highest networth
+       actor") and 2 `sales_in_weather` questions. It regressed 5: the notes nudge
+       toward *more careful* SQL that the literal gold scores wrong (`Fielders IS NULL OR
+       = ''` vs gold `= ''`; `generalinfo.city` vs `location.city`), plus repeat noise.
+       That is the same failure mode as reasoning (§6.3).
+     - Not adopted. The flag stays.
+     - **Narrower variant, if pursued:** notes *only* for question-relevant columns the
+       1a profile flags as text-encoded money/duration/number. This touches ≈ 14 of 501
+       questions (the ≤ ≈ 1.5 pt bound), with nothing added elsewhere.
+   - **New design data (2026-09-26).** One sequential stream of BIRD's train archive
+     (≈ 9.4 GB transferred) extracted **47 more train databases**: all ≤ 100 MB, plus 6
+     mid-size (0.1–0.35 GB, including the 60+-table `works_cycles` for larger-schema
+     checks). 2.3 GB on disk; all pass `PRAGMA quick_check`.
+     - `benchmark/splits.py` now builds **`train_dev2`** (the 4 preselected databases,
+       503 questions) and **`train_design`** (the other 43 databases, 5,851
+       questions): the pool for fitting gates and for SFT execution checks, never for
+       scoring.
+     - Existing split fingerprints are unchanged.
+     - The few-shot pool now also excludes `train_dev2`.
+   - **Format/intent gate for text-encoded numbers: investigated on `train_design`,
+     STOPPED before any Jev spend (2026-09-26).**
+     - 194 of 5,851 design questions (3.3%) have gold SQL that uses a numeric-as-text
+       column numerically (money, `thousands`, integer-text).
+     - Deterministic triggers are imprecise: "question mentions the column" fires 726
+       times (23% precision, 87% recall); adding comparison cue words gives 433 (36%,
+       80%).
+     - v4p1 baseline on the 194 (`20260927T041334Z`, $0.10): **30.4%**. But of 135
+       wrong answers, **63 are ours converting the text to a number where the gold
+       doesn't** (`AVG(Price)` over '$4.99' text; `ORDER BY population` on text). Only
+       **9** are the case a format note would fix (gold converts, ours doesn't).
+     - BIRD's own filtered train set keeps 59% of the "gold naive, ours converts"
+       group (71% overall), so BIRD largely treats naive text handling as acceptable
+       gold.
+     - **Decision:** no "convert this" gate: it would lower EX against BIRD's gold. No
+       "don't convert" gate either: it games label conventions, degrades real
+       correctness for the product, and may not match test grading, which uses
+       multiple gold-SQL pools, new test values and human review.
+     - The question "does test grading accept CAST-normalised answers where dev gold
+       compares text?" goes to the BIRD team.
+     - Jev's shadow comparison for this gate is moot. Jev stays planned for
+       selection (rank 4/6).
+     - Wider lesson: on BIRD, "more correct than the gold" is a recurring failure class
+       (reasoning, 1c notes, casts). Rank G training on BIRD-style labels would *learn*
+       these conventions, which helps dev scores but is a test-transfer risk. Weigh it
+       once BIRD answers.
 
 ---
 
@@ -795,6 +1313,7 @@ time.
 - Agentar-Scale-SQL: https://arxiv.org/abs/2509.24403 · SIRIUS-SQL: https://arxiv.org/abs/2606.01246
 - Databricks RLVR: https://arxiv.org/abs/2509.21459 · MCI-SQL: https://arxiv.org/abs/2603.13390 · CHASE-SQL: https://arxiv.org/abs/2410.01943
 - EllieSQL: https://arxiv.org/abs/2503.22402 · GEPA: https://arxiv.org/abs/2507.19457 · DivSkill-SQL: https://arxiv.org/abs/2605.21792
-- Jev: https://typesafe.ai/blog/introducing-system-one-models-and-jev · https://simonwillison.net/2026/Sep/21/jev/ · https://openrouter.ai/blog/tutorials/jev-vs-llm-as-a-judge/
+- BIRD filtered train (6,601 rows): https://huggingface.co/datasets/birdsql/bird23-train-filtered
+- Jev API, limits and price: https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request · https://docs.typesafe.ai/model-jaggedness/jev-1.13 · https://openrouter.ai/typesafe/jev-1.13/
 - Fireworks pricing (incl. 50% batch): https://docs.fireworks.ai/serverless/pricing
 - Tam et al., *Let Me Speak Freely?*: https://arxiv.org/abs/2408.02442

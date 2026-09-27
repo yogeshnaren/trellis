@@ -1,0 +1,38 @@
+rows compared: 1036 (deepseek 1036, gpt-oss 1036)
+deepseek-0731 63.6% | gpt-oss-120b 62.7% | any-correct 68.6%
+
+both wrong: 325 (31.4%)
+  same result set (consensus against gold): 191 = 58.8% of jointly-wrong, 18.4% of all rows
+  disagree (genuine-ish): 134 = 41.2% of jointly-wrong, 12.9% of all rows
+  only deepseek right: 61, only gpt-oss right: 52
+
+DECISION RULE -> INCONCLUSIVE (35-60%)
+
+consensus rows where both return EMPTY: 22 (12% of consensus rows)
+
+database                      n     DS    GPT both wrong  consensus  genuine-ish % rows
+california_schools           59  44.1%  40.7%         29    14 (48%)              25.4%
+thrombosis_prediction       113  46.0%  51.3%         49    37 (76%)              10.6%
+formula_1                   108  50.0%  49.1%         49    28 (57%)              19.4%
+card_games                  139  56.1%  54.0%         58    35 (60%)              16.5%
+toxicology                  105  61.0%  59.0%         34    15 (44%)              18.1%
+debit_card_specializing      34  64.7%  67.6%         10     9 (90%)               2.9%
+financial                    76  65.8%  61.8%         20    13 (65%)               9.2%
+codebase_community          137  72.3%  71.5%         36    23 (64%)               9.5%
+european_football_2          78  76.9%  70.5%         17     7 (41%)              12.8%
+student_club                110  78.2%  76.4%         18     6 (33%)              10.9%
+superhero                    77  88.3%  92.2%          5     4 (80%)               1.3%
+
+simple       n= 777 DS 68.0% GPT 67.1% both-wrong 215 consensus 132 (61%) genuine-ish 10.7% of rows
+moderate     n= 216 DS 50.0% GPT 49.1% both-wrong 94 consensus 51 (54%) genuine-ish 19.9% of rows
+challenging  n=  43 DS 53.5% GPT 53.5% both-wrong 16 consensus 8 (50%) genuine-ish 18.6% of rows
+
+group                     n  DS acc both wrong  consensus  genuine-ish % rows
+ratio question          124   55.6%         47    22 (47%)              20.2%
+division|cast            70   47.1%         31     8 (26%)              32.9%
+group_by                 65   46.2%         32    14 (44%)              27.7%
+subquery                 61   49.2%         28    17 (61%)              18.0%
+joins>=2                140   58.6%         48    27 (56%)              15.0%
+superlative             202   53.5%         83    40 (48%)              21.3%
+count question          282   63.1%         93    67 (72%)               9.2%
+simple (no feature)     594   69.0%        159   107 (67%)               8.8%

@@ -1,0 +1,63 @@
+
+### mini_dev/baseline(1x)  rows=500  official=47.6%  failing=262
+   values-differ                        90  34.4% of failures  18.0% of all rows
+   extra-columns                        76  29.0% of failures  15.2% of all rows
+   empty-result                         26   9.9% of failures   5.2% of all rows
+   missing-columns                      24   9.2% of failures   4.8% of all rows
+   row-count-differs                    22   8.4% of failures   4.4% of all rows
+   pipeline-safety-rejected              8   3.1% of failures   1.6% of all rows
+   pipeline-repair-exhausted             7   2.7% of failures   1.4% of all rows
+   answered-unsupported                  6   2.3% of failures   1.2% of all rows
+   gold-exec-error                       2   0.8% of failures   0.4% of all rows
+   prediction-exec-error                 1   0.4% of failures   0.2% of all rows
+   oracle presentational fixes (upper bound, NOT a gain): {'drop-extra-columns': 43, 'strip-round': 9, 'count-without-distinct': 10, 'split-concat': 9} -> + 14.2%
+   rows with corrected gold: 500; official 47.6% -> corrected 50.0%
+
+### mini_dev/gate1(3x)  rows=500  official=59.0%  failing=205
+   values-differ                        95  46.3% of failures  19.0% of all rows
+   row-count-differs                    34  16.6% of failures   6.8% of all rows
+   empty-result                         25  12.2% of failures   5.0% of all rows
+   extra-columns                        24  11.7% of failures   4.8% of all rows
+   missing-columns                      17   8.3% of failures   3.4% of all rows
+   pipeline-repair-exhausted             5   2.4% of failures   1.0% of all rows
+   gold-exec-error                       2   1.0% of failures   0.4% of all rows
+   pipeline-structured-output-failed     1   0.5% of failures   0.2% of all rows
+   pipeline-safety-rejected              1   0.5% of failures   0.2% of all rows
+   prediction-exec-error                 1   0.5% of failures   0.2% of all rows
+   oracle presentational fixes (upper bound, NOT a gain): {'drop-extra-columns': 13, 'count-without-distinct': 9, 'split-concat': 3} -> + 5.0%
+   rows with corrected gold: 500; official 59.0% -> corrected 60.4%
+
+### train_dev/baseline(2x)  rows=501  official=60.1%  failing=200
+   values-differ                        82  41.0% of failures  16.4% of all rows
+   extra-columns                        54  27.0% of failures  10.8% of all rows
+   row-count-differs                    34  17.0% of failures   6.8% of all rows
+   empty-result                         13   6.5% of failures   2.6% of all rows
+   pipeline-repair-exhausted             8   4.0% of failures   1.6% of all rows
+   missing-columns                       5   2.5% of failures   1.0% of all rows
+   pipeline-safety-rejected              3   1.5% of failures   0.6% of all rows
+   answered-unsupported                  1   0.5% of failures   0.2% of all rows
+   oracle presentational fixes (upper bound, NOT a gain): {'drop-extra-columns': 34, 'count-without-distinct': 7, 'strip-round': 1} -> + 8.4%
+   rows with corrected gold: 72; official 68.1% -> corrected 77.8%
+
+### train_dev/1abc(2x)  rows=501  official=68.5%  failing=158
+   values-differ                        91  57.6% of failures  18.2% of all rows
+   row-count-differs                    39  24.7% of failures   7.8% of all rows
+   extra-columns                        11   7.0% of failures   2.2% of all rows
+   empty-result                         10   6.3% of failures   2.0% of all rows
+   missing-columns                       4   2.5% of failures   0.8% of all rows
+   pipeline-repair-exhausted             1   0.6% of failures   0.2% of all rows
+   gold-exec-error                       1   0.6% of failures   0.2% of all rows
+   prediction-exec-error                 1   0.6% of failures   0.2% of all rows
+   oracle presentational fixes (upper bound, NOT a gain): {'count-without-distinct': 6, 'drop-extra-columns': 5} -> + 2.2%
+   rows with corrected gold: 72; official 76.4% -> corrected 80.6%
+
+### dev_untouched(1x)  rows=1036  official=64.6%  failing=367
+   values-differ                       177  48.2% of failures  17.1% of all rows
+   row-count-differs                    73  19.9% of failures   7.0% of all rows
+   empty-result                         43  11.7% of failures   4.2% of all rows
+   extra-columns                        39  10.6% of failures   3.8% of all rows
+   missing-columns                      25   6.8% of failures   2.4% of all rows
+   pipeline-repair-exhausted             5   1.4% of failures   0.5% of all rows
+   prediction-exec-error                 3   0.8% of failures   0.3% of all rows
+   pipeline-safety-rejected              2   0.5% of failures   0.2% of all rows
+   oracle presentational fixes (upper bound, NOT a gain): {'drop-extra-columns': 17, 'count-without-distinct': 30, 'split-concat': 5} -> + 5.0%

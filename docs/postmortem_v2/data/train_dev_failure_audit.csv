@@ -1,0 +1,47 @@
+row_index,db_id,question_id,bucket,tag,reason
+320,soccer_2016,1944,row-count-differs,LD,gold returns every win date; question and evidence ask for the first (MIN)
+408,soccer_2016,2032,empty-result,LD,gold uses CASE..ELSE 0 over a fan-out join; agent's HAVING COUNT>5 is the literal reading
+341,soccer_2016,1965,row-count-differs,LD,gold counts ball rows per innings (121/117) for a question about overs
+393,soccer_2016,2017,values-differ,HC,gold COUNT(Player_Id) counts player-match rows (97); agent COUNT(DISTINCT) gives 11
+399,soccer_2016,2023,extra-columns,LD,gold reaches City via Player->Country->City (arbitrary city of the country)
+293,soccer_2016,1917,empty-result,LD,gold returns Orange_Cap ids for every season the player appeared in
+291,soccer_2016,1915,values-differ,HC,hint MAX(COUNT(Role_id)) read literally by gold (no DISTINCT); agent used DISTINCT
+388,soccer_2016,2012,row-count-differs,LD,gold restricts "participated" to Man_of_the_Match players
+324,soccer_2016,1948,values-differ,LD,gold returns Match_Id ordered by Match_Winner
+264,soccer_2016,1888,values-differ,LD,gold SUM(Match_Winner) sums team ids for "total winning match"
+219,soccer_2016,1843,row-count-differs,LD,gold returns the team name for "list the player's name"
+269,soccer_2016,1893,values-differ,LD,gold COUNT(CASE..THEN 1 ELSE 0) / TOTAL(Match_Id) gives ~0.00017
+325,soccer_2016,1949,extra-columns,HC,hint "year refers to DOB": gold returns the full DOB date, agent returns the year
+277,soccer_2016,1901,values-differ,HC,gold counts matches; agent counts distinct winning teams ("how many teams")
+301,soccer_2016,1925,values-differ,LD,gold has an OR-precedence bug and counts Batsman_Scored rows
+302,soccer_2016,1926,values-differ,LD,gold COUNT(CASE..ELSE 0) / TOTAL(Venue_Id)
+459,sales_in_weather,8175,values-differ,GE,agent added an unconstrained weather join that perturbs multiplicity (1.5114 vs 1.5088)
+429,sales_in_weather,8145,values-differ,LD,gold joins weather on station only (no date); agent joins on date
+462,sales_in_weather,8178,values-differ,LD,gold SUM(store_nbr) for "how many stores"
+479,sales_in_weather,8195,extra-columns,PA,question asks for the station and the average; gold returns the average only
+435,sales_in_weather,8151,values-differ,GE,agent's MAX(tmax) subquery is not scoped to the store's station, so the join yields NULL
+440,sales_in_weather,8156,values-differ,GE,same unscoped MAX(tmax) error as row 435
+433,sales_in_weather,8149,values-differ,LD,gold sums units over every weather row (8.8M); agent's answer is the sensible one
+474,sales_in_weather,8190,gold-exec-error,LD,gold query times out
+483,sales_in_weather,8199,values-differ,HC,hint literal time('5:00:00') is malformed for SQLite (NULL); gold corrected it to '05:00:00'
+439,sales_in_weather,8155,values-differ,HC,hint Divide(Sum(units), Count(date)); gold uses non-distinct COUNT(date)
+491,sales_in_weather,8207,empty-result,LD,gold LIKE '%' OR 'HZ' OR '%' is always true (852 rows); agent's LIKE '%HZ%' is correct
+490,sales_in_weather,8206,correct-on-reexecution,PATHOLOGY,agent joined weather with no key: 107,877,015-row intermediate for a 111-row answer; timed out in-run
+54,restaurant,1678,row-count-differs,LD,gold selects id_restaurant for "at what numbers"
+119,restaurant,1743,values-differ,HC,COUNT(label) vs COUNT(DISTINCT label): 180 vs 165
+87,restaurant,1711,row-count-differs,GE,agent dropped street_num = 106 (stated in the question, not in the evidence)
+91,restaurant,1715,missing-columns,PA,gold also returns the restaurant label
+103,restaurant,1727,extra-columns,LD,evidence says address = street_num, street_name; gold returns street_name only
+160,restaurant,1784,values-differ,PA,"restaurant with most branches": gold groups by county over labels, agent by city; ambiguous
+129,restaurant,1753,row-count-differs,GE,agent took ids from generalinfo instead of location for "located" (174 vs 168)
+112,restaurant,1736,values-differ,GE,agent filtered 'Northern California'; stored value is lowercase, so 0 rows
+106,restaurant,1730,extra-columns,LD,same as row 103
+162,restaurant,1786,row-count-differs,LD,gold ignores food_type and joins on city (30,970 rows)
+143,restaurant,1767,values-differ,LD,gold COUNT(food_type = 'american') counts every row
+155,restaurant,1779,values-differ,LD,gold joins location to generalinfo on city (22,952 rows)
+11,movie,741,values-differ,HC,COUNT(*) of character rows (108) vs COUNT(DISTINCT MovieID) (87)
+44,movie,774,values-differ,LD,gold returns a difference of counts (-268) for a percentage question
+45,movie,775,empty-result,LD,gold filters title 'Godzilla' though the question says 'Bruce Almighty'
+13,movie,743,values-differ,GE,screentime is text like 0:17:30; agent subtracts text (NULL), gold parses SUBSTR
+36,movie,766,row-count-differs,LD,gold adds Gender = 'Male', which the question does not state
+42,movie,772,row-count-differs,GE,net worth is text like $375,000,000.00; agent compares strings and omits SUM

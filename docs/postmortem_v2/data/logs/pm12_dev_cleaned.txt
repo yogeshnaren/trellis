@@ -1,0 +1,18 @@
+dev_untouched rows 1036; question+evidence unchanged in cleaned release: 779 (75.2%)
+
+cleaned SQL text differs on 133 of 779 same-input rows (17.1%); the gold RESULT SET changes on 54 (6.9%)
+
+model             original gold  cleaned gold   delta   (rows: 779)
+deepseek-0731             64.2%         68.3%    +4.1
+gpt-oss-120b              63.4%         67.3%    +3.9
+
+against original gold: both wrong 245 (31.5%); same answer 148 = 60.4% of jointly-wrong, 19.0% of rows; disagree 97 (12.5% of rows)
+
+against cleaned gold: both wrong 210 (27.0%); same answer 124 = 59.0% of jointly-wrong, 15.9% of rows; disagree 86 (11.0% of rows)
+
+consensus-against-gold rows explained by label cleaning: 24 of 148 (16%)
+rows that flip wrong->right under cleaned gold (either model): 38; right->wrong: 3
+
+Composition of deepseek-0731's wrong rows on the same-input subset (share of ALL rows)
+  original : deepseek wrong 35.8% = shared-with-gpt-oss 19.0% + both-wrong-but-differ 12.5% + deepseek-only 4.4%
+  cleaned  : deepseek wrong 31.7% = shared-with-gpt-oss 15.9% + both-wrong-but-differ 11.0% + deepseek-only 4.7%

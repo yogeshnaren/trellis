@@ -1,0 +1,24 @@
+
+[Mini-Dev vs Arcwise-Plat-SQL] rows with corrected gold: 500; result set changed: 113 (22.6%); exec errors 2
+    thrombosis_prediction       19/ 50 = 38%
+    california_schools          11/ 30 = 37%
+    debit_card_specializing      9/ 30 = 30%
+    toxicology                  11/ 40 = 28%
+    codebase_community          13/ 49 = 27%
+    european_football_2         12/ 51 = 24%
+    card_games                  10/ 52 = 19%
+    superhero                    9/ 52 = 17%
+    financial                    5/ 32 = 16%
+    formula_1                    9/ 66 = 14%
+    student_club                 5/ 48 = 10%
+
+[train_dev (Verified same-input subset)] rows with corrected gold: 72; result set changed: 18 (25.0%); exec errors 0
+    sales_in_weather             2/  7 = 29%
+    soccer_2016                 11/ 42 = 26%
+    movie                        2/  9 = 22%
+    restaurant                   3/ 14 = 21%
+
+stable-wrong train_dev rows with a Verified same-input label: 16; of which the agent matches the CORRECTED gold: 8 (50%)
+
+train_dev both model families wrong on 138/501 (27.5%); of those they return the SAME result set: 98 (71%) -> 19.6% of all rows
+only DeepSeek right 26; only gpt-oss right 15; union-correct 72.5% vs DeepSeek alone 69.5%

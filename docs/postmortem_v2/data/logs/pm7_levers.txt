@@ -1,0 +1,21 @@
+### (A) all-NULL / empty shipped answers
+mini_dev/gate1(3x)     answers=500  empty=25 (correct 0)  single-all-NULL=4 (correct 0)
+train_dev/1abc(2x)     answers=501  empty=32 (correct 22)  single-all-NULL=8 (correct 0)
+dev_untouched(1x)      answers=1036  empty=45 (correct 0)  single-all-NULL=9 (correct 1)
+
+### (B) agent uses COUNT(DISTINCT ..): correctness, and whether gold also uses DISTINCT
+mini_dev/gate1(3x)     agent uses COUNT(DISTINCT): 50; both-distinct correct 8/15 = 53%; agent-only distinct correct 12/35 = 34%; gold-only distinct correct 2/7 = 29%
+train_dev/1abc(2x)     agent uses COUNT(DISTINCT): 42; both-distinct correct 2/3 = 67%; agent-only distinct correct 18/39 = 46%; gold-only distinct correct 1/6 = 17%
+dev_untouched(1x)      agent uses COUNT(DISTINCT): 109; both-distinct correct 17/35 = 49%; agent-only distinct correct 23/74 = 31%; gold-only distinct correct 2/9 = 22%
+
+### (C) train_dev: among rows wrong for BOTH model families, share where the two agree (= consensus vs gold), by feature
+group                     n  DS acc both-wrong  consensus   genuine-ish (both wrong, disagree)
+all                     501   69.5%        138    98 (71%)                   40 (8.0% of rows)
+q_ratio                  64   42.2%         34    17 (50%)                   17 (26.6% of rows)
+division|cast            50   48.0%         24    13 (54%)                   11 (22.0% of rows)
+group_by                 70   51.4%         33    21 (64%)                   12 (17.1% of rows)
+subquery                 31   51.6%         15    11 (73%)                    4 (12.9% of rows)
+joins>=2                122   57.4%         50    32 (64%)                   18 (14.8% of rows)
+q_superlative           105   60.0%         40    25 (62%)                   15 (14.3% of rows)
+q_count                 162   66.7%         47    35 (74%)                   12 (7.4% of rows)
+no feature (simple)     250   79.2%         43    36 (84%)                    7 (2.8% of rows)

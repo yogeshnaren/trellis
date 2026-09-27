@@ -1,0 +1,7 @@
+dataset           rows    gold w/ >=1 unambiguous bug idiom   breakdown
+mini_dev           500     1 (0.2%)   {'COUNT(CASE..THEN 1 ELSE 0) counts every row': 1}
+train_dev          501    10 (2.0%)   {'COUNT(<comparison>) counts every row': 3, 'TOTAL()-of-id/odd-agg': 5, 'COUNT(CASE..THEN 1 ELSE 0) counts every row': 3, "LIKE ... OR '...' (always true)": 2}
+dev_untouched     1036     1 (0.1%)   {'COUNT(CASE..THEN 1 ELSE 0) counts every row': 1}
+mini_dev/gate1(3x)     rows with gold-bug idiom:   1 agent acc 0.0% | other rows 499 acc 59.5%
+train_dev/1abc(2x)     rows with gold-bug idiom:  10 agent acc 10.0% | other rows 491 acc 69.9%
+dev_untouched(1x)      rows with gold-bug idiom:   1 agent acc 0.0% | other rows 1035 acc 63.7%

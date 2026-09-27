@@ -289,13 +289,22 @@ def execute(
     return columns, [tuple(row) for row in rows[:limit]], truncated
 
 
+def _canonical_value(value: Any) -> Any:
+    # Python's set comparison treats 1 and 1.0 (and 0 and -0.0) as equal; repr doesn't.
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    return value
+
+
 def result_signature(rows: list[tuple[Any, ...]]) -> str:
     """Order- and duplicate-insensitive fingerprint of a full result set.
 
-    Equal signatures mean equal results under BIRD's official ``set(rows)`` comparison, so
-    this is the key for clustering candidates by execution result.
+    Results equal under BIRD's official ``set(rows)`` comparison get equal signatures,
+    including integer-valued floats vs integers, so this is the key for clustering
+    candidates by execution result. Signatures from before this normalisation (runs before
+    2026-09-26) may split such results; compare signatures only within one code state.
     """
-    canonical = sorted(repr(row) for row in set(rows))
+    canonical = sorted(repr(tuple(_canonical_value(v) for v in row)) for row in set(rows))
     return hashlib.sha256("\n".join(canonical).encode()).hexdigest()[:16]
 
 

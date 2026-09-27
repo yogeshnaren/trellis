@@ -437,18 +437,28 @@ FULL_COMPARISON_REPEATS = 2
 DEFAULT_MIN_GAIN_PTS = 1.5
 
 
+def answer_uncached_cost(record: dict[str, Any]) -> float:
+    """Uncached-equivalent $ for one answer: its LLM calls plus any non-LLM per-question
+    charges (Jev decisions, probes, hosting) recorded in ``extra_cost_usd``."""
+    llm = sum(
+        cost_usd(call["model"], int(call["input_tokens"]), 0, int(call["output_tokens"]))
+        for call in record.get("llm_calls", [])
+    )
+    return llm + float(record.get("extra_cost_usd", 0.0))
+
+
 def cost_latency(runs: dict[int, list[dict[str, Any]]]) -> tuple[float, float, float]:
-    """(measured $/answer, uncached-equivalent $/answer, P50 seconds) over all repeats."""
+    """(measured $/answer, uncached-equivalent $/answer, P50 seconds) over all repeats.
+
+    Both cost figures include per-question non-LLM charges (``extra_cost_usd``). One-time
+    costs (e.g. building a per-database glossary) are not per-answer and are reported as a
+    separate submission total.
+    """
     records = [record for rows in runs.values() for record in rows]
     calls = [call for record in records for call in record.get("llm_calls", [])]
-    measured = sum(float(call["cost_usd"]) for call in calls) / len(records)
-    uncached = (
-        sum(
-            cost_usd(call["model"], int(call["input_tokens"]), 0, int(call["output_tokens"]))
-            for call in calls
-        )
-        / len(records)
-    )
+    extra = sum(float(record.get("extra_cost_usd", 0.0)) for record in records)
+    measured = (sum(float(call["cost_usd"]) for call in calls) + extra) / len(records)
+    uncached = sum(answer_uncached_cost(record) for record in records) / len(records)
     latencies = sorted(float(record.get("t_total_ms", 0.0)) for record in records)
     return measured, uncached, latencies[len(latencies) // 2] / 1_000
 
@@ -463,6 +473,28 @@ def required_gain(
 
 
 NON_INFERIORITY_MARGIN_PTS = 1.5
+# Submission track (§5.7, adopted 2026-09-26): absolute ceilings replace the per-point
+# cost/latency penalty for the frozen hidden-test configuration.
+SUBMISSION_MAX_UNCACHED_USD = 0.01  # mean per answer, all per-question charges included
+SUBMISSION_MAX_ANSWER_USD = 0.05  # hard cap for any single answer
+SUBMISSION_MAX_P90_S = 30.0
+
+
+def p90_seconds(runs: dict[int, list[dict[str, Any]]]) -> float:
+    latencies = sorted(float(r.get("t_total_ms", 0.0)) for rows in runs.values() for r in rows)
+    return latencies[min(len(latencies) - 1, int(len(latencies) * 0.9))] / 1_000
+
+
+def max_answer_cost(runs: dict[int, list[dict[str, Any]]]) -> float:
+    return max(answer_uncached_cost(r) for rows in runs.values() for r in rows)
+
+
+def within_submission_ceilings(mean_usd: float, max_usd: float, p90_s: float) -> bool:
+    return (
+        mean_usd <= SUBMISSION_MAX_UNCACHED_USD
+        and max_usd <= SUBMISSION_MAX_ANSWER_USD
+        and p90_s <= SUBMISSION_MAX_P90_S
+    )
 
 
 def non_inferior(
@@ -533,6 +565,7 @@ def flips_report(
     force: bool = False,
     pilot: bool = False,
     min_gain: float = DEFAULT_MIN_GAIN_PTS,
+    track: str = "product",
     iterations: int = 2_000,
     seed: int = 0,
 ) -> str:
@@ -572,7 +605,17 @@ def flips_report(
     row_ci, macro_ci = _bootstrap(per_db, iterations, seed)
     old_cost = cost_latency({r: old[r] for r in shared})
     new_cost = cost_latency({r: new[r] for r in shared})
-    minimum = required_gain(min_gain, old_cost, new_cost)
+    new_p90 = p90_seconds({r: new[r] for r in shared})
+    new_max = max_answer_cost({r: new[r] for r in shared})
+    ceilings_ok = within_submission_ceilings(new_cost[1], new_max, new_p90)
+    if track == "submission":
+        minimum = min_gain
+    else:
+        minimum = required_gain(min_gain, old_cost, new_cost)
+
+    def passes(delta: float, ci_low: float) -> bool:
+        clears = delta * 100 >= minimum and ci_low > 0
+        return clears and (ceilings_ok or track != "submission")
     repeats = (
         max(len(runs) for runs in old.values()),
         max(len(runs) for runs in new.values()),
@@ -620,10 +663,19 @@ def flips_report(
         f"| new | {new_cost[0]:.6f} | {new_cost[1]:.6f} | {new_cost[2]:.2f} |",
         "",
         (
-            f"**Required minimum: {minimum:+.2f} pts** (base {min_gain:+.2f}, plus 1 pt per "
-            "+50% uncached cost and per +1s P50). Meets it: row-weighted "
-            f"**{'yes' if row_delta * 100 >= minimum and row_ci[0] > 0 else 'no'}**, "
-            f"macro **{'yes' if macro_delta * 100 >= minimum and macro_ci[0] > 0 else 'no'}**"
+            f"**Track: {track}.** "
+            + (
+                f"**Required minimum: {minimum:+.2f} pts** (declared base; cost and latency "
+                f"are ceilings: mean uncached ≤ ${SUBMISSION_MAX_UNCACHED_USD}/answer, any "
+                f"answer ≤ ${SUBMISSION_MAX_ANSWER_USD}, P90 ≤ {SUBMISSION_MAX_P90_S:.0f}s; "
+                f"new run mean ${new_cost[1]:.6f}, max ${new_max:.4f}, P90 {new_p90:.2f}s: "
+                f"**{'within' if ceilings_ok else 'EXCEEDED'}**). "
+                if track == "submission"
+                else f"**Required minimum: {minimum:+.2f} pts** (base {min_gain:+.2f}, plus 1 "
+                "pt per +50% uncached cost and per +1s P50). "
+            )
+            + f"Meets it: row-weighted **{'yes' if passes(row_delta, row_ci[0]) else 'no'}**, "
+            f"macro **{'yes' if passes(macro_delta, macro_ci[0]) else 'no'}**"
             " (point estimate ≥ minimum and CI lower bound > 0)."
         ),
         (
@@ -774,6 +826,13 @@ def main() -> None:
         help="Declared base minimum gain in points, before cost/latency adjustment.",
     )
     flips_cmd.add_argument(
+        "--track",
+        choices=["product", "submission"],
+        default="product",
+        help="Acceptance track (§5.7): product = cost/latency penalty points; submission = "
+        "declared minimum plus absolute cost and P90 ceilings.",
+    )
+    flips_cmd.add_argument(
         "--pilot",
         action="store_true",
         help="Allow partial overlap / unequal repeats; the report is labeled non-acceptance.",
@@ -806,6 +865,7 @@ def main() -> None:
                 force=args.force,
                 pilot=args.pilot,
                 min_gain=args.min_gain,
+                track=args.track,
             )
         )
 

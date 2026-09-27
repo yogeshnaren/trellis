@@ -11,6 +11,12 @@
   results (and 23 of Mini-Dev's), so each question set is scored only on its own databases.
   Same 11 schemas as Mini-Dev, so it is *not* a generalization check; it is reported
   separately and never tuned on.
+- ``train_dev2.json``: 4 more train databases, preselected by a fixed hash rule before any run
+  (SOTA plan §5.9). Development data only: they repeat ``train_dev``'s themes, so transfer
+  claims still need the lockbox.
+- ``train_design.json``: every other locally available train database. It is the pool for
+  designing and fitting triggers or gates (e.g. the format/intent gate), and for SFT
+  execution checks. Never used to *score* a configuration.
 - Mini-Dev itself (``mini_dev_sqlite.json``, 500 rows) stays the infrequent gate.
 
 If BIRD-Verified (``data/bird/verified/bird-verified-train.json``, from ReViSQL; ids are
@@ -45,6 +51,9 @@ from benchmark.bird import DEFAULT_BIRD_DIR, dataset_fingerprint
 # gold SQL is cleanest (restaurant has 19/117 empty gold results, soccer_2016 5, movie 2;
 # the lockbox's seven have 5 empty results in 974 rows and no gold errors).
 TRAIN_DEV_DBS = ("movie", "restaurant", "sales_in_weather", "soccer_2016")
+# Preselected 2026-09-26 before any download or run: sha256("train_dev2:" + db_id) order over
+# train databases outside train_dev/lockbox with a .sqlite <= 100 MB and 60-200 questions.
+TRAIN_DEV2_DBS = ("ice_hockey_draft", "movielens", "professional_basketball", "regional_sales")
 TRAIN_LOCKBOX_DBS = (
     "european_football_1",
     "food_inspection_2",
@@ -80,6 +89,20 @@ def build(bird_dir: Path = DEFAULT_BIRD_DIR) -> dict[str, Any]:
         ),
         "dev_untouched": (untouched, "data/bird/dev/dev_databases", dev_path),
     }
+    local_train_dbs = {
+        path.parent.name for path in Path(train_dir).glob("*/*.sqlite")
+        if path.stem == path.parent.name
+    }
+    reserved = set(TRAIN_DEV_DBS) | set(TRAIN_DEV2_DBS) | set(TRAIN_LOCKBOX_DBS)
+    design_dbs = sorted(local_train_dbs - reserved)
+    if set(TRAIN_DEV2_DBS) <= local_train_dbs:
+        splits["train_dev2"] = (
+            [q for q in train if q["db_id"] in TRAIN_DEV2_DBS], train_dir, train_path
+        )
+    if design_dbs:
+        splits["train_design"] = (
+            [q for q in train if q["db_id"] in design_dbs], train_dir, train_path
+        )
     manifest: dict[str, Any] = {
         "mini_dev": {
             "questions": str(mini_path),
@@ -106,6 +129,10 @@ def build(bird_dir: Path = DEFAULT_BIRD_DIR) -> dict[str, Any]:
         manifest.update(_verified_splits(verified_path, train, out_dir))
     manifest["train_dev"]["databases"] = list(TRAIN_DEV_DBS)
     manifest["train_lockbox"]["databases"] = list(TRAIN_LOCKBOX_DBS)
+    if "train_dev2" in manifest:
+        manifest["train_dev2"]["databases"] = list(TRAIN_DEV2_DBS)
+    if "train_design" in manifest:
+        manifest["train_design"]["databases"] = design_dbs
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n")
     return manifest
 

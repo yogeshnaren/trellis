@@ -1,0 +1,61 @@
+
+6.1 unquoted special-char identifiers
+  # 1192 thrombosis_prediction    baseline=?  gate1(3x)= OK  | OK  | OK    err=None
+  # 1225 thrombosis_prediction    baseline=?  gate1(3x)= bad | bad | bad   err=None
+  # 1232 thrombosis_prediction    baseline=?  gate1(3x)= OK  | OK  | OK    err=None
+  # 1189 thrombosis_prediction    baseline=?  gate1(3x)= OK  | OK  | OK    err=None
+
+6.3 wide-table false 'unsupported' / wrong-table
+  # 1169 thrombosis_prediction    baseline=?  gate1(3x)= OK  | OK  | OK    err=None
+  # 1267 thrombosis_prediction    baseline=?  gate1(3x)= bad | bad | bad   err=None
+
+6.5 over-projection (Chinook-era rule)
+  #  881 formula_1                baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #  954 formula_1                baseline=?  gate1(3x)= OK  | OK  | OK    err=None
+  #  955 formula_1                baseline=?  gate1(3x)= bad | bad | bad   err=None
+  # 1003 formula_1                baseline=?  gate1(3x)= OK  | OK  | OK    err=None
+
+6.7 fan-out COUNT vs COUNT DISTINCT
+  #  201 toxicology               baseline=?  gate1(3x)= bad | bad | bad   err=None
+
+6.2 dictionary-related (yearmonth text date; rtype)
+  # 1500 debit_card_specializing  baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #   40 california_schools       baseline=?  gate1(3x)= bad | bad | bad   err=None
+
+6.4/evidence literal traps (date slash; label inversion)
+  #  563 codebase_community       baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #  565 codebase_community       baseline=?  gate1(3x)= bad | bad | bad   err=None
+
+6.6 outer-join implied
+  #   23 california_schools       baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #   24 california_schools       baseline=?  gate1(3x)= bad | bad | bad   err=None
+
+timeouts (v1 6.8)
+  # 1505 debit_card_specializing  baseline=?  gate1(3x)= bad/repair-exhausted | bad/repair-exhausted | bad/repair-exhausted   err=interrupted
+  # 1031 european_football_2      baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #  595 codebase_community       baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #  604 codebase_community       baseline=?  gate1(3x)= bad/repair-exhausted | bad/repair-exhausted | bad/repair-exhausted   err=interrupted
+  #  409 card_games               baseline=?  gate1(3x)= bad/repair-exhausted | bad/repair-exhausted | bad/repair-exhausted   err=interrupted
+  #  247 toxicology               baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #  346 card_games               baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #  518 card_games               baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #  701 codebase_community       baseline=?  gate1(3x)= bad | bad | bad   err=None
+
+hallucinated identifiers (not quoting)
+  # 1356 student_club             baseline=?  gate1(3x)= OK  | OK  | OK    err=None
+  #  639 codebase_community       baseline=?  gate1(3x)= bad | bad | bad   err=None
+  #  473 card_games               baseline=?  gate1(3x)= bad/repair-exhausted | bad | bad   err=no such column: isForeignOnly
+  #  243 toxicology               baseline=?  gate1(3x)= bad | bad/repair-exhausted | bad/repair-exhausted   err=None
+
+6.1 unquoted special-char identifiers                        gate1 accuracy on these 4 ids: 75%
+6.3 wide-table false 'unsupported' / wrong-table             gate1 accuracy on these 2 ids: 50%
+6.5 over-projection (Chinook-era rule)                       gate1 accuracy on these 4 ids: 50%
+6.7 fan-out COUNT vs COUNT DISTINCT                          gate1 accuracy on these 1 ids: 0%
+6.2 dictionary-related (yearmonth text date; rtype)          gate1 accuracy on these 2 ids: 0%
+6.4/evidence literal traps (date slash; label inversion)     gate1 accuracy on these 2 ids: 0%
+6.6 outer-join implied                                       gate1 accuracy on these 2 ids: 0%
+timeouts (v1 6.8)                                            gate1 accuracy on these 9 ids: 0%
+hallucinated identifiers (not quoting)                       gate1 accuracy on these 4 ids: 25%
+
+Gate-1 pipeline census over 1500 answers: {'result_truncated': 74, 'empty_retried': 89, 'repaired': 44, 'err:repair-exhausted': 15, 'err:structured-output-failed': 1, 'refusal_retried': 17, 'err:safety-rejected': 3}
+flaky rows: 14 [('california_schools', 46), ('california_schools', 83), ('card_games', 371), ('card_games', 407), ('card_games', 474), ('card_games', 480), ('codebase_community', 683), ('debit_card_specializing', 1533), ('european_football_2', 1148), ('student_club', 1350), ('superhero', 751), ('thrombosis_prediction', 1198), ('thrombosis_prediction', 1185), ('toxicology', 227)]

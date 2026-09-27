@@ -424,7 +424,8 @@ def test_run_metadata_ignores_result_files_when_hashing_code(tmp_path: Path) -> 
         difficulty=None, db=["movie"], limit=2, per_db=None, ids=None, seed=0,
         models=["m"], temperature=0.0, max_tokens=400, reasoning_effort=None, repeats=1,
         prompt_profile="product", quote_identifiers=False, pipeline_repairs=False, dictionary=False,
-        llm_timeout=20.0, fewshot=0, fewshot_pool=Path("data/bird/train/train.json"),
+        llm_timeout=20.0, fewshot=0, fewshot_pool=Path("data/bird/train/train.json"), truncation_retry=0,
+        column_meaning=0,
     )
     if not args.questions.exists():
         import pytest
@@ -501,3 +502,30 @@ def test_fewshot_excludes_held_out_databases_and_renders() -> None:
     assert "OTHER databases" in block and "Hint: actor refers to Name" in block
     assert block.endswith("Now answer this question:\n")
     assert render_examples([]) == ""
+
+
+def test_submission_track_ceilings_and_p90() -> None:
+    from benchmark.analyze import p90_seconds, within_submission_ceilings
+
+    runs = {i: [{"t_total_ms": 1000.0 * (i + 1)}] for i in range(10)}  # 1s … 10s
+    assert p90_seconds(runs) == 10.0
+    assert within_submission_ceilings(0.0099, 0.05, 29.9)
+    assert not within_submission_ceilings(0.0101, 0.02, 1.0)  # mean cost ceiling
+    assert not within_submission_ceilings(0.001, 0.06, 1.0)  # one answer over the hard cap
+    assert not within_submission_ceilings(0.001, 0.01, 30.1)  # latency ceiling
+
+
+def test_cost_includes_non_llm_per_question_charges() -> None:
+    from benchmark.analyze import answer_uncached_cost, cost_latency, max_answer_cost
+    from src.costs import MODEL_GPT_OSS
+
+    call = {"model": MODEL_GPT_OSS, "input_tokens": 1_000_000, "output_tokens": 0,
+            "cost_usd": 0.15}
+    plain = {"llm_calls": [call], "t_total_ms": 1000.0}
+    with_jev = {**plain, "extra_cost_usd": 0.02}
+    assert answer_uncached_cost(plain) == pytest.approx(0.15)
+    assert answer_uncached_cost(with_jev) == pytest.approx(0.17)
+    runs = {0: [plain], 1: [with_jev]}
+    measured, uncached, _ = cost_latency(runs)
+    assert measured == pytest.approx(0.16) and uncached == pytest.approx(0.16)
+    assert max_answer_cost(runs) == pytest.approx(0.17)

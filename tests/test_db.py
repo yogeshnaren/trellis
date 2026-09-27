@@ -128,6 +128,23 @@ def test_sqlite_authorizer_denies_writes(conn: sqlite3.Connection) -> None:
         conn.execute("DELETE FROM Artist")
 
 
+def test_result_signature_matches_bird_set_equality() -> None:
+    from src.db import result_signature
+
+    cases = [
+        ([(1, "a")], [(1.0, "a")]),  # set equality ignores int vs integer-valued float
+        ([(0,)], [(-0.0,)]),
+        ([(2,), (1,), (1,)], [(1.0,), (2.0,)]),  # order and duplicates too
+    ]
+    for left, right in cases:
+        assert set(left) == set(right)
+        assert result_signature(left) == result_signature(right)
+    # Results BIRD scores as different must stay different.
+    assert result_signature([(1.5,)]) != result_signature([(1,)])
+    assert result_signature([("1",)]) != result_signature([(1,)])
+    assert result_signature([(None,)]) != result_signature([(0,)])
+
+
 def test_execute_candidate_needs_no_gold_and_keeps_safety() -> None:
     from src.db import execute_candidate
 

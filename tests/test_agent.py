@@ -261,3 +261,45 @@ def test_unavailable_model_is_a_handled_error_not_a_crash(
     assert result.error_category == "model-unavailable"
     assert "retired-model" in (result.error or "")
     assert not result.ok and result.rows is None and not result.llm_calls
+
+
+def test_truncation_retry_only_for_length_cutoffs(tmp_path: Path) -> None:
+    import asyncio
+    from dataclasses import replace
+
+    cut = replace(llm('{"response_type": "query", "sql": "SELECT Na'), finish_reason="length")
+    good = _query("SELECT Name FROM Artist LIMIT 1")
+    malformed = replace(llm('{"response_type": "query"'), finish_reason="stop")
+
+    def run(responses: list[LLMResult], retry_tokens: int) -> tuple[Any, list[int]]:
+        queue = iter(responses)
+        caps: list[int] = []
+
+        async def fake_complete(*args: Any, **kwargs: Any) -> LLMResult:
+            caps.append(kwargs["max_tokens"])
+            return next(queue)
+
+        async def scenario() -> Any:
+            conn = connect_readonly()
+            try:
+                agent = Agent(
+                    MODEL_GPT_OSS,
+                    conn,
+                    BudgetGuard(1.0, tmp_path / "spend.sqlite"),
+                    complete_fn=fake_complete,
+                    truncation_retry_tokens=retry_tokens,
+                )
+                return await agent.ask("q", ConversationContext(get_schema()))
+            finally:
+                conn.close()
+
+        return asyncio.run(scenario()), caps
+
+    fixed, caps = run([cut, good], 1200)
+    assert fixed.ok and fixed.truncation_retried and caps == [400, 1200]
+    off, caps = run([cut], 0)  # off by default: the cut-off answer fails as before
+    assert off.error_category == "structured-output-failed" and caps == [400]
+    other, caps = run([malformed], 1200)  # malformed but not cut off: no retry
+    assert other.error_category == "structured-output-failed" and caps == [400]
+    twice, caps = run([cut, cut], 1200)  # retried at most once
+    assert twice.error_category == "structured-output-failed" and caps == [400, 1200]

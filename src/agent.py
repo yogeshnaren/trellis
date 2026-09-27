@@ -49,6 +49,7 @@ class AgentResult:
     repaired: bool = False
     refusal_retried: bool = False
     empty_retried: bool = False
+    truncation_retried: bool = False
     truncated: bool = False
     llm_calls: list[LLMResult] = field(default_factory=list)
     t_schema_ms: float = 0.0
@@ -92,6 +93,7 @@ class Agent:
         request_options: dict[str, Any] | None = None,
         pipeline_repairs: bool = False,
         llm_timeout_s: float = 20.0,
+        truncation_retry_tokens: int = 0,
     ):
         self.model = model
         self.conn = conn
@@ -108,6 +110,9 @@ class Agent:
         self.pipeline_repairs = pipeline_repairs
         # Reasoning-mode calls can legitimately exceed the interactive 20s client timeout.
         self.llm_timeout_s = llm_timeout_s
+        # When > 0: an answer cut off by max_tokens (finish_reason "length") is re-asked once
+        # with this larger cap, instead of raising every call's cap. Off by default.
+        self.truncation_retry_tokens = truncation_retry_tokens
 
     async def ask(self, question: str, ctx: ConversationContext) -> AgentResult:
         started = time.perf_counter()
@@ -115,6 +120,7 @@ class Agent:
         messages = ctx.build_messages(question)
         repairs_left = self.max_repairs
         refusal_retry_left = 1 if self.pipeline_repairs else 0
+        max_tokens = self.max_tokens
 
         while True:
             try:
@@ -122,7 +128,7 @@ class Agent:
                     messages,
                     self.model,
                     response_format=SQL_SCHEMA,
-                    max_tokens=self.max_tokens,
+                    max_tokens=max_tokens,
                     budget=self.budget,
                     request_options=self.request_options,
                     temperature=self.temperature,
@@ -164,6 +170,15 @@ class Agent:
                             f"{payload.response_type} responses require a non-empty message"
                         )
             except (ValidationError, ValueError) as exc:
+                if (
+                    llm_result.finish_reason == "length"
+                    and self.truncation_retry_tokens > max_tokens
+                    and not result.truncation_retried
+                ):
+                    # Same messages, larger cap, once: only truncated answers pay for it.
+                    result.truncation_retried = True
+                    max_tokens = self.truncation_retry_tokens
+                    continue
                 return self._finish(
                     result, f"Structured output failed: {exc}", "structured-output-failed", started
                 )
