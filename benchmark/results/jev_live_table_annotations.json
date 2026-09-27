@@ -1,0 +1,2444 @@
+{
+  "questions_sha256_16": "169a2b7ac100a5b2",
+  "pilot_sha256_16": "169a2b7ac100a5b2",
+  "database_sha256_16": {
+    "ice_hockey_draft": "4b297d4b7f8c0ff3",
+    "movielens": "7c0f4f556f28e787",
+    "professional_basketball": "11bc18807f9209e4",
+    "regional_sales": "9820888505c30dfd"
+  },
+  "mode": "table",
+  "complete": true,
+  "results": [
+    {
+      "row_index": 0,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "height_info",
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "height_info": 0.91,
+        "PlayerInfo": 0.83,
+        "weight_info": 0.07,
+        "SeasonStatus": 0.12
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.7926e-05,
+      "latency_ms": 333.3762049951474
+    },
+    {
+      "row_index": 1,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "height_info",
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "height_info": 0.91,
+        "PlayerInfo": 0.95,
+        "weight_info": 0.1,
+        "SeasonStatus": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.9354e-05,
+      "latency_ms": 178.11816399625968
+    },
+    {
+      "row_index": 2,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "weight_info",
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "weight_info": 0.93,
+        "PlayerInfo": 0.84,
+        "height_info": 0.08,
+        "SeasonStatus": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.7884e-05,
+      "latency_ms": 155.35464599815896
+    },
+    {
+      "row_index": 3,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "weight_info"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.94,
+        "weight_info": 0.95,
+        "height_info": 0.09,
+        "SeasonStatus": 0.36
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.9522e-05,
+      "latency_ms": 224.53375199984293
+    },
+    {
+      "row_index": 4,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "height_info"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.72,
+        "height_info": 0.94,
+        "weight_info": 0.07,
+        "SeasonStatus": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.99e-05,
+      "latency_ms": 147.68549500149675
+    },
+    {
+      "row_index": 5,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "weight_info"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.96,
+        "weight_info": 0.9,
+        "height_info": 0.09,
+        "SeasonStatus": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.9396e-05,
+      "latency_ms": 167.41008999815676
+    },
+    {
+      "row_index": 6,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "height_info"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.95,
+        "height_info": 0.95,
+        "weight_info": 0.08,
+        "SeasonStatus": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.9564e-05,
+      "latency_ms": 369.24890899535967
+    },
+    {
+      "row_index": 7,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "weight_info",
+        "SeasonStatus"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.94,
+        "weight_info": 0.95,
+        "SeasonStatus": 0.96,
+        "height_info": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.8892e-05,
+      "latency_ms": 218.19765200052643
+    },
+    {
+      "row_index": 8,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "SeasonStatus"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.95,
+        "height_info": 0.07,
+        "weight_info": 0.08,
+        "SeasonStatus": 0.93
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.8682e-05,
+      "latency_ms": 238.8715310007683
+    },
+    {
+      "row_index": 9,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "SeasonStatus",
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "SeasonStatus": 0.94,
+        "PlayerInfo": 0.93,
+        "height_info": 0.07,
+        "weight_info": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.0782e-05,
+      "latency_ms": 184.1255449980963
+    },
+    {
+      "row_index": 10,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "weight_info"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.96,
+        "weight_info": 0.92,
+        "height_info": 0.1,
+        "SeasonStatus": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.8514e-05,
+      "latency_ms": 245.5566450007609
+    },
+    {
+      "row_index": 11,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "SeasonStatus"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.96,
+        "height_info": 0.08,
+        "weight_info": 0.07,
+        "SeasonStatus": 0.95
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.8934e-05,
+      "latency_ms": 170.64805699919816
+    },
+    {
+      "row_index": 12,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "SeasonStatus"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.93,
+        "height_info": 0.07,
+        "weight_info": 0.07,
+        "SeasonStatus": 0.94
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.8346e-05,
+      "latency_ms": 210.82494300208054
+    },
+    {
+      "row_index": 13,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.97,
+        "SeasonStatus": 0.09,
+        "height_info": 0.07,
+        "weight_info": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.3848e-05,
+      "latency_ms": 152.45747200242477
+    },
+    {
+      "row_index": 14,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "SeasonStatus",
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "SeasonStatus": 0.96,
+        "PlayerInfo": 0.95,
+        "height_info": 0.08,
+        "weight_info": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.1412e-05,
+      "latency_ms": 294.48588899686
+    },
+    {
+      "row_index": 15,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.96,
+        "height_info": 0.07,
+        "weight_info": 0.07,
+        "SeasonStatus": 0.18
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.0236e-05,
+      "latency_ms": 180.16932500177063
+    },
+    {
+      "row_index": 16,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.94,
+        "height_info": 0.07,
+        "weight_info": 0.07,
+        "SeasonStatus": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.7548e-05,
+      "latency_ms": 268.3975769978133
+    },
+    {
+      "row_index": 17,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "weight_info",
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "weight_info": 0.94,
+        "PlayerInfo": 0.95,
+        "height_info": 0.08,
+        "SeasonStatus": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.864e-05,
+      "latency_ms": 148.761980002746
+    },
+    {
+      "row_index": 18,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "SeasonStatus"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.97,
+        "SeasonStatus": 0.91,
+        "height_info": 0.07,
+        "weight_info": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.9312e-05,
+      "latency_ms": 154.18275199772324
+    },
+    {
+      "row_index": 19,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "SeasonStatus",
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "SeasonStatus": 0.95,
+        "height_info": 0.07,
+        "weight_info": 0.07,
+        "PlayerInfo": 0.91
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.9816e-05,
+      "latency_ms": 217.2081770040677
+    },
+    {
+      "row_index": 20,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "weight_info",
+        "PlayerInfo"
+      ],
+      "table_probabilities": {
+        "weight_info": 0.95,
+        "PlayerInfo": 0.95,
+        "height_info": 0.09,
+        "SeasonStatus": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.9354e-05,
+      "latency_ms": 149.90373599721352
+    },
+    {
+      "row_index": 21,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "weight_info"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.96,
+        "weight_info": 0.96,
+        "height_info": 0.08,
+        "SeasonStatus": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.9396e-05,
+      "latency_ms": 145.88928300508996
+    },
+    {
+      "row_index": 22,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "SeasonStatus"
+      ],
+      "table_probabilities": {
+        "SeasonStatus": 0.93,
+        "height_info": 0.08,
+        "weight_info": 0.07,
+        "PlayerInfo": 0.24
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.8934e-05,
+      "latency_ms": 152.10723000200232
+    },
+    {
+      "row_index": 23,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "height_info",
+        "PlayerInfo",
+        "SeasonStatus"
+      ],
+      "table_probabilities": {
+        "height_info": 0.95,
+        "PlayerInfo": 0.92,
+        "SeasonStatus": 0.92,
+        "weight_info": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 3.8976e-05,
+      "latency_ms": 173.43765900295693
+    },
+    {
+      "row_index": 24,
+      "db_id": "ice_hockey_draft",
+      "prioritized_tables": [
+        "PlayerInfo",
+        "SeasonStatus"
+      ],
+      "table_probabilities": {
+        "PlayerInfo": 0.96,
+        "SeasonStatus": 0.96,
+        "height_info": 0.07,
+        "weight_info": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.3302e-05,
+      "latency_ms": 180.14005100121722
+    },
+    {
+      "row_index": 25,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "users",
+        "u2base"
+      ],
+      "table_probabilities": {
+        "users": 0.97,
+        "actors": 0.08,
+        "u2base": 0.97,
+        "movies2directors": 0.06,
+        "directors": 0.07,
+        "movies": 0.09,
+        "movies2actors": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5318e-05,
+      "latency_ms": 154.90760900138412
+    },
+    {
+      "row_index": 26,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "u2base"
+      ],
+      "table_probabilities": {
+        "movies": 0.96,
+        "u2base": 0.95,
+        "actors": 0.08,
+        "movies2directors": 0.09,
+        "users": 0.11,
+        "directors": 0.09,
+        "movies2actors": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5234e-05,
+      "latency_ms": 267.55258399498416
+    },
+    {
+      "row_index": 27,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "users",
+        "u2base"
+      ],
+      "table_probabilities": {
+        "users": 0.67,
+        "u2base": 0.94,
+        "actors": 0.08,
+        "movies2directors": 0.08,
+        "directors": 0.07,
+        "movies": 0.11,
+        "movies2actors": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5108e-05,
+      "latency_ms": 271.95231299992884
+    },
+    {
+      "row_index": 28,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "actors",
+        "movies2directors",
+        "movies2actors"
+      ],
+      "table_probabilities": {
+        "actors": 0.66,
+        "movies2directors": 0.97,
+        "u2base": 0.08,
+        "users": 0.07,
+        "directors": 0.13,
+        "movies": 0.17,
+        "movies2actors": 0.96
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5276e-05,
+      "latency_ms": 270.0891269996646
+    },
+    {
+      "row_index": 29,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "actors",
+        "directors",
+        "movies2directors",
+        "movies2actors"
+      ],
+      "table_probabilities": {
+        "actors": 0.87,
+        "directors": 0.84,
+        "movies": 0.47,
+        "movies2directors": 0.94,
+        "u2base": 0.08,
+        "users": 0.08,
+        "movies2actors": 0.94
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.4688e-05,
+      "latency_ms": 280.97938599967165
+    },
+    {
+      "row_index": 30,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "movies2directors"
+      ],
+      "table_probabilities": {
+        "movies": 0.86,
+        "movies2directors": 0.9,
+        "actors": 0.09,
+        "u2base": 0.08,
+        "users": 0.07,
+        "directors": 0.15,
+        "movies2actors": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.4604e-05,
+      "latency_ms": 276.4506430030451
+    },
+    {
+      "row_index": 31,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "actors",
+        "movies",
+        "movies2actors"
+      ],
+      "table_probabilities": {
+        "actors": 0.94,
+        "movies": 0.65,
+        "u2base": 0.2,
+        "movies2directors": 0.08,
+        "users": 0.11,
+        "directors": 0.09,
+        "movies2actors": 0.96
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.4856e-05,
+      "latency_ms": 183.52077700546943
+    },
+    {
+      "row_index": 32,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "users",
+        "movies",
+        "u2base"
+      ],
+      "table_probabilities": {
+        "users": 0.97,
+        "movies": 0.96,
+        "actors": 0.09,
+        "movies2directors": 0.08,
+        "u2base": 0.96,
+        "directors": 0.08,
+        "movies2actors": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5234e-05,
+      "latency_ms": 262.2500380020938
+    },
+    {
+      "row_index": 33,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "directors",
+        "movies2directors"
+      ],
+      "table_probabilities": {
+        "directors": 0.94,
+        "actors": 0.11,
+        "movies2directors": 0.97,
+        "u2base": 0.11,
+        "users": 0.08,
+        "movies": 0.12,
+        "movies2actors": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5612e-05,
+      "latency_ms": 134.3499190043076
+    },
+    {
+      "row_index": 34,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "u2base",
+        "movies2directors"
+      ],
+      "table_probabilities": {
+        "movies": 0.94,
+        "u2base": 0.94,
+        "actors": 0.09,
+        "movies2directors": 0.92,
+        "users": 0.12,
+        "directors": 0.12,
+        "movies2actors": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.4898e-05,
+      "latency_ms": 725.9304629988037
+    },
+    {
+      "row_index": 35,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "users",
+        "u2base"
+      ],
+      "table_probabilities": {
+        "users": 0.97,
+        "actors": 0.07,
+        "movies2directors": 0.07,
+        "u2base": 0.97,
+        "directors": 0.07,
+        "movies": 0.12,
+        "movies2actors": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.557e-05,
+      "latency_ms": 194.03052200505044
+    },
+    {
+      "row_index": 36,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "directors",
+        "movies2directors"
+      ],
+      "table_probabilities": {
+        "directors": 0.94,
+        "actors": 0.1,
+        "movies2directors": 0.96,
+        "u2base": 0.14,
+        "users": 0.09,
+        "movies": 0.13,
+        "movies2actors": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5024e-05,
+      "latency_ms": 144.0049140001065
+    },
+    {
+      "row_index": 37,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies2actors",
+        "actors",
+        "movies2directors",
+        "directors"
+      ],
+      "table_probabilities": {
+        "movies2actors": 0.95,
+        "actors": 0.51,
+        "movies2directors": 0.95,
+        "u2base": 0.07,
+        "users": 0.08,
+        "directors": 0.6,
+        "movies": 0.22
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5024e-05,
+      "latency_ms": 241.58086300303694
+    },
+    {
+      "row_index": 38,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "actors",
+        "u2base",
+        "movies2actors"
+      ],
+      "table_probabilities": {
+        "movies": 0.93,
+        "actors": 0.92,
+        "u2base": 0.91,
+        "movies2directors": 0.1,
+        "users": 0.16,
+        "directors": 0.09,
+        "movies2actors": 0.96
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5234e-05,
+      "latency_ms": 275.49641099903965
+    },
+    {
+      "row_index": 39,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "movies2actors"
+      ],
+      "table_probabilities": {
+        "movies": 0.95,
+        "movies2actors": 0.97,
+        "actors": 0.23,
+        "movies2directors": 0.08,
+        "u2base": 0.08,
+        "users": 0.08,
+        "directors": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5528e-05,
+      "latency_ms": 153.3486050029751
+    },
+    {
+      "row_index": 40,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "movies2actors"
+      ],
+      "table_probabilities": {
+        "movies": 0.95,
+        "actors": 0.48,
+        "movies2directors": 0.1,
+        "u2base": 0.08,
+        "users": 0.08,
+        "directors": 0.09,
+        "movies2actors": 0.96
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5024e-05,
+      "latency_ms": 154.02844100026414
+    },
+    {
+      "row_index": 41,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "actors",
+        "movies",
+        "movies2actors"
+      ],
+      "table_probabilities": {
+        "actors": 0.83,
+        "movies2directors": 0.09,
+        "u2base": 0.08,
+        "users": 0.07,
+        "directors": 0.09,
+        "movies": 0.94,
+        "movies2actors": 0.96
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.494e-05,
+      "latency_ms": 152.38886299630394
+    },
+    {
+      "row_index": 42,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "directors",
+        "movies2directors"
+      ],
+      "table_probabilities": {
+        "directors": 0.94,
+        "actors": 0.1,
+        "movies2directors": 0.97,
+        "u2base": 0.08,
+        "users": 0.09,
+        "movies": 0.15,
+        "movies2actors": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.4856e-05,
+      "latency_ms": 180.34068600536557
+    },
+    {
+      "row_index": 43,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "movies2directors"
+      ],
+      "table_probabilities": {
+        "movies": 0.91,
+        "actors": 0.1,
+        "movies2directors": 0.86,
+        "u2base": 0.08,
+        "users": 0.08,
+        "directors": 0.13,
+        "movies2actors": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.4688e-05,
+      "latency_ms": 140.0372560019605
+    },
+    {
+      "row_index": 44,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "movies2directors"
+      ],
+      "table_probabilities": {
+        "movies": 0.93,
+        "actors": 0.09,
+        "movies2directors": 0.86,
+        "u2base": 0.08,
+        "users": 0.07,
+        "directors": 0.1,
+        "movies2actors": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5318e-05,
+      "latency_ms": 140.0634550009272
+    },
+    {
+      "row_index": 45,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "u2base"
+      ],
+      "table_probabilities": {
+        "movies": 0.89,
+        "u2base": 0.95,
+        "actors": 0.09,
+        "movies2directors": 0.26,
+        "users": 0.12,
+        "directors": 0.11,
+        "movies2actors": 0.12
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6158e-05,
+      "latency_ms": 161.86016500432743
+    },
+    {
+      "row_index": 46,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "actors",
+        "u2base",
+        "movies2actors"
+      ],
+      "table_probabilities": {
+        "actors": 0.81,
+        "u2base": 0.88,
+        "movies2directors": 0.1,
+        "users": 0.13,
+        "directors": 0.09,
+        "movies": 0.29,
+        "movies2actors": 0.97
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5066e-05,
+      "latency_ms": 159.20304999599466
+    },
+    {
+      "row_index": 47,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "actors"
+      ],
+      "table_probabilities": {
+        "actors": 0.96,
+        "users": 0.08,
+        "directors": 0.08,
+        "movies2directors": 0.07,
+        "u2base": 0.09,
+        "movies": 0.1,
+        "movies2actors": 0.12
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.641e-05,
+      "latency_ms": 192.1507300066878
+    },
+    {
+      "row_index": 48,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies2directors"
+      ],
+      "table_probabilities": {
+        "directors": 0.24,
+        "movies": 0.18,
+        "movies2directors": 0.94,
+        "actors": 0.09,
+        "u2base": 0.11,
+        "users": 0.09,
+        "movies2actors": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5192e-05,
+      "latency_ms": 169.55847300414462
+    },
+    {
+      "row_index": 49,
+      "db_id": "movielens",
+      "prioritized_tables": [
+        "movies",
+        "u2base"
+      ],
+      "table_probabilities": {
+        "movies": 0.95,
+        "actors": 0.09,
+        "movies2directors": 0.11,
+        "u2base": 0.95,
+        "users": 0.14,
+        "directors": 0.1,
+        "movies2actors": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.578e-05,
+      "latency_ms": 166.88031100056833
+    },
+    {
+      "row_index": 50,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "teams"
+      ],
+      "table_probabilities": {
+        "teams": 0.94,
+        "coaches": 0.19,
+        "awards_coaches": 0.26,
+        "series_post": 0.41,
+        "awards_players": 0.1,
+        "draft": 0.08,
+        "player_allstar": 0.07,
+        "players_teams": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.077e-05,
+      "latency_ms": 211.76380900578806
+    },
+    {
+      "row_index": 51,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "teams"
+      ],
+      "table_probabilities": {
+        "teams": 0.97,
+        "players_teams": 0.09,
+        "series_post": 0.1,
+        "coaches": 0.07,
+        "player_allstar": 0.07,
+        "awards_coaches": 0.06,
+        "awards_players": 0.06,
+        "draft": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1652e-05,
+      "latency_ms": 164.1630689991871
+    },
+    {
+      "row_index": 52,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "coaches"
+      ],
+      "table_probabilities": {
+        "awards_coaches": 0.1,
+        "coaches": 0.97,
+        "series_post": 0.07,
+        "awards_players": 0.07,
+        "draft": 0.07,
+        "teams": 0.14,
+        "player_allstar": 0.06,
+        "players_teams": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2408e-05,
+      "latency_ms": 158.86635999777354
+    },
+    {
+      "row_index": 53,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "coaches",
+        "teams"
+      ],
+      "table_probabilities": {
+        "coaches": 0.96,
+        "teams": 0.97,
+        "awards_coaches": 0.09,
+        "player_allstar": 0.06,
+        "series_post": 0.07,
+        "awards_players": 0.06,
+        "draft": 0.06,
+        "players_teams": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1358e-05,
+      "latency_ms": 166.54491699591745
+    },
+    {
+      "row_index": 54,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "coaches",
+        "teams"
+      ],
+      "table_probabilities": {
+        "coaches": 0.93,
+        "teams": 0.71,
+        "player_allstar": 0.07,
+        "awards_coaches": 0.11,
+        "series_post": 0.08,
+        "awards_players": 0.07,
+        "draft": 0.07,
+        "players_teams": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1022e-05,
+      "latency_ms": 172.83688399766106
+    },
+    {
+      "row_index": 55,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "coaches"
+      ],
+      "table_probabilities": {
+        "coaches": 0.95,
+        "teams": 0.18,
+        "awards_coaches": 0.1,
+        "player_allstar": 0.07,
+        "series_post": 0.09,
+        "awards_players": 0.07,
+        "draft": 0.07,
+        "players_teams": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1274e-05,
+      "latency_ms": 180.71249200147577
+    },
+    {
+      "row_index": 56,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "teams"
+      ],
+      "table_probabilities": {
+        "teams": 0.94,
+        "coaches": 0.11,
+        "players_teams": 0.08,
+        "awards_coaches": 0.09,
+        "series_post": 0.09,
+        "awards_players": 0.06,
+        "draft": 0.07,
+        "player_allstar": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.0812e-05,
+      "latency_ms": 249.2018030025065
+    },
+    {
+      "row_index": 57,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "players_teams",
+        "awards_players",
+        "teams"
+      ],
+      "table_probabilities": {
+        "player_allstar": 0.25,
+        "players_teams": 0.8,
+        "awards_players": 0.96,
+        "teams": 0.58,
+        "awards_coaches": 0.09,
+        "draft": 0.11,
+        "players": 0.16,
+        "series_post": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.3206e-05,
+      "latency_ms": 207.591254998988
+    },
+    {
+      "row_index": 58,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "players",
+        "player_allstar"
+      ],
+      "table_probabilities": {
+        "players": 0.93,
+        "draft": 0.08,
+        "player_allstar": 0.83,
+        "awards_players": 0.4,
+        "players_teams": 0.1,
+        "awards_coaches": 0.07,
+        "series_post": 0.06,
+        "coaches": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1274e-05,
+      "latency_ms": 300.3766080000787
+    },
+    {
+      "row_index": 59,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "players",
+        "awards_players"
+      ],
+      "table_probabilities": {
+        "players": 0.95,
+        "awards_players": 0.88,
+        "players_teams": 0.11,
+        "awards_coaches": 0.13,
+        "series_post": 0.07,
+        "coaches": 0.08,
+        "draft": 0.1,
+        "teams": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.951e-05,
+      "latency_ms": 258.1051670058514
+    },
+    {
+      "row_index": 60,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "player_allstar",
+        "players_teams"
+      ],
+      "table_probabilities": {
+        "player_allstar": 0.9,
+        "awards_players": 0.14,
+        "players_teams": 0.85,
+        "players": 0.19,
+        "draft": 0.12,
+        "awards_coaches": 0.09,
+        "series_post": 0.1,
+        "coaches": 0.12
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1568e-05,
+      "latency_ms": 183.84190499637043
+    },
+    {
+      "row_index": 61,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "players"
+      ],
+      "table_probabilities": {
+        "players": 0.96,
+        "awards_players": 0.07,
+        "players_teams": 0.09,
+        "awards_coaches": 0.06,
+        "series_post": 0.06,
+        "coaches": 0.06,
+        "draft": 0.08,
+        "teams": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 6.9762e-05,
+      "latency_ms": 313.57796999509446
+    },
+    {
+      "row_index": 62,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "players",
+        "player_allstar",
+        "awards_players"
+      ],
+      "table_probabilities": {
+        "players": 0.95,
+        "player_allstar": 0.67,
+        "awards_players": 0.82,
+        "draft": 0.08,
+        "players_teams": 0.11,
+        "awards_coaches": 0.07,
+        "series_post": 0.07,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1232e-05,
+      "latency_ms": 271.1542359975283
+    },
+    {
+      "row_index": 63,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "teams"
+      ],
+      "table_probabilities": {
+        "coaches": 0.18,
+        "teams": 0.92,
+        "player_allstar": 0.07,
+        "players": 0.2,
+        "awards_coaches": 0.08,
+        "series_post": 0.1,
+        "awards_players": 0.08,
+        "draft": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.35e-05,
+      "latency_ms": 272.87891000014497
+    },
+    {
+      "row_index": 64,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "player_allstar",
+        "players"
+      ],
+      "table_probabilities": {
+        "player_allstar": 0.92,
+        "players": 0.96,
+        "awards_players": 0.36,
+        "draft": 0.07,
+        "players_teams": 0.1,
+        "awards_coaches": 0.07,
+        "series_post": 0.06,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.0686e-05,
+      "latency_ms": 176.56377499952214
+    },
+    {
+      "row_index": 65,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "coaches"
+      ],
+      "table_probabilities": {
+        "teams": 0.12,
+        "players_teams": 0.07,
+        "awards_coaches": 0.09,
+        "coaches": 0.96,
+        "series_post": 0.06,
+        "awards_players": 0.06,
+        "draft": 0.06,
+        "player_allstar": 0.05
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.0476e-05,
+      "latency_ms": 210.4566759953741
+    },
+    {
+      "row_index": 66,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "players",
+        "player_allstar",
+        "players_teams"
+      ],
+      "table_probabilities": {
+        "players": 0.92,
+        "player_allstar": 0.68,
+        "players_teams": 0.59,
+        "draft": 0.11,
+        "awards_players": 0.09,
+        "awards_coaches": 0.07,
+        "series_post": 0.08,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1778e-05,
+      "latency_ms": 235.0912409965531
+    },
+    {
+      "row_index": 67,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "players",
+        "awards_players"
+      ],
+      "table_probabilities": {
+        "players": 0.97,
+        "player_allstar": 0.08,
+        "draft": 0.09,
+        "awards_players": 0.96,
+        "awards_coaches": 0.08,
+        "coaches": 0.07,
+        "teams": 0.09,
+        "players_teams": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.3458e-05,
+      "latency_ms": 203.99463400099194
+    },
+    {
+      "row_index": 68,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "series_post"
+      ],
+      "table_probabilities": {
+        "series_post": 0.97,
+        "player_allstar": 0.06,
+        "coaches": 0.08,
+        "teams": 0.11,
+        "players_teams": 0.07,
+        "awards_coaches": 0.07,
+        "awards_players": 0.06,
+        "draft": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.4382e-05,
+      "latency_ms": 141.83027800027048
+    },
+    {
+      "row_index": 69,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "awards_coaches",
+        "coaches"
+      ],
+      "table_probabilities": {
+        "awards_coaches": 0.7,
+        "coaches": 0.85,
+        "series_post": 0.16,
+        "awards_players": 0.07,
+        "draft": 0.08,
+        "teams": 0.16,
+        "player_allstar": 0.06,
+        "players_teams": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.077e-05,
+      "latency_ms": 188.71860999934142
+    },
+    {
+      "row_index": 70,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "players",
+        "players_teams",
+        "teams"
+      ],
+      "table_probabilities": {
+        "player_allstar": 0.43,
+        "players": 0.85,
+        "draft": 0.1,
+        "players_teams": 0.83,
+        "awards_players": 0.1,
+        "teams": 0.88,
+        "awards_coaches": 0.07,
+        "series_post": 0.16
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.4508e-05,
+      "latency_ms": 156.23724500619574
+    },
+    {
+      "row_index": 71,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "teams"
+      ],
+      "table_probabilities": {
+        "teams": 0.95,
+        "player_allstar": 0.09,
+        "players_teams": 0.09,
+        "series_post": 0.08,
+        "coaches": 0.07,
+        "awards_coaches": 0.07,
+        "awards_players": 0.07,
+        "draft": 0.06
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1778e-05,
+      "latency_ms": 137.2528530046111
+    },
+    {
+      "row_index": 72,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "draft",
+        "players_teams"
+      ],
+      "table_probabilities": {
+        "draft": 0.88,
+        "player_allstar": 0.09,
+        "series_post": 0.08,
+        "awards_players": 0.09,
+        "players_teams": 0.52,
+        "players": 0.16,
+        "awards_coaches": 0.07,
+        "coaches": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.3542e-05,
+      "latency_ms": 206.23255900136428
+    },
+    {
+      "row_index": 73,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "player_allstar",
+        "players"
+      ],
+      "table_probabilities": {
+        "player_allstar": 0.9,
+        "players": 0.51,
+        "players_teams": 0.28,
+        "awards_players": 0.18,
+        "draft": 0.15,
+        "awards_coaches": 0.1,
+        "series_post": 0.09,
+        "coaches": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.1106e-05,
+      "latency_ms": 211.29849999852013
+    },
+    {
+      "row_index": 74,
+      "db_id": "professional_basketball",
+      "prioritized_tables": [
+        "players",
+        "players_teams"
+      ],
+      "table_probabilities": {
+        "players": 0.88,
+        "player_allstar": 0.22,
+        "players_teams": 0.93,
+        "draft": 0.15,
+        "awards_players": 0.08,
+        "awards_coaches": 0.06,
+        "series_post": 0.07,
+        "coaches": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 7.2954e-05,
+      "latency_ms": 176.66910200205166
+    },
+    {
+      "row_index": 75,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Sales Team",
+        "Products"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.98,
+        "Sales Team": 0.96,
+        "Products": 0.98,
+        "Customers": 0.08,
+        "Regions": 0.07,
+        "Store Locations": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5822e-05,
+      "latency_ms": 181.01910000405042
+    },
+    {
+      "row_index": 76,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Customers"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Customers": 0.96,
+        "Products": 0.1,
+        "Regions": 0.07,
+        "Sales Team": 0.08,
+        "Store Locations": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6284e-05,
+      "latency_ms": 152.47438700316707
+    },
+    {
+      "row_index": 77,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Store Locations",
+        "Regions"
+      ],
+      "table_probabilities": {
+        "Store Locations": 0.97,
+        "Regions": 0.95,
+        "Sales Orders": 0.08,
+        "Products": 0.07,
+        "Customers": 0.07,
+        "Sales Team": 0.13
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6158e-05,
+      "latency_ms": 161.96473000309197
+    },
+    {
+      "row_index": 78,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Sales Team"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Sales Team": 0.88,
+        "Products": 0.1,
+        "Customers": 0.1,
+        "Regions": 0.08,
+        "Store Locations": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6452e-05,
+      "latency_ms": 219.9777039932087
+    },
+    {
+      "row_index": 79,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Customers"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Customers": 0.92,
+        "Products": 0.08,
+        "Regions": 0.07,
+        "Sales Team": 0.08,
+        "Store Locations": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6158e-05,
+      "latency_ms": 142.09634600410936
+    },
+    {
+      "row_index": 80,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Products"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.98,
+        "Products": 0.97,
+        "Customers": 0.08,
+        "Regions": 0.07,
+        "Sales Team": 0.08,
+        "Store Locations": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.7418e-05,
+      "latency_ms": 294.50981200352544
+    },
+    {
+      "row_index": 81,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Team"
+      ],
+      "table_probabilities": {
+        "Sales Team": 0.94,
+        "Sales Orders": 0.13,
+        "Regions": 0.24,
+        "Products": 0.08,
+        "Customers": 0.1,
+        "Store Locations": 0.13
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5612e-05,
+      "latency_ms": 167.4039019999327
+    },
+    {
+      "row_index": 82,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Products"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Products": 0.97,
+        "Customers": 0.09,
+        "Regions": 0.07,
+        "Sales Team": 0.08,
+        "Store Locations": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.7124e-05,
+      "latency_ms": 150.9925589998602
+    },
+    {
+      "row_index": 83,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Products"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.96,
+        "Products": 0.95,
+        "Customers": 0.09,
+        "Regions": 0.07,
+        "Sales Team": 0.08,
+        "Store Locations": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6788e-05,
+      "latency_ms": 130.4596570043941
+    },
+    {
+      "row_index": 84,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Store Locations",
+        "Sales Orders"
+      ],
+      "table_probabilities": {
+        "Store Locations": 0.95,
+        "Sales Team": 0.11,
+        "Sales Orders": 0.96,
+        "Products": 0.1,
+        "Customers": 0.1,
+        "Regions": 0.13
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.599e-05,
+      "latency_ms": 158.36911299993517
+    },
+    {
+      "row_index": 85,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Sales Team"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Sales Team": 0.94,
+        "Products": 0.1,
+        "Customers": 0.09,
+        "Regions": 0.08,
+        "Store Locations": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6158e-05,
+      "latency_ms": 144.47442399978172
+    },
+    {
+      "row_index": 86,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Store Locations",
+        "Sales Orders"
+      ],
+      "table_probabilities": {
+        "Store Locations": 0.96,
+        "Sales Orders": 0.96,
+        "Regions": 0.16,
+        "Products": 0.1,
+        "Customers": 0.08,
+        "Sales Team": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6662e-05,
+      "latency_ms": 190.5914219969418
+    },
+    {
+      "row_index": 87,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Store Locations"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Store Locations": 0.97,
+        "Sales Team": 0.08,
+        "Products": 0.1,
+        "Customers": 0.08,
+        "Regions": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5906e-05,
+      "latency_ms": 390.4579849986476
+    },
+    {
+      "row_index": 88,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Customers"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Customers": 0.94,
+        "Sales Team": 0.08,
+        "Products": 0.09,
+        "Regions": 0.08,
+        "Store Locations": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.7166e-05,
+      "latency_ms": 148.4957040011068
+    },
+    {
+      "row_index": 89,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Store Locations"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Store Locations": 0.95,
+        "Sales Team": 0.09,
+        "Regions": 0.15,
+        "Products": 0.09,
+        "Customers": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.872e-05,
+      "latency_ms": 143.09648499329342
+    },
+    {
+      "row_index": 90,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Store Locations",
+        "Sales Orders"
+      ],
+      "table_probabilities": {
+        "Store Locations": 0.97,
+        "Sales Orders": 0.96,
+        "Products": 0.11,
+        "Customers": 0.08,
+        "Regions": 0.09,
+        "Sales Team": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6788e-05,
+      "latency_ms": 315.46144599997206
+    },
+    {
+      "row_index": 91,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.98,
+        "Products": 0.07,
+        "Customers": 0.07,
+        "Regions": 0.06,
+        "Sales Team": 0.07,
+        "Store Locations": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6788e-05,
+      "latency_ms": 176.1936289985897
+    },
+    {
+      "row_index": 92,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Sales Team"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.96,
+        "Sales Team": 0.91,
+        "Products": 0.11,
+        "Customers": 0.1,
+        "Regions": 0.1,
+        "Store Locations": 0.1
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5696e-05,
+      "latency_ms": 274.46759799931897
+    },
+    {
+      "row_index": 93,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Regions",
+        "Sales Team",
+        "Store Locations"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.96,
+        "Regions": 0.71,
+        "Sales Team": 0.57,
+        "Products": 0.12,
+        "Customers": 0.11,
+        "Store Locations": 0.62
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5738e-05,
+      "latency_ms": 169.01563099963823
+    },
+    {
+      "row_index": 94,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Sales Team",
+        "Store Locations"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Sales Team": 0.93,
+        "Regions": 0.33,
+        "Products": 0.1,
+        "Customers": 0.1,
+        "Store Locations": 0.5
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6158e-05,
+      "latency_ms": 136.8175239986158
+    },
+    {
+      "row_index": 95,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Team",
+        "Regions"
+      ],
+      "table_probabilities": {
+        "Sales Team": 0.9,
+        "Sales Orders": 0.14,
+        "Regions": 0.64,
+        "Products": 0.09,
+        "Customers": 0.1,
+        "Store Locations": 0.14
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5654e-05,
+      "latency_ms": 153.74129599513253
+    },
+    {
+      "row_index": 96,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Store Locations"
+      ],
+      "table_probabilities": {
+        "Store Locations": 0.96,
+        "Sales Orders": 0.2,
+        "Products": 0.08,
+        "Customers": 0.09,
+        "Regions": 0.1,
+        "Sales Team": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5906e-05,
+      "latency_ms": 147.53820799523965
+    },
+    {
+      "row_index": 97,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.97,
+        "Products": 0.11,
+        "Customers": 0.08,
+        "Regions": 0.07,
+        "Sales Team": 0.07,
+        "Store Locations": 0.08
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.5822e-05,
+      "latency_ms": 243.91064399969764
+    },
+    {
+      "row_index": 98,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Store Locations",
+        "Regions"
+      ],
+      "table_probabilities": {
+        "Store Locations": 0.93,
+        "Regions": 0.93,
+        "Sales Team": 0.11,
+        "Products": 0.09,
+        "Customers": 0.08,
+        "Sales Orders": 0.09
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.6956e-05,
+      "latency_ms": 223.7073220021557
+    },
+    {
+      "row_index": 99,
+      "db_id": "regional_sales",
+      "prioritized_tables": [
+        "Sales Orders",
+        "Sales Team"
+      ],
+      "table_probabilities": {
+        "Sales Orders": 0.98,
+        "Sales Team": 0.96,
+        "Products": 0.08,
+        "Customers": 0.09,
+        "Regions": 0.08,
+        "Store Locations": 0.07
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 4.9518e-05,
+      "latency_ms": 144.0880419977475
+    }
+  ],
+  "annotations": [
+    {
+      "row_index": 0,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `height_info`, `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 1,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `height_info`, `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 2,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `weight_info`, `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 3,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `weight_info` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 4,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `height_info` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 5,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `weight_info` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 6,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `height_info` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 7,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `weight_info`, `SeasonStatus` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 8,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `SeasonStatus` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 9,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `SeasonStatus`, `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 10,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `weight_info` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 11,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `SeasonStatus` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 12,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `SeasonStatus` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 13,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 14,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `SeasonStatus`, `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 15,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 16,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 17,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `weight_info`, `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 18,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `SeasonStatus` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 19,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `SeasonStatus`, `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 20,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `weight_info`, `PlayerInfo` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 21,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `weight_info` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 22,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `SeasonStatus` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 23,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `height_info`, `PlayerInfo`, `SeasonStatus` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 24,
+      "db_id": "ice_hockey_draft",
+      "text": "Schema navigation aid: prioritize `PlayerInfo`, `SeasonStatus` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 25,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `users`, `u2base` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 26,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `u2base` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 27,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `users`, `u2base` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 28,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `actors`, `movies2directors`, `movies2actors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 29,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `actors`, `directors`, `movies2directors`, `movies2actors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 30,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `movies2directors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 31,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `actors`, `movies`, `movies2actors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 32,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `users`, `movies`, `u2base` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 33,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `directors`, `movies2directors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 34,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `u2base`, `movies2directors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 35,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `users`, `u2base` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 36,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `directors`, `movies2directors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 37,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies2actors`, `actors`, `movies2directors`, `directors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 38,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `actors`, `u2base`, `movies2actors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 39,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `movies2actors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 40,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `movies2actors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 41,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `actors`, `movies`, `movies2actors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 42,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `directors`, `movies2directors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 43,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `movies2directors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 44,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `movies2directors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 45,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `u2base` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 46,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `actors`, `u2base`, `movies2actors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 47,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `actors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 48,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies2directors` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 49,
+      "db_id": "movielens",
+      "text": "Schema navigation aid: prioritize `movies`, `u2base` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 50,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 51,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 52,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `coaches` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 53,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `coaches`, `teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 54,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `coaches`, `teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 55,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `coaches` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 56,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 57,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `players_teams`, `awards_players`, `teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 58,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `players`, `player_allstar` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 59,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `players`, `awards_players` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 60,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `player_allstar`, `players_teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 61,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `players` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 62,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `players`, `player_allstar`, `awards_players` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 63,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 64,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `player_allstar`, `players` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 65,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `coaches` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 66,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `players`, `player_allstar`, `players_teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 67,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `players`, `awards_players` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 68,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `series_post` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 69,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `awards_coaches`, `coaches` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 70,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `players`, `players_teams`, `teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 71,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 72,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `draft`, `players_teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 73,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `player_allstar`, `players` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 74,
+      "db_id": "professional_basketball",
+      "text": "Schema navigation aid: prioritize `players`, `players_teams` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 75,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Sales Team`, `Products` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 76,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Customers` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 77,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Store Locations`, `Regions` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 78,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Sales Team` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 79,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Customers` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 80,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Products` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 81,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Team` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 82,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Products` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 83,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Products` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 84,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Store Locations`, `Sales Orders` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 85,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Sales Team` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 86,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Store Locations`, `Sales Orders` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 87,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Store Locations` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 88,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Customers` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 89,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Store Locations` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 90,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Store Locations`, `Sales Orders` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 91,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 92,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Sales Team` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 93,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Regions`, `Sales Team`, `Store Locations` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 94,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Sales Team`, `Store Locations` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 95,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Team`, `Regions` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 96,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Store Locations` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 97,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 98,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Store Locations`, `Regions` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    },
+    {
+      "row_index": 99,
+      "db_id": "regional_sales",
+      "text": "Schema navigation aid: prioritize `Sales Orders`, `Sales Team` as starting tables. This is advisory, not a table restriction. Use any other lookup or join tables needed from the full schema, and follow the original question."
+    }
+  ],
+  "cost_usd": 0.005077338
+}
