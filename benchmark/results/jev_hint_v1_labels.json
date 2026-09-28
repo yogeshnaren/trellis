@@ -1,0 +1,181 @@
+{
+  "source": "data/bird/splits/train_dev.json",
+  "source_sha256_16": "e5503cce83be1678",
+  "labeling": "29 atomic hint fragments selected from a hash sample; role assigned from original question before Jev calls, no gold SQL",
+  "items": [
+    {
+      "row_index": 61,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "no Bakers Square Restaurant & Pie Shop refers to label <> 'bakers square restaurant & pie shop'",
+      "role": "filter"
+    },
+    {
+      "row_index": 82,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "the most popular refers to max(review)",
+      "role": "rank"
+    },
+    {
+      "row_index": 83,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "unpopular refers to min(review)",
+      "role": "rank"
+    },
+    {
+      "row_index": 98,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "the most restaurants refers to max(count(street_name))",
+      "role": "rank"
+    },
+    {
+      "row_index": 114,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "percentage = divide(count(id_restaurant where region = 'bay area'), count(id_restaurant)) * 100%",
+      "role": "return"
+    },
+    {
+      "row_index": 138,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "street number below 500 refers to street_num < 500",
+      "role": "filter"
+    },
+    {
+      "row_index": 145,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "percentage = divide(count(id_restaurant where food_type = 'afghani'), count(id_restaurant)) * 100%",
+      "role": "return"
+    },
+    {
+      "row_index": 148,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "review rating of 2 or more refers to review > 2",
+      "role": "filter"
+    },
+    {
+      "row_index": 156,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "the highest number refers to max(count(city))",
+      "role": "rank"
+    },
+    {
+      "row_index": 198,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "born in the 90s refers to DOB > = '1990-01-01' AND DOB < = '1999-12-31'",
+      "role": "filter"
+    },
+    {
+      "row_index": 250,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "percent = divide(count(Toss_Id where Toss_Name = 'field'), count(Toss_Id)) * 100%",
+      "role": "return"
+    },
+    {
+      "row_index": 266,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "most number of balls refers to max(Ball_Id)",
+      "role": "rank"
+    },
+    {
+      "row_index": 272,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "most umpires refers to max(count(Umpire_Id))",
+      "role": "rank"
+    },
+    {
+      "row_index": 305,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "born before 10/16/1975 refers to DOB < 1975-10-16",
+      "role": "filter"
+    },
+    {
+      "row_index": 322,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "run rate = divide(sum(Runs_Scored) when Toss_Name = 'bat', sum(Over_Id) when Toss_Name = 'field')",
+      "role": "return"
+    },
+    {
+      "row_index": 325,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "majority of the players refers to max(count(Player_Id))",
+      "role": "rank"
+    },
+    {
+      "row_index": 327,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "fewest number of matches refers to min(count(Match_Id))",
+      "role": "rank"
+    },
+    {
+      "row_index": 329,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "last match of Season 9 refers to max(Match_Date) where Season_Id = 9",
+      "role": "rank"
+    },
+    {
+      "row_index": 337,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "youngest player refers to max(DOB)",
+      "role": "rank"
+    },
+    {
+      "row_index": 345,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "win rate refers to DIVIDE(COUNT(Toss_Winner = Match_Winner), COUNT(Match_Date like '2012%'))",
+      "role": "return"
+    },
+    {
+      "row_index": 346,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "win margins of less than 10 refers to Win_Margin < 10",
+      "role": "filter"
+    },
+    {
+      "row_index": 408,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "man of the match more than 5 times refers to COUNT(Man_of_the_Match) > 5",
+      "role": "filter"
+    },
+    {
+      "row_index": 426,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "more windy refers to Max(avgspeed)",
+      "role": "rank"
+    },
+    {
+      "row_index": 447,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "temperature range refers to Subtract (tmax, tmin)",
+      "role": "return"
+    },
+    {
+      "row_index": 452,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "max temperature refers to tmax",
+      "role": "return"
+    },
+    {
+      "row_index": 463,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "item weren't sold refers to units = 0",
+      "role": "filter"
+    },
+    {
+      "row_index": 472,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "earliest sunrise Min(sunrise)",
+      "role": "return"
+    },
+    {
+      "row_index": 476,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "highest recorded heat refers to Max(heat)",
+      "role": "rank"
+    },
+    {
+      "row_index": 481,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "maximum average speed refers to Max(avgspeed)",
+      "role": "return"
+    }
+  ]
+}

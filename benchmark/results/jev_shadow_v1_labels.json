@@ -1,0 +1,315 @@
+{
+  "source": "data/bird/splits/train_dev.json",
+  "source_sha256_16": "e5503cce83be1678",
+  "raw": "benchmark/results/bird_raw_20260927T060549Z.jsonl",
+  "selection": "sha256(jev-shadow-v1:row_index), quotas movie9, restaurant13, soccer_2016 14, sales_in_weather14; half currently correct controls where available; first repeat only",
+  "items": [
+    {
+      "row_index": 13,
+      "db_id": "movie",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 16,
+      "db_id": "movie",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 18,
+      "db_id": "movie",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 27,
+      "db_id": "movie",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 28,
+      "db_id": "movie",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 35,
+      "db_id": "movie",
+      "kind": "extreme",
+      "omitted": true,
+      "label_reason": "MAX(NetWorth) compares currency text lexically; it does not implement numeric highest net worth."
+    },
+    {
+      "row_index": 38,
+      "db_id": "movie",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 39,
+      "db_id": "movie",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 44,
+      "db_id": "movie",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 47,
+      "db_id": "restaurant",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 75,
+      "db_id": "restaurant",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 82,
+      "db_id": "restaurant",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 94,
+      "db_id": "restaurant",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 114,
+      "db_id": "restaurant",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 115,
+      "db_id": "restaurant",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 123,
+      "db_id": "restaurant",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 124,
+      "db_id": "restaurant",
+      "kind": "extreme",
+      "omitted": true,
+      "label_reason": "The question asks for a country, but SQL ranks and returns county."
+    },
+    {
+      "row_index": 145,
+      "db_id": "restaurant",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 149,
+      "db_id": "restaurant",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 155,
+      "db_id": "restaurant",
+      "kind": "negation",
+      "omitted": true,
+      "label_reason": "No more than 3 includes 3; SQL uses review < 3."
+    },
+    {
+      "row_index": 160,
+      "db_id": "restaurant",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 161,
+      "db_id": "restaurant",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 174,
+      "db_id": "soccer_2016",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 178,
+      "db_id": "soccer_2016",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 180,
+      "db_id": "soccer_2016",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 249,
+      "db_id": "soccer_2016",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 250,
+      "db_id": "soccer_2016",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 293,
+      "db_id": "soccer_2016",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 302,
+      "db_id": "soccer_2016",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 305,
+      "db_id": "soccer_2016",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 314,
+      "db_id": "soccer_2016",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 368,
+      "db_id": "soccer_2016",
+      "kind": "extreme",
+      "omitted": true,
+      "label_reason": "The question ranges over all matches Bangalore played; SQL adds an unrequested Bangalore-winner filter."
+    },
+    {
+      "row_index": 388,
+      "db_id": "soccer_2016",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 393,
+      "db_id": "soccer_2016",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 400,
+      "db_id": "soccer_2016",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 407,
+      "db_id": "soccer_2016",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 428,
+      "db_id": "sales_in_weather",
+      "kind": "extreme",
+      "omitted": true,
+      "label_reason": "The hottest weather day is not joined to the sales date, so sales are not restricted to that day."
+    },
+    {
+      "row_index": 429,
+      "db_id": "sales_in_weather",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 435,
+      "db_id": "sales_in_weather",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 460,
+      "db_id": "sales_in_weather",
+      "kind": "ratio",
+      "omitted": false
+    },
+    {
+      "row_index": 464,
+      "db_id": "sales_in_weather",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 465,
+      "db_id": "sales_in_weather",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 466,
+      "db_id": "sales_in_weather",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 467,
+      "db_id": "sales_in_weather",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 471,
+      "db_id": "sales_in_weather",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 472,
+      "db_id": "sales_in_weather",
+      "kind": "negation",
+      "omitted": false
+    },
+    {
+      "row_index": 473,
+      "db_id": "sales_in_weather",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 476,
+      "db_id": "sales_in_weather",
+      "kind": "extreme",
+      "omitted": false
+    },
+    {
+      "row_index": 483,
+      "db_id": "sales_in_weather",
+      "kind": "time",
+      "omitted": false
+    },
+    {
+      "row_index": 494,
+      "db_id": "sales_in_weather",
+      "kind": "ratio",
+      "omitted": false
+    }
+  ],
+  "label_method": "Manual reading of original question, evidence, and saved candidate SQL only; gold SQL/results were not consulted. The label concerns the selected atomic requirement and counts a misapplication as omitted.",
+  "raw_sha256_16": "54fb4a0a56f21bf8"
+}

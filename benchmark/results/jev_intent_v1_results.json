@@ -1,0 +1,734 @@
+{
+  "source_sha256_16": "e5503cce83be1678",
+  "results": [
+    {
+      "row_index": 1,
+      "db_id": "movie",
+      "intents": [
+        "extreme"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": true
+      },
+      "jev_probabilities": {
+        "ratio": 0.04,
+        "temporal": 0.12,
+        "upper_bound": 0.16,
+        "extreme": 0.97
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": true
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5578e-05,
+      "latency_ms": 283.7028889989597
+    },
+    {
+      "row_index": 10,
+      "db_id": "movie",
+      "intents": [
+        "extreme"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": true
+      },
+      "jev_probabilities": {
+        "ratio": 0.03,
+        "temporal": 0.07,
+        "upper_bound": 0.4,
+        "extreme": 0.98
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": true
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.562e-05,
+      "latency_ms": 204.2660120059736
+    },
+    {
+      "row_index": 20,
+      "db_id": "movie",
+      "intents": [
+        "temporal"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.02,
+        "temporal": 0.97,
+        "upper_bound": 0.04,
+        "extreme": 0.03
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5578e-05,
+      "latency_ms": 168.3636320012738
+    },
+    {
+      "row_index": 22,
+      "db_id": "movie",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.02,
+        "temporal": 0.05,
+        "upper_bound": 0.04,
+        "extreme": 0.03
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5536e-05,
+      "latency_ms": 148.93209799629403
+    },
+    {
+      "row_index": 23,
+      "db_id": "movie",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.03,
+        "temporal": 0.03,
+        "upper_bound": 0.03,
+        "extreme": 0.03
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5704e-05,
+      "latency_ms": 134.65851899672998
+    },
+    {
+      "row_index": 80,
+      "db_id": "restaurant",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.02,
+        "temporal": 0.03,
+        "upper_bound": 0.03,
+        "extreme": 0.03
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.4612e-05,
+      "latency_ms": 185.05579899647273
+    },
+    {
+      "row_index": 117,
+      "db_id": "restaurant",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.02,
+        "temporal": 0.03,
+        "upper_bound": 0.05,
+        "extreme": 0.03
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.4612e-05,
+      "latency_ms": 191.60538700089091
+    },
+    {
+      "row_index": 121,
+      "db_id": "restaurant",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.03,
+        "temporal": 0.03,
+        "upper_bound": 0.07,
+        "extreme": 0.03
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5158e-05,
+      "latency_ms": 146.84953200048767
+    },
+    {
+      "row_index": 161,
+      "db_id": "restaurant",
+      "intents": [
+        "extreme"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": true
+      },
+      "jev_probabilities": {
+        "ratio": 0.04,
+        "temporal": 0.03,
+        "upper_bound": 0.5,
+        "extreme": 0.98
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": true,
+        "extreme": true
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5074e-05,
+      "latency_ms": 257.10240899934433
+    },
+    {
+      "row_index": 173,
+      "db_id": "soccer_2016",
+      "intents": [
+        "temporal",
+        "extreme"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.03,
+        "temporal": 0.97,
+        "upper_bound": 0.5,
+        "extreme": 0.98
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": true,
+        "extreme": true
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5662e-05,
+      "latency_ms": 173.70729200047208
+    },
+    {
+      "row_index": 232,
+      "db_id": "soccer_2016",
+      "intents": [
+        "extreme"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": true
+      },
+      "jev_probabilities": {
+        "ratio": 0.03,
+        "temporal": 0.27,
+        "upper_bound": 0.71,
+        "extreme": 0.97
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": true,
+        "extreme": true
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.8056e-05,
+      "latency_ms": 201.352392003173
+    },
+    {
+      "row_index": 256,
+      "db_id": "soccer_2016",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.03,
+        "temporal": 0.24,
+        "upper_bound": 0.22,
+        "extreme": 0.07
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5998e-05,
+      "latency_ms": 158.5421359995962
+    },
+    {
+      "row_index": 257,
+      "db_id": "soccer_2016",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.02,
+        "temporal": 0.22,
+        "upper_bound": 0.03,
+        "extreme": 0.04
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5662e-05,
+      "latency_ms": 133.32580299902475
+    },
+    {
+      "row_index": 290,
+      "db_id": "soccer_2016",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.05,
+        "temporal": 0.07,
+        "upper_bound": 0.06,
+        "extreme": 0.05
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.478e-05,
+      "latency_ms": 217.3081130022183
+    },
+    {
+      "row_index": 297,
+      "db_id": "soccer_2016",
+      "intents": [
+        "upper_bound"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": true,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.06,
+        "temporal": 0.05,
+        "upper_bound": 0.97,
+        "extreme": 0.03
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": true,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5116e-05,
+      "latency_ms": 137.83259100455325
+    },
+    {
+      "row_index": 301,
+      "db_id": "soccer_2016",
+      "intents": [
+        "upper_bound"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.05,
+        "temporal": 0.05,
+        "upper_bound": 0.9,
+        "extreme": 0.04
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": true,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.772e-05,
+      "latency_ms": 128.3940529974643
+    },
+    {
+      "row_index": 364,
+      "db_id": "soccer_2016",
+      "intents": [
+        "temporal"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.03,
+        "temporal": 0.95,
+        "upper_bound": 0.04,
+        "extreme": 0.05
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.7636e-05,
+      "latency_ms": 170.54368099343264
+    },
+    {
+      "row_index": 382,
+      "db_id": "soccer_2016",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.02,
+        "temporal": 0.03,
+        "upper_bound": 0.04,
+        "extreme": 0.03
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.499e-05,
+      "latency_ms": 138.56787599797826
+    },
+    {
+      "row_index": 414,
+      "db_id": "soccer_2016",
+      "intents": [
+        "temporal"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.03,
+        "temporal": 0.95,
+        "upper_bound": 0.04,
+        "extreme": 0.05
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.7342e-05,
+      "latency_ms": 179.23095599689987
+    },
+    {
+      "row_index": 428,
+      "db_id": "sales_in_weather",
+      "intents": [
+        "temporal",
+        "extreme"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": true
+      },
+      "jev_probabilities": {
+        "ratio": 0.04,
+        "temporal": 0.96,
+        "upper_bound": 0.46,
+        "extreme": 0.96
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": true
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.8224e-05,
+      "latency_ms": 142.7430049952818
+    },
+    {
+      "row_index": 451,
+      "db_id": "sales_in_weather",
+      "intents": [
+        "extreme"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.05,
+        "temporal": 0.06,
+        "upper_bound": 0.14,
+        "extreme": 0.96
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": true
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5914e-05,
+      "latency_ms": 157.5327250029659
+    },
+    {
+      "row_index": 457,
+      "db_id": "sales_in_weather",
+      "intents": [
+        "temporal"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.04,
+        "temporal": 0.97,
+        "upper_bound": 0.04,
+        "extreme": 0.03
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.7468e-05,
+      "latency_ms": 163.83165399747668
+    },
+    {
+      "row_index": 464,
+      "db_id": "sales_in_weather",
+      "intents": [
+        "temporal",
+        "extreme"
+      ],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.03,
+        "temporal": 0.98,
+        "upper_bound": 0.58,
+        "extreme": 0.99
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": true,
+        "upper_bound": true,
+        "extreme": true
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.8476e-05,
+      "latency_ms": 130.64205900445813
+    },
+    {
+      "row_index": 482,
+      "db_id": "sales_in_weather",
+      "intents": [],
+      "rule_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "jev_probabilities": {
+        "ratio": 0.05,
+        "temporal": 0.32,
+        "upper_bound": 0.21,
+        "extreme": 0.05
+      },
+      "jev_flags": {
+        "ratio": false,
+        "temporal": false,
+        "upper_bound": false,
+        "extreme": false
+      },
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.5368e-05,
+      "latency_ms": 167.03348900045967
+    }
+  ],
+  "scorecard": {
+    "completed": 24,
+    "threshold": 0.5,
+    "by_intent": {
+      "ratio": {
+        "positives": 0,
+        "rule": {
+          "tp": 0,
+          "fp": 0,
+          "tn": 24,
+          "fn": 0
+        },
+        "jev": {
+          "tp": 0,
+          "fp": 0,
+          "tn": 24,
+          "fn": 0
+        },
+        "brier": 0.0012708333333333335
+      },
+      "temporal": {
+        "positives": 7,
+        "rule": {
+          "tp": 5,
+          "fp": 0,
+          "tn": 17,
+          "fn": 2
+        },
+        "jev": {
+          "tp": 7,
+          "fp": 0,
+          "tn": 17,
+          "fn": 0
+        },
+        "brier": 0.013820833333333334
+      },
+      "upper_bound": {
+        "positives": 2,
+        "rule": {
+          "tp": 1,
+          "fp": 0,
+          "tn": 22,
+          "fn": 1
+        },
+        "jev": {
+          "tp": 2,
+          "fp": 4,
+          "tn": 18,
+          "fn": 0
+        },
+        "brier": 0.0785
+      },
+      "extreme": {
+        "positives": 8,
+        "rule": {
+          "tp": 5,
+          "fp": 0,
+          "tn": 16,
+          "fn": 3
+        },
+        "jev": {
+          "tp": 8,
+          "fp": 0,
+          "tn": 16,
+          "fn": 0
+        },
+        "brier": 0.0013541666666666671
+      }
+    },
+    "exact_match_rule": 19,
+    "exact_match_jev": 20,
+    "cost_usd": 0.0006258839999999999,
+    "p50_ms": 165.43257149896817
+  }
+}

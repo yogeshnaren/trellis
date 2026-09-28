@@ -44,6 +44,23 @@ leakage checks; no gate SQL, prediction, result or failure was inspected.
 See `benchmark/results/training_quality_audit.md` and
 `benchmark/results/model_error_audit.md`.
 
+**Jev checkpoint (2026-09-27):** the typed client and independent OpenRouter
+provider/session caps are implemented. Requirement coverage found 0/5 hand-labeled
+omissions; candidate choice lost 10–11 net correct answers versus result-majority
+on 102 contested old-bank questions. Neither is promoted. Separate cheap shadows
+found promising *classification* signals: foreign-key-aware table choice recovered
+all gold tables for 41/50 questions in soccer and 41/50 in the preselected
+`train_dev2` basketball database, and atomic hint-role choice scored 24/24
+versus a frozen free rule's 21/24 on a new sample. These do **not** establish an
+EX gain. Jev must not hide other schema tables; no live Jev route is enabled.
+A frozen 100-question `train_dev2` live pilot then tested table and evidence-role
+advisories separately: table 57/100 vs control 56/100 (one timeout-related fix),
+hint 56/100 vs 56/100 with no flips (including 14/27 on targeted hints in both
+arms). Both missed the predeclared +4-net-fix pilot screen; neither advances to a
+full run or a sealed gate. OpenRouter spent $0.027703116 through these tests.
+Details: `benchmark/results/jev_shadow_outcome.md` and
+`benchmark/results/jev_live_outcome.md`.
+
 The v2.6 changes are:
 - a two-track acceptance rule;
 - a parallel generation/training track;
@@ -97,7 +114,7 @@ format oracle (§2) are historical diagnosis, not current improvement estimates.
   **66.0%** and rank 1b **66.5%** (one repeat, CI includes zero), and `train_dev`
   control **69.4%** / rank 1b candidate **70.2%** (§0.1 table).
 - The first `train_lockbox` look is a 175-row stratified sample: +1.90 pts for rank 1b,
-  with a CI including zero. `train_dev2` remains unrun.
+  with a CI including zero. `train_dev2` has no generator run; only 50 basketball rows were used in a Jev table-choice shadow.
 - The v2.6 "≈ 66.9% full dev" pooled different question and database versions, so it is
   withdrawn, together with the rank estimate built on it.
 - For reference, BIRD's main board lists single-model baselines such as Claude Opus 4.6
@@ -1134,11 +1151,13 @@ interventions rather than one opaque `Jev on` configuration.
    shared convention errors for human review and SFT data selection.
    It cannot certify that a public gold label is wrong.
 
-The first live test is post-SQL requirement coverage on stored `train_dev`
-answers in shadow mode, followed by a targeted repair A/B. Pre-generation
-Jev routing comes later if it beats the deterministic intent baseline.
-Cache a single narrow decision request when several checks share state;
-call Jev only when a semantic judgment can change a decision.
+The post-SQL requirement-coverage shadow failed its detection gate, so the
+targeted repair A/B was skipped. Two pre-generation classifiers with promising
+separate shadows were then tested as advisories on frozen `train_dev2` questions;
+neither cleared its live EX pilot screen (§7). No Jev route is queued for a full
+comparison without a new, specific shadow signal. Cache a single narrow decision
+request when several checks share state; call Jev only when a semantic judgment
+can change a decision.
 
 ### 6.5 Candidate bank, cascade and routing
 
@@ -1220,8 +1239,8 @@ are contingent on an implemented submission path.
 - **API:** pinned `typesafe/jev-1.13` through OpenRouter's
   `POST /api/alpha/decisions`, with typed `noul`, `choice` and `score`
   outputs. No SQL or explanatory text generation. The OpenRouter model page (reachable
-  2026-09-26) lists $0.042 per million input tokens, output free. Endpoint behaviour and
-  latency still need a pilot; the API is alpha.
+  2026-09-26) lists $0.042 per million input tokens, output free. The 2026-09-27
+  shadow pilots measured actual usage and 178–187 ms typical Jev latency; the API is alpha.
 - **Call design (v2.7):** a declared pilot variable. Compare one bundled call with a
   two-stage design (only if justified) on net EX, false repairs, cost and P90. Calls fire
   on triggers; a post-SQL coverage decision necessarily follows SQL generation.
@@ -1259,6 +1278,35 @@ are contingent on an implemented submission path.
   Jev and a small LLM judge under the same candidate budget. A Jev
   decision ships only if its net gain meets §5 and its failure mode is
   understood.
+
+**Measured rank-3 and selector stop (2026-09-27).** Fifty manually labeled
+`train_dev` requirements yielded five omissions. Jev `noul` at the predeclared
+0.8 threshold found 0/5, with 0/45 false flags; the deterministic screen found
+0/5 with one false flag. The old four-candidate bank had 102 disagreements;
+Jev `choice` scored 29/102 versus result-majority's 39/102 without schema.
+After adding the verified schema slice required by this plan, Jev scored
+28/102 (10 fixes, 21 regressions), for 334/501 = 66.67% versus majority's
+345/501 = 68.86%. The bank predates bounded facts; its 73.5%
+perfect-selector ceiling cannot reach the 75% train-dev checkpoint.
+A separate 24-question intent pilot scored 20 exact matches for Jev versus
+19 for free rules, with four false upper-bound flags. Foreign-key-aware
+table selection recovered all gold tables in 41/50 soccer and 41/50
+preselected `train_dev2` basketball questions, versus 48/50 for retaining
+all eight shortlisted tables; use it only as an annotation candidate, never
+a hard schema filter. Atomic hint-role choice scored 24/24 versus a frozen
+free rule's 21/24 on a separate development sample; it has no measured EX
+benefit in its shadow test. The owner raised the Fireworks cap to $8, enabling
+a frozen 100-question `train_dev2` live advisory pilot. The v4p1 control was
+56/100; table guidance was 57/100 (one timeout-related fix), and hint-role
+guidance was 56/100 with zero official-EX flips. The targeted 27 hint questions
+were 14/27 in both arms. Neither cleared the predeclared +4-net-fix screen, so
+neither gets a full comparison or adoption. Jev's 127 calls cost $0.005621532;
+OpenRouter spent $0.027703116 in total, within the $5 provider and $1
+per-session caps. The coverage-triggered repair A/B and small LLM judge remain
+stopped because their earlier shadow triggers failed. No Mini-Dev or sealed
+lockbox look was used. Column-level choice awaits a second reliable label
+audit of look-alike columns (§5.3 of POSTMORTEM_V2). Live details:
+`benchmark/results/jev_live_outcome.md`.
 
 Jev's published limitations include arithmetic, counting, date
 comparison, long irrelevant state, indirection and literal readings.
@@ -1460,7 +1508,8 @@ looks for bundled checkpoints.
        is still ≈ 66%, so this is context, not a score.
      - A real selector on the 102 disagreement questions might recover about half the
        +4.0 ceiling, at ≈ 4× generation cost (inside the submission ceilings).
-       Jev-`choice` selection is untested: there is no OpenRouter key yet.
+       Jev-`choice` selection was later tested on these 102 questions and lost to
+       result-majority (29 vs 39 correct; see the Jev checkpoint at the top).
      - **Answer-key review completed (2026-09-27)** on the 252 practice-set
        disagreements (`benchmark/review_packet.py`; aggregates in
        benchmark/results/answer_key_review.md). The owner judged 166 cases and Sonnet 5

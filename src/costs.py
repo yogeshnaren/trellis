@@ -237,6 +237,38 @@ class BudgetGuard:
             row = db.execute("SELECT usd FROM reservation WHERE token = ?", (key,)).fetchone()
             return Reservation(key, float(row[0]) if row else 0.0)
 
+    @staticmethod
+    def _provider_committed(db: sqlite3.Connection, provider: str) -> float:
+        """Include open reservations and provisional charges in a provider's cap."""
+        if provider == "openrouter":
+            spent = db.execute(
+                "SELECT COALESCE(SUM(usd), 0) FROM charge "
+                "WHERE source = 'openrouter' OR (source = 'unsettled' "
+                "AND token GLOB 'openrouter:*')"
+            ).fetchone()[0]
+            held = db.execute(
+                "SELECT COALESCE(SUM(usd), 0) FROM reservation "
+                "WHERE token GLOB 'openrouter:*'"
+            ).fetchone()[0]
+        elif provider == "fireworks":
+            spent = db.execute(
+                "SELECT COALESCE(SUM(usd), 0) FROM charge "
+                "WHERE source != 'openrouter' AND NOT (source = 'unsettled' "
+                "AND token GLOB 'openrouter:*')"
+            ).fetchone()[0]
+            held = db.execute(
+                "SELECT COALESCE(SUM(usd), 0) FROM reservation "
+                "WHERE token NOT GLOB 'openrouter:*'"
+            ).fetchone()[0]
+        else:
+            raise ValueError(f"Unknown budget provider: {provider}")
+        return float(spent) + float(held)
+
+    def remaining_for(self, provider: str, ceiling_usd: float) -> float:
+        """Available provider balance in the one cross-process ledger."""
+        with self._transaction() as db:
+            return max(ceiling_usd - self._provider_committed(db, provider), 0.0)
+
     async def reserve(
         self,
         model: str,
@@ -245,9 +277,67 @@ class BudgetGuard:
         *,
         batch: bool = False,
     ) -> Reservation:
-        """Atomically reserve conservative uncached-input plus max-output cost."""
+        """Reserve Fireworks cost against its cap, independently of OpenRouter spend."""
         amount = cost_usd(model, estimated_input_tokens, 0, max_output_tokens, batch=batch)
-        return await self.reserve_usd(amount, label=model)
+        with self._transaction() as db:
+            committed = self._provider_committed(db, "fireworks")
+            if committed + amount > self.ceiling_usd:
+                raise BudgetExceeded(
+                    f"Fireworks ${self.ceiling_usd:.2f} ceiling would be exceeded; "
+                    f"${max(self.ceiling_usd - committed, 0.0):.4f} remains"
+                )
+            token = uuid4().hex
+            db.execute(
+                "INSERT INTO reservation (token, usd, pid, at, ttl_s, label) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (token, amount, os.getpid(), time.time(), STALE_RESERVATION_S, model),
+            )
+            return Reservation(token, amount)
+
+    async def reserve_openrouter_usd(
+        self,
+        amount_usd: float,
+        *,
+        provider_ceiling_usd: float,
+        session_ceiling_usd: float,
+        session_id: str,
+        label: str = "jev",
+    ) -> Reservation:
+        """Atomically enforce both OpenRouter caps in the shared SQLite ledger.
+
+        The token prefix survives stale charging and settlement, so a provisional
+        charge still counts against the correct provider and session.
+        """
+        if amount_usd <= 0 or provider_ceiling_usd <= 0 or session_ceiling_usd <= 0:
+            raise ValueError("OpenRouter reservation and ceilings must be positive")
+        if not session_id or not all(ch.isalnum() or ch in "_-" for ch in session_id):
+            raise ValueError("OpenRouter session id must be alphanumeric, '-' or '_'")
+        prefix = f"openrouter:{session_id}:"
+        with self._transaction() as db:
+            provider_committed = self._provider_committed(db, "openrouter")
+            session_spent = db.execute(
+                "SELECT COALESCE(SUM(usd), 0) FROM charge WHERE token GLOB ?",
+                (prefix + "*",),
+            ).fetchone()[0]
+            session_held = db.execute(
+                "SELECT COALESCE(SUM(usd), 0) FROM reservation WHERE token GLOB ?",
+                (prefix + "*",),
+            ).fetchone()[0]
+            if provider_committed + amount_usd > provider_ceiling_usd:
+                raise BudgetExceeded(
+                    f"OpenRouter ${provider_ceiling_usd:.2f} total ceiling would be exceeded"
+                )
+            if float(session_spent) + float(session_held) + amount_usd > session_ceiling_usd:
+                raise BudgetExceeded(
+                    f"OpenRouter ${session_ceiling_usd:.2f} session ceiling would be exceeded"
+                )
+            token = prefix + uuid4().hex
+            db.execute(
+                "INSERT INTO reservation (token, usd, pid, at, ttl_s, label) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (token, amount_usd, os.getpid(), time.time(), STALE_RESERVATION_S, label),
+            )
+            return Reservation(token, amount_usd)
 
     async def reserve_usd(
         self,

@@ -1,0 +1,151 @@
+{
+  "source": "data/bird/splits/train_dev.json",
+  "source_sha256_16": "e5503cce83be1678",
+  "labeling": "Fresh hash-selected atomic hint fragments excluding v1; manual roles from original questions before Jev calls",
+  "items": [
+    {
+      "row_index": 44,
+      "db_id": "movie",
+      "focal_hint_fragment": "percentage = divide(count(ActorID where NetWorth > '$400,000,000.00'), COUNT(ActorID))*100%",
+      "role": "return"
+    },
+    {
+      "row_index": 97,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "more than 4 star review refers to review > 4",
+      "role": "filter"
+    },
+    {
+      "row_index": 109,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "the most burger restaurants refers to max(count(street_name where food_type = 'burgers' and city = 'san francisco'))",
+      "role": "rank"
+    },
+    {
+      "row_index": 149,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "the highest number of cities refers to max(count(city))",
+      "role": "rank"
+    },
+    {
+      "row_index": 160,
+      "db_id": "restaurant",
+      "focal_hint_fragment": "the highest number of branches refers to max(count(city))",
+      "role": "rank"
+    },
+    {
+      "row_index": 192,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "the most venues refers to max(count(Venue_Id))",
+      "role": "rank"
+    },
+    {
+      "row_index": 229,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "the point of winning margin lower than 30% of the average winning margin refers to Win_Margin < multiply(avg(Win_Margin), 0.3)",
+      "role": "filter"
+    },
+    {
+      "row_index": 230,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "percentage = divide(count(Role_Id where Role_Desc = 'Captain'), count(Role_Id)) * 100%",
+      "role": "return"
+    },
+    {
+      "row_index": 242,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "win rate = divide(count(Match_Id where Match_Winner = 3), count(Match_Id)) * 100%",
+      "role": "return"
+    },
+    {
+      "row_index": 248,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "percent = divide(count(Match_Id where Venue_Name = 'Wankhede Stadium'), count(Match_Id)) * 100%",
+      "role": "return"
+    },
+    {
+      "row_index": 277,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "winning margin is less than fifty refers to Win_Margin < 50",
+      "role": "filter"
+    },
+    {
+      "row_index": 303,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "average number = divide(sum(Extra_Runs), count(Extra_Runs))",
+      "role": "return"
+    },
+    {
+      "row_index": 311,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "from 5/9/2009 to 8/8/2011 refers to Match_Date between '2009-05-09' and '2011-08-08'",
+      "role": "filter"
+    },
+    {
+      "row_index": 338,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "first match of season 1 refers to Season_Id = 1 and min(Match_Date)",
+      "role": "rank"
+    },
+    {
+      "row_index": 370,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "average winning margin refers to avg(win_margin)",
+      "role": "return"
+    },
+    {
+      "row_index": 389,
+      "db_id": "soccer_2016",
+      "focal_hint_fragment": "scored less than 3 refers to Runs_Scored < 3",
+      "role": "filter"
+    },
+    {
+      "row_index": 429,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "most units sold refers to Max(units)",
+      "role": "rank"
+    },
+    {
+      "row_index": 435,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "highest max temperature refers to Max(tmax)",
+      "role": "rank"
+    },
+    {
+      "row_index": 444,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "result wind speed refers to resultspeed",
+      "role": "return"
+    },
+    {
+      "row_index": 445,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "station with more stores refers to Max(Count(store_nbr))",
+      "role": "rank"
+    },
+    {
+      "row_index": 457,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "total precipitation refers to preciptotal",
+      "role": "return"
+    },
+    {
+      "row_index": 469,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "sold no less than 300 quantities refers to units > = 300",
+      "role": "filter"
+    },
+    {
+      "row_index": 475,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "highest quantity refers to Max(units)",
+      "role": "rank"
+    },
+    {
+      "row_index": 487,
+      "db_id": "sales_in_weather",
+      "focal_hint_fragment": "lowest minimum temperature refers to Min(tmin)",
+      "role": "return"
+    }
+  ]
+}

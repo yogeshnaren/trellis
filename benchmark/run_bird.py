@@ -113,12 +113,47 @@ def select_questions(args: argparse.Namespace) -> list[BirdQuestion]:
     return sorted(questions, key=lambda q: (q.db_id, q.row_index))
 
 
+def load_row_annotations(
+    path: Path, questions_path: Path, db_dir: Path = DEFAULT_DB_DIR
+) -> dict[int, str]:
+    """Load benchmark-only advisory text pinned to the exact question set."""
+    raw = json.loads(path.read_text())
+    if raw.get("complete") is not True:
+        raise ValueError("Jev annotation file is incomplete")
+    if raw.get("questions_sha256_16") != dataset_fingerprint(questions_path):
+        raise ValueError("Jev annotation question-set fingerprint does not match")
+    questions = {q.row_index: q for q in load_questions(questions_path)}
+    expected_databases = {
+        db_id: database_fingerprint(db_path_for(db_id, db_dir=db_dir))
+        for db_id in sorted({q.db_id for q in questions.values()})
+    }
+    if raw.get("database_sha256_16") != expected_databases:
+        raise ValueError("Jev annotation database fingerprints do not match")
+    annotations: dict[int, str] = {}
+    for item in raw.get("annotations", []):
+        row = item.get("row_index")
+        if not isinstance(row, int) or row in annotations or row not in questions:
+            raise ValueError("Jev annotation row is missing, duplicate, or unknown")
+        if item.get("db_id") != questions[row].db_id:
+            raise ValueError("Jev annotation database does not match the question")
+        annotation = item.get("text")
+        if not isinstance(annotation, str) or not annotation.strip():
+            raise ValueError("Jev annotation text must be nonempty")
+        annotations[row] = annotation.strip() + "\n\n"
+    return annotations
+
+
 async def benchmark(args: argparse.Namespace) -> Path:
     if not os.getenv("FIREWORKS_API_KEY"):
         raise SystemExit(
             "BLOCKED: FIREWORKS_API_KEY is absent. Run:\nexport FIREWORKS_API_KEY=<your-key>"
         )
     questions = select_questions(args)
+    row_annotations = (
+        load_row_annotations(args.row_annotations, args.questions, args.db_dir)
+        if args.row_annotations is not None
+        else {}
+    )
     if not questions:
         raise SystemExit("No BIRD questions matched --difficulty/--db/--limit filters")
     guard = get_shared_budget(args.budget, args.ledger_path)
@@ -171,8 +206,10 @@ async def benchmark(args: argparse.Namespace) -> Path:
                     llm_timeout_s=args.llm_timeout,
                     truncation_retry_tokens=args.truncation_retry,
                 )
-                prompt = STRATEGIES[args.strategy] + with_evidence(
-                    question.question, question.evidence
+                prompt = (
+                    STRATEGIES[args.strategy]
+                    + row_annotations.get(question.row_index, "")
+                    + with_evidence(question.question, question.evidence)
                 )
                 if args.profile_facts:
                     prompt = (
@@ -334,6 +371,11 @@ def run_metadata(args: argparse.Namespace, questions: list[BirdQuestion]) -> dic
         ),
         **({"strategy": args.strategy} if getattr(args, "strategy", "direct") != "direct" else {}),
         **(
+            {"row_annotations_sha256_16": dataset_fingerprint(args.row_annotations)}
+            if getattr(args, "row_annotations", None) is not None
+            else {}
+        ),
+        **(
             {
                 "column_meaning": args.column_meaning,
                 "column_meaning_sha256_16": dataset_fingerprint(args.column_meaning_file),
@@ -483,6 +525,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--ids", type=int, nargs="+", help="Question ids to add as targeted cases.")
     parser.add_argument("--seed", type=int, default=0, help="Sampling seed for --limit/--per-db.")
     parser.add_argument("--questions", type=Path, default=DEFAULT_QUESTIONS)
+    parser.add_argument(
+        "--row-annotations",
+        type=Path,
+        help="Optional content-pinned benchmark-only Jev advisory text by row.",
+    )
     parser.add_argument("--db-dir", type=Path, default=DEFAULT_DB_DIR)
     parser.add_argument(
         "--prompt-profile",

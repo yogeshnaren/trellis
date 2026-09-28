@@ -1,0 +1,422 @@
+{
+  "questions_sha256_16": "169a2b7ac100a5b2",
+  "pilot_sha256_16": "169a2b7ac100a5b2",
+  "database_sha256_16": {
+    "ice_hockey_draft": "4b297d4b7f8c0ff3",
+    "movielens": "7c0f4f556f28e787",
+    "professional_basketball": "11bc18807f9209e4",
+    "regional_sales": "9820888505c30dfd"
+  },
+  "mode": "hint",
+  "complete": true,
+  "results": [
+    {
+      "row_index": 45,
+      "db_id": "movielens",
+      "fragment": "'negative critical reception' refers to percentage of movies with a rating of 1, which = [count(rating = 1) / count(all movies)] * 100%",
+      "role": "return",
+      "confidence": 0.74,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.163e-05,
+      "latency_ms": 261.8252520042006
+    },
+    {
+      "row_index": 50,
+      "db_id": "professional_basketball",
+      "fragment": "percentage of winning at the home = Divide(homeWon, won) * 100",
+      "role": "return",
+      "confidence": 0.99,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.037e-05,
+      "latency_ms": 151.7912819981575
+    },
+    {
+      "row_index": 53,
+      "db_id": "professional_basketball",
+      "fragment": "more than 50 games won refers to won > 50",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.0748e-05,
+      "latency_ms": 136.74801000161096
+    },
+    {
+      "row_index": 54,
+      "db_id": "professional_basketball",
+      "fragment": "team with 90% games won refers to Divide (won, games) > 0.9",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.0706e-05,
+      "latency_ms": 150.33427299931645
+    },
+    {
+      "row_index": 56,
+      "db_id": "professional_basketball",
+      "fragment": "team with winning rate less than 50% refers to Divide (won, Sum(won, lost)) < 0.5",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.0748e-05,
+      "latency_ms": 154.02888599783182
+    },
+    {
+      "row_index": 57,
+      "db_id": "professional_basketball",
+      "fragment": "played more than 3800 points refers to Sum(points) > = 3800",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.0832e-05,
+      "latency_ms": 185.10762900405098
+    },
+    {
+      "row_index": 58,
+      "db_id": "professional_basketball",
+      "fragment": "higher than 75 inch refers to height > 75",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.995e-05,
+      "latency_ms": 387.29769000201486
+    },
+    {
+      "row_index": 59,
+      "db_id": "professional_basketball",
+      "fragment": "minimum weight refers to Min(weight)",
+      "role": "return",
+      "confidence": 0.59,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9152e-05,
+      "latency_ms": 296.94091000419576
+    },
+    {
+      "row_index": 60,
+      "db_id": "professional_basketball",
+      "fragment": "team with at least 3 all star player refers to tmID where Count(player_allstar.playerID) > = 3",
+      "role": "filter",
+      "confidence": 0.99,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.079e-05,
+      "latency_ms": 370.06909300544066
+    },
+    {
+      "row_index": 61,
+      "db_id": "professional_basketball",
+      "fragment": "BMI = Multiply(Divide(weight, Multiply(height, height)), 703)",
+      "role": "return",
+      "confidence": 0.82,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9866e-05,
+      "latency_ms": 214.5872769979178
+    },
+    {
+      "row_index": 62,
+      "db_id": "professional_basketball",
+      "fragment": "average BMI refers to AVG (Multiply(Divide(weight, Multiply(height, height)), 703))",
+      "role": "return",
+      "confidence": 0.99,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.0286e-05,
+      "latency_ms": 376.75352900259895
+    },
+    {
+      "row_index": 64,
+      "db_id": "professional_basketball",
+      "fragment": "average height refers to avg(height)",
+      "role": "return",
+      "confidence": 0.99,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.911e-05,
+      "latency_ms": 291.66181899927324
+    },
+    {
+      "row_index": 65,
+      "db_id": "professional_basketball",
+      "fragment": "more than 2 different teams refers to count(tmID) > 2",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9908e-05,
+      "latency_ms": 296.7938799993135
+    },
+    {
+      "row_index": 66,
+      "db_id": "professional_basketball",
+      "fragment": "all free throw attempted successfully made refers to ftAttempted > 0 and ftAttempted = ftMade",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.0874e-05,
+      "latency_ms": 286.3419540008181
+    },
+    {
+      "row_index": 73,
+      "db_id": "professional_basketball",
+      "fragment": "the most rebounds refers to max(rebounds)",
+      "role": "rank",
+      "confidence": 0.98,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9656e-05,
+      "latency_ms": 195.92452999495436
+    },
+    {
+      "row_index": 84,
+      "db_id": "regional_sales",
+      "fragment": "highest median income refers to Max(Median Income)",
+      "role": "rank",
+      "confidence": 0.87,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9572e-05,
+      "latency_ms": 214.69468899886124
+    },
+    {
+      "row_index": 85,
+      "db_id": "regional_sales",
+      "fragment": "highest net profit = Max(Subtract (Unit Price, Unit Cost))",
+      "role": "rank",
+      "confidence": 0.97,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9992e-05,
+      "latency_ms": 194.70678500510985
+    },
+    {
+      "row_index": 86,
+      "db_id": "regional_sales",
+      "fragment": "highest discount applied refers to Max(Discount Applied)",
+      "role": "return",
+      "confidence": 0.45,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.0286e-05,
+      "latency_ms": 224.73826400528196
+    },
+    {
+      "row_index": 87,
+      "db_id": "regional_sales",
+      "fragment": "highest sales order unit price refers to Max(Unit Price)",
+      "role": "rank",
+      "confidence": 0.95,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.953e-05,
+      "latency_ms": 171.5138610015856
+    },
+    {
+      "row_index": 90,
+      "db_id": "regional_sales",
+      "fragment": "average land area = Divide (Sum(Land Area), Count(Land Area))",
+      "role": "return",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.0622e-05,
+      "latency_ms": 186.7787099981797
+    },
+    {
+      "row_index": 91,
+      "db_id": "regional_sales",
+      "fragment": "order date after 1/1/2018 refers to OrderDate > '1/1/2018'",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.1126e-05,
+      "latency_ms": 218.49479799857363
+    },
+    {
+      "row_index": 92,
+      "db_id": "regional_sales",
+      "fragment": "highest unit price refers to Max(Unit Price)",
+      "role": "rank",
+      "confidence": 0.91,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9236e-05,
+      "latency_ms": 196.0145470002317
+    },
+    {
+      "row_index": 93,
+      "db_id": "regional_sales",
+      "fragment": "most discount refers to Max(Discount Applied)",
+      "role": "rank",
+      "confidence": 0.94,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.932e-05,
+      "latency_ms": 197.78315499570454
+    },
+    {
+      "row_index": 94,
+      "db_id": "regional_sales",
+      "fragment": "order quantity greater than 5 refers to Order Quantity > 5",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9866e-05,
+      "latency_ms": 169.92614199989475
+    },
+    {
+      "row_index": 96,
+      "db_id": "regional_sales",
+      "fragment": "most populous country refers to Max(Population)",
+      "role": "rank",
+      "confidence": 0.89,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.953e-05,
+      "latency_ms": 139.15864899900043
+    },
+    {
+      "row_index": 97,
+      "db_id": "regional_sales",
+      "fragment": "highest unit price refers to Max(Unit Price)",
+      "role": "rank",
+      "confidence": 0.7,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 1.9362e-05,
+      "latency_ms": 181.61588099610526
+    },
+    {
+      "row_index": 98,
+      "db_id": "regional_sales",
+      "fragment": "median income no more than 30,000 refers to Median Income < 30,000",
+      "role": "filter",
+      "confidence": 1,
+      "model_version": "typesafe/jev-1.13-20260917",
+      "cost_usd": 2.1126e-05,
+      "latency_ms": 165.065842003969
+    }
+  ],
+  "annotations": [
+    {
+      "row_index": 45,
+      "db_id": "movielens",
+      "text": "Evidence-use aid: the hint fragment \"'negative critical reception' refers to percentage of movies with a rating of 1, which = [count(rating = 1) / count(all movies)] * 100%\" primarily defines a value or computation to return only if the question asks for it. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 50,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"percentage of winning at the home = Divide(homeWon, won) * 100\" primarily defines a value or computation to return only if the question asks for it. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 53,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"more than 50 games won refers to won > 50\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 54,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"team with 90% games won refers to Divide (won, games) > 0.9\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 56,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"team with winning rate less than 50% refers to Divide (won, Sum(won, lost)) < 0.5\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 57,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"played more than 3800 points refers to Sum(points) > = 3800\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 58,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"higher than 75 inch refers to height > 75\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 59,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"minimum weight refers to Min(weight)\" primarily defines a value or computation to return only if the question asks for it. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 60,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"team with at least 3 all star player refers to tmID where Count(player_allstar.playerID) > = 3\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 61,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"BMI = Multiply(Divide(weight, Multiply(height, height)), 703)\" primarily defines a value or computation to return only if the question asks for it. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 62,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"average BMI refers to AVG (Multiply(Divide(weight, Multiply(height, height)), 703))\" primarily defines a value or computation to return only if the question asks for it. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 64,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"average height refers to avg(height)\" primarily defines a value or computation to return only if the question asks for it. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 65,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"more than 2 different teams refers to count(tmID) > 2\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 66,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"all free throw attempted successfully made refers to ftAttempted > 0 and ftAttempted = ftMade\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 73,
+      "db_id": "professional_basketball",
+      "text": "Evidence-use aid: the hint fragment \"the most rebounds refers to max(rebounds)\" primarily defines a ranking criterion for finding the requested entity. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 84,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"highest median income refers to Max(Median Income)\" primarily defines a ranking criterion for finding the requested entity. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 85,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"highest net profit = Max(Subtract (Unit Price, Unit Cost))\" primarily defines a ranking criterion for finding the requested entity. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 86,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"highest discount applied refers to Max(Discount Applied)\" primarily defines a value or computation to return only if the question asks for it. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 87,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"highest sales order unit price refers to Max(Unit Price)\" primarily defines a ranking criterion for finding the requested entity. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 90,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"average land area = Divide (Sum(Land Area), Count(Land Area))\" primarily defines a value or computation to return only if the question asks for it. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 91,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"order date after 1/1/2018 refers to OrderDate > '1/1/2018'\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 92,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"highest unit price refers to Max(Unit Price)\" primarily defines a ranking criterion for finding the requested entity. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 93,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"most discount refers to Max(Discount Applied)\" primarily defines a ranking criterion for finding the requested entity. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 94,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"order quantity greater than 5 refers to Order Quantity > 5\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 96,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"most populous country refers to Max(Population)\" primarily defines a ranking criterion for finding the requested entity. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 97,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"highest unit price refers to Max(Unit Price)\" primarily defines a ranking criterion for finding the requested entity. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    },
+    {
+      "row_index": 98,
+      "db_id": "regional_sales",
+      "text": "Evidence-use aid: the hint fragment \"median income no more than 30,000 refers to Median Income < 30,000\" primarily defines a condition to enforce when finding matching rows or groups. This is advisory; preserve every constraint in the original question and do not add unrequested output columns."
+    }
+  ],
+  "cost_usd": 0.000544194
+}

@@ -697,3 +697,20 @@ stays as a named constant for provenance and pricing.
     limit, to reset after evaluation. It never enters the repository or `.env`.
   - The shared ledger cap is raised to **$8.50** (spend $7.47 on 2026-09-28) for the
     parity check and the dev-1106 run. Runs pass `--budget 8.50`.
+
+## 2026-09-28 — Merged: Jev pilots not adopted; training pool not fit for SFT yet
+- Merged from `codex/jev-shadow-gates` and `codex/label-quality-audit` (work dated
+  2026-09-27).
+- **Jev, not adopted:**
+  - candidate choice lost to result-majority on the 102 disagreement questions
+    (29 vs 39 correct), also with the schema added (28 vs 39);
+  - requirement coverage found 0/5 hand-labelled omissions;
+  - the live `train_dev2` pilot of table and evidence-role advisories scored 57/100
+    and 56/100 vs a 56/100 control, below the predeclared +4 screen.
+  - OpenRouter spend $0.028. No live Jev route is enabled.
+- **Training data, not yet fit for SFT:** a 100-row stratified screen of the 5,115-row
+  candidate pool found 18 clear label defects (17.5% weighted, above the 15% trigger).
+  Re-filter and review independently before any SFT.
+- **`train_dev2` is partly used:** 100 questions (25 per database) plus 50
+  `professional_basketball` rows fed the Jev pilots. A fresh candidate bank must use
+  the unused rows or other train databases.

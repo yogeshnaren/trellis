@@ -1,0 +1,902 @@
+[
+  {
+    "question_id": 6915,
+    "db_id": "ice_hockey_draft",
+    "question": "What is the height of David Bornhammar in inches?",
+    "evidence": "heigh in inches refers to height_in_inch;",
+    "SQL": "SELECT T2.height_in_inch FROM PlayerInfo AS T1 INNER JOIN height_info AS T2 ON T1.height = T2.height_id WHERE T1.PlayerName = 'David Bornhammar'",
+    "difficulty": "unknown",
+    "source_row_index": 419
+  },
+  {
+    "question_id": 6917,
+    "db_id": "ice_hockey_draft",
+    "question": "Among the players with a height of over 6'2\" inches, how many of them were born in Sweden?",
+    "evidence": "height of over 6'2\" inches refers to height_in_inch > '6''2\"'; born in Sweden refers to nation = 'Sweden' ;",
+    "SQL": "SELECT COUNT(T1.ELITEID) FROM PlayerInfo AS T1 INNER JOIN height_info AS T2 ON T1.height = T2.height_id WHERE T2.height_in_inch > '6''2\"' AND T1.nation = 'Sweden'",
+    "difficulty": "unknown",
+    "source_row_index": 421
+  },
+  {
+    "question_id": 6919,
+    "db_id": "ice_hockey_draft",
+    "question": "How much does David Bornhammar weigh in kilograms?",
+    "evidence": "weigh in kilograms refers to weight_in_kg;",
+    "SQL": "SELECT T2.weight_in_kg FROM PlayerInfo AS T1 INNER JOIN weight_info AS T2 ON T1.weight = T2.weight_id WHERE T1.PlayerName = 'David Bornhammar'",
+    "difficulty": "unknown",
+    "source_row_index": 423
+  },
+  {
+    "question_id": 6923,
+    "db_id": "ice_hockey_draft",
+    "question": "What is the weight of the player with the longest time on ice in the player\u2019s first 7 years of NHL career in kilograms?",
+    "evidence": "weight in kilograms refers to weight_in_kg; longest time on ice in the player's first 7 years of NHL career refers to MAX(sum_7yr_TOI);",
+    "SQL": "SELECT T2.weight_in_kg FROM PlayerInfo AS T1 INNER JOIN weight_info AS T2 ON T1.weight = T2.weight_id WHERE T1.sum_7yr_TOI = ( SELECT MAX(t.sum_7yr_TOI) FROM PlayerInfo t )",
+    "difficulty": "unknown",
+    "source_row_index": 427
+  },
+  {
+    "question_id": 6924,
+    "db_id": "ice_hockey_draft",
+    "question": "How much taller is David Bornhammar than Pauli Levokari in centimeters?",
+    "evidence": "how much taller = SUBTRACT(SUM(height_in_cm WHERE PlayerName = 'David Bornhammar'), SUM(height_in_cm WHERE PlayerName = 'Pauli Levokari')); height in centimeters refers to height_in_cm;",
+    "SQL": "SELECT ( SELECT T2.height_in_cm FROM PlayerInfo AS T1 INNER JOIN height_info AS T2 ON T1.height = T2.height_id WHERE T1.PlayerName = 'David Bornhammar' ) - ( SELECT T2.height_in_cm FROM PlayerInfo AS T1 INNER JOIN height_info AS T2 ON T1.height = T2.height_id WHERE T1.PlayerName = 'Pauli Levokari' )",
+    "difficulty": "unknown",
+    "source_row_index": 428
+  },
+  {
+    "question_id": 6926,
+    "db_id": "ice_hockey_draft",
+    "question": "Please list the names of all the players that are over 90 kg and are right-shooted.",
+    "evidence": "names of the players refers to PlayerName; over 90 kg refers to weight_in_kg > 90; right-shooted refers to shoots = 'R';",
+    "SQL": "SELECT T1.PlayerName FROM PlayerInfo AS T1 INNER JOIN weight_info AS T2 ON T1.weight = T2.weight_id WHERE T2.weight_in_kg > 90 AND T1.shoots = 'R'",
+    "difficulty": "unknown",
+    "source_row_index": 430
+  },
+  {
+    "question_id": 6932,
+    "db_id": "ice_hockey_draft",
+    "question": "What is the height in centimeter of the tallest player born in Edmonton, Alberta, Canada?",
+    "evidence": "height in centimeter refers to height_in_cm; tallest player refers to MAX(height_in_cm); born in Edmonton, Alberta, Canada refers to birthplace = 'Edmonton, AB, CAN';",
+    "SQL": "SELECT T2.height_in_cm FROM PlayerInfo AS T1 INNER JOIN height_info AS T2 ON T1.height = T2.height_id WHERE T1.birthplace = 'Edmonton, AB, CAN' ORDER BY T2.height_in_cm DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 436
+  },
+  {
+    "question_id": 6934,
+    "db_id": "ice_hockey_draft",
+    "question": "What is the weight in kilograms of the player with the highest number of goal differential of all time?",
+    "evidence": "weight in kilograms refers to weight_in_kg; highest number of goal differential of all time refers to MAX(PLUSMINUS);",
+    "SQL": "SELECT T3.weight_in_kg FROM SeasonStatus AS T1 INNER JOIN PlayerInfo AS T2 ON T1.ELITEID = T2.ELITEID INNER JOIN weight_info AS T3 ON T2.weight = T3.weight_id ORDER BY T1.PLUSMINUS DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 438
+  },
+  {
+    "question_id": 6939,
+    "db_id": "ice_hockey_draft",
+    "question": "Among the players who played 72 games, how many are left-shooters?",
+    "evidence": "played 72 games refers to GP = 72; left-shooters refers to shoots = 'L';",
+    "SQL": "SELECT COUNT(T2.ELITEID) FROM SeasonStatus AS T1 INNER JOIN PlayerInfo AS T2 ON T1.ELITEID = T2.ELITEID WHERE T1.GP = 72 AND T2.shoots = 'L'",
+    "difficulty": "unknown",
+    "source_row_index": 443
+  },
+  {
+    "question_id": 6943,
+    "db_id": "ice_hockey_draft",
+    "question": "Name the player who scored the most goals in a single game in the 2007-2008 season of WHL?",
+    "evidence": "name of the player refers to PlayerName; scored the most goals in a single game refers to MAX(G); WHL refers to LEAGUE = 'WHL'; 2007-2008 season refers to SEASON = '2007-2008';",
+    "SQL": "SELECT T2.PlayerName FROM SeasonStatus AS T1 INNER JOIN PlayerInfo AS T2 ON T1.ELITEID = T2.ELITEID WHERE T1.SEASON = '2007-2008' AND T1.LEAGUE = 'WHL' ORDER BY T1.G DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 447
+  },
+  {
+    "question_id": 6945,
+    "db_id": "ice_hockey_draft",
+    "question": "Identify the players who weigh 120 kg.",
+    "evidence": "players refers to PlayerName; weigh 120 kg refers to weight_in_kg = 120;",
+    "SQL": "SELECT T2.PlayerName FROM weight_info AS T1 INNER JOIN PlayerInfo AS T2 ON T1.weight_id = T2.weight WHERE T1.weight_in_kg = 120",
+    "difficulty": "unknown",
+    "source_row_index": 449
+  },
+  {
+    "question_id": 6947,
+    "db_id": "ice_hockey_draft",
+    "question": "Identify the name and position of the player who has committed the most rule violations.",
+    "evidence": "name of the player refers to PlayerName; position of the player refers to position_info; committed the most rule violations refers to MAX(PIM);",
+    "SQL": "SELECT T2.PlayerName, T2.position_info FROM SeasonStatus AS T1 INNER JOIN PlayerInfo AS T2 ON T1.ELITEID = T2.ELITEID WHERE T1.PIM = ( SELECT MAX(PIM) FROM SeasonStatus )",
+    "difficulty": "unknown",
+    "source_row_index": 451
+  },
+  {
+    "question_id": 6948,
+    "db_id": "ice_hockey_draft",
+    "question": "Name the player who has the most NHL points in draft year.",
+    "evidence": "name of the player refers to PlayerName; most NHL points in draft year refers to MAX(P);",
+    "SQL": "SELECT T2.PlayerName FROM SeasonStatus AS T1 INNER JOIN PlayerInfo AS T2 ON T1.ELITEID = T2.ELITEID WHERE T1.P = ( SELECT MAX(P) FROM SeasonStatus )",
+    "difficulty": "unknown",
+    "source_row_index": 452
+  },
+  {
+    "question_id": 6949,
+    "db_id": "ice_hockey_draft",
+    "question": "Among all players drafted by the Toronto Maple Leafs, identify the percentage who are from Eastern Europe.",
+    "evidence": "players refers to PlayerName; drafted by the Toronto Maple Leafs refers to overallby = 'Toronto Maple Leafs'; percentage = MULTIPLY(DIVIDE(SUM(nation = 'Eastern Europe'), COUNT(ELITEID) WHERE overallby = 'Toronto Maple Leafs'), 100); from Eastern Europe refers to nation in ('Belarus', 'Bulgaria', 'Czech Republic', 'Hungary', 'Moldova', 'Poland', 'Romania', 'Slovakia', 'Ukraine'); countries in a continent can be identified by referring to https://worldpopulationreview.com/country-rankings/list-of-countries-by-continent;",
+    "SQL": "SELECT CAST(COUNT(CASE WHEN nation IN ('Belarus', 'Czech Rep.', 'Slovakia', 'Ukraine') THEN ELITEID ELSE NULL END) AS REAL) * 100 / COUNT(ELITEID) FROM PlayerInfo WHERE overallby = 'Toronto Maple Leafs'",
+    "difficulty": "unknown",
+    "source_row_index": 453
+  },
+  {
+    "question_id": 6951,
+    "db_id": "ice_hockey_draft",
+    "question": "Name the player and his team who made the playoffs in the 2006-2007 season of SuperElit league with the highest points.",
+    "evidence": "name of the player refers to PlayerName; playoffs refers to GAMETYPE = 'Playoffs'; highest points refers to MAX(P); 2006-2007 season refers to SEASON = '2006-2007'; SuperElit league refers to LEAGUE = 'SuperElit';",
+    "SQL": "SELECT T2.PlayerName, T1.TEAM FROM SeasonStatus AS T1 INNER JOIN PlayerInfo AS T2 ON T1.ELITEID = T2.ELITEID WHERE T1.SEASON = '2006-2007' AND T1.GAMETYPE = 'Playoffs' AND T1.LEAGUE = 'SuperElit' ORDER BY T1.P DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 455
+  },
+  {
+    "question_id": 6952,
+    "db_id": "ice_hockey_draft",
+    "question": "How many players who were drafted by the Toronto Maple Leafs have played over 300 games in their first 7 years of the NHL career?",
+    "evidence": "drafted by the Toronto Maple Leafs refers to overallby = 'Toronto Maple Leafs'; played over 300 games in their first 7 years of the NHL career refers to sum_7yr_GP > 300;",
+    "SQL": "SELECT COUNT(ELITEID) FROM PlayerInfo WHERE overallby = 'Toronto Maple Leafs' AND sum_7yr_GP > 300",
+    "difficulty": "unknown",
+    "source_row_index": 456
+  },
+  {
+    "question_id": 6956,
+    "db_id": "ice_hockey_draft",
+    "question": "What is the birthplace of Aaron Gagnon?",
+    "evidence": "FALSE;",
+    "SQL": "SELECT birthplace FROM PlayerInfo WHERE PlayerName = 'Aaron Gagnon'",
+    "difficulty": "unknown",
+    "source_row_index": 460
+  },
+  {
+    "question_id": 6958,
+    "db_id": "ice_hockey_draft",
+    "question": "List out the name of players who weight 190 lbs.",
+    "evidence": "name of players refers to PlayerName; weight 190 lbs refers to weight_in_lbs = 190;",
+    "SQL": "SELECT T1.PlayerName FROM PlayerInfo AS T1 INNER JOIN weight_info AS T2 ON T1.weight = T2.weight_id WHERE T2.weight_in_lbs = 190",
+    "difficulty": "unknown",
+    "source_row_index": 462
+  },
+  {
+    "question_id": 6964,
+    "db_id": "ice_hockey_draft",
+    "question": "List out the nation of players who played for the 1997-1998 season .",
+    "evidence": "players refers to PlayerName; 1997-1998 season refers to SEASON = '1997-1998';",
+    "SQL": "SELECT DISTINCT T2.nation FROM SeasonStatus AS T1 INNER JOIN PlayerInfo AS T2 ON T1.ELITEID = T2.ELITEID WHERE T1.SEASON = '1997-1998'",
+    "difficulty": "unknown",
+    "source_row_index": 468
+  },
+  {
+    "question_id": 6971,
+    "db_id": "ice_hockey_draft",
+    "question": "Who among the players in season 2000-2001 has committed the highest rule violations or penalty minutes?",
+    "evidence": "committed the highest rule violations or penalty minutes refers to MAX(PIM); 2000-2001 season refers to SEASON = '2000-2001'",
+    "SQL": "SELECT T2.PlayerName FROM SeasonStatus AS T1 INNER JOIN PlayerInfo AS T2 ON T1.ELITEID = T2.ELITEID WHERE T1.SEASON = '2000-2001' ORDER BY T1.PIM DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 475
+  },
+  {
+    "question_id": 6977,
+    "db_id": "ice_hockey_draft",
+    "question": "How many players who were born in 1980 weigh 185 in pounds?",
+    "evidence": "born in 1980 refers to birthyear = 1980; weigh 185 in pounds refers to weight_in_lbs = 185;",
+    "SQL": "SELECT COUNT(T2.ELITEID) FROM weight_info AS T1 INNER JOIN PlayerInfo AS T2 ON T1.weight_id = T2.weight WHERE T1.weight_in_lbs = 185 AND strftime('%Y', T2.birthdate) = '1980'",
+    "difficulty": "unknown",
+    "source_row_index": 481
+  },
+  {
+    "question_id": 6983,
+    "db_id": "ice_hockey_draft",
+    "question": "Calculate the average weight in pounds of all players drafted by Arizona Coyotes.",
+    "evidence": "average weight in pounds = AVG(weight_in_lbs); weight in pounds refers to weight_in_lbs; players refers to PlayerName; drafted by Arizona Coyotes refers to overallby = 'Arizona Coyotes';",
+    "SQL": "SELECT CAST(SUM(T1.weight_in_lbs) AS REAL) / COUNT(T2.ELITEID) FROM weight_info AS T1 INNER JOIN PlayerInfo AS T2 ON T1.weight_id = T2.weight WHERE T2.overallby = 'Arizona Coyotes'",
+    "difficulty": "unknown",
+    "source_row_index": 487
+  },
+  {
+    "question_id": 6985,
+    "db_id": "ice_hockey_draft",
+    "question": "How many games did Per Mars play in the 1997-1998 season?",
+    "evidence": "1997-1998 season refers to SEASON = '1997-1998';",
+    "SQL": "SELECT T2.GP FROM PlayerInfo AS T1 INNER JOIN SeasonStatus AS T2 ON T1.ELITEID = T2.ELITEID WHERE T2.SEASON = '1997-1998' AND T1.PlayerName = 'Pavel Patera'",
+    "difficulty": "unknown",
+    "source_row_index": 489
+  },
+  {
+    "question_id": 6994,
+    "db_id": "ice_hockey_draft",
+    "question": "Indicate the height of all players from team Oshawa Generals in inches.",
+    "evidence": "height in inches refers to height_in_inch; players refers to PlayerName; team Oshawa Generals refers to TEAM = 'Oshawa Generals';",
+    "SQL": "SELECT T3.height_in_inch FROM PlayerInfo AS T1 INNER JOIN SeasonStatus AS T2 ON T1.ELITEID = T2.ELITEID INNER JOIN height_info AS T3 ON T1.height = T3.height_id WHERE T2.TEAM = 'Oshawa Generals'",
+    "difficulty": "unknown",
+    "source_row_index": 498
+  },
+  {
+    "question_id": 6997,
+    "db_id": "ice_hockey_draft",
+    "question": "What is the percentage of Swedish players in playoffs games in the 1997 - 2000 season?",
+    "evidence": "percentage = MULTIPLY(DIVIDE(SUM(nation = 'Sweden'), COUNT(ELITEID) WHERE SEASON = '1997-2000'), 100); Swedish refers to nation = 'Sweden'; players refers to PlayerName; playoffs games refers to GAMETYPE = 'Playoffs'; 1997-2000 season refers to 3 consecutive SEASONs : '1997-1998', '1998-1999', '1999-2000';",
+    "SQL": "SELECT DISTINCT CAST(COUNT(CASE WHEN T1.nation = 'Sweden' THEN T1.ELITEID ELSE NULL END) OVER (PARTITION BY T2.SEASON) AS REAL) * 100 / COUNT(T1.ELITEID) OVER (PARTITION BY T2.SEASON) FROM PlayerInfo AS T1 INNER JOIN SeasonStatus AS T2 ON T1.ELITEID = T2.ELITEID WHERE T2.SEASON IN ('1997-1998', '1998-1999', '1999-2000')",
+    "difficulty": "unknown",
+    "source_row_index": 501
+  },
+  {
+    "question_id": 2248,
+    "db_id": "movielens",
+    "question": "Among the users who gave a rating of 5, how many of them are male?",
+    "evidence": "Male users mean that u_gender = 'M'",
+    "SQL": "SELECT COUNT(T1.userid) FROM u2base AS T1 INNER JOIN users AS T2 ON T1.userid = T2.userid WHERE T1.rating = 5 AND T2.u_gender = 'M'",
+    "difficulty": "unknown",
+    "source_row_index": 1
+  },
+  {
+    "question_id": 2257,
+    "db_id": "movielens",
+    "question": "What is the average rating of the newest movies from France?",
+    "evidence": "France is a country; year = 4 represents the newest date.",
+    "SQL": "SELECT AVG(T1.rating) FROM u2base AS T1 INNER JOIN movies AS T2 ON T1.movieid = T2.movieid WHERE T2.country = 'france' AND T2.year = 4",
+    "difficulty": "unknown",
+    "source_row_index": 10
+  },
+  {
+    "question_id": 2261,
+    "db_id": "movielens",
+    "question": "What is the ID of audiences that gave the most rating of 5?",
+    "evidence": "The audience and users are the same meaning",
+    "SQL": "SELECT userid FROM u2base WHERE rating = 5 GROUP BY userid ORDER BY COUNT(movieid) DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 14
+  },
+  {
+    "question_id": 2262,
+    "db_id": "movielens",
+    "question": "What are the ID of actors that had worked together with director 22397? What was the genre of that movie?",
+    "evidence": "",
+    "SQL": "SELECT T2.actorid, T4.genre FROM movies AS T1 INNER JOIN movies2actors AS T2 ON T1.movieid = T2.movieid INNER JOIN actors AS T3 ON T2.actorid = T3.actorid INNER JOIN movies2directors AS T4 ON T1.movieid = T4.movieid WHERE T4.directorid = 22397",
+    "difficulty": "unknown",
+    "source_row_index": 15
+  },
+  {
+    "question_id": 2263,
+    "db_id": "movielens",
+    "question": "Please list down the ID of actors and directors in action movies.",
+    "evidence": "",
+    "SQL": "SELECT T2.actorid, T1.directorid FROM movies2directors AS T1 INNER JOIN movies2actors AS T2 ON T1.movieid = T2.movieid WHERE T1.genre = 'Action'",
+    "difficulty": "unknown",
+    "source_row_index": 16
+  },
+  {
+    "question_id": 2267,
+    "db_id": "movielens",
+    "question": "UK produced what genre of movies?",
+    "evidence": "UK is a country",
+    "SQL": "SELECT T2.genre FROM movies AS T1 INNER JOIN movies2directors AS T2 ON T1.movieid = T2.movieid WHERE T1.country = 'UK'",
+    "difficulty": "unknown",
+    "source_row_index": 20
+  },
+  {
+    "question_id": 2272,
+    "db_id": "movielens",
+    "question": "Please list down ID of movies acted by top 5 actors based on actor rating.",
+    "evidence": "",
+    "SQL": "SELECT T2.movieid FROM actors AS T1 INNER JOIN movies2actors AS T2 ON T1.actorid = T2.actorid GROUP BY T2.actorid ORDER BY AVG(T1.a_quality) DESC LIMIT 5",
+    "difficulty": "unknown",
+    "source_row_index": 25
+  },
+  {
+    "question_id": 2283,
+    "db_id": "movielens",
+    "question": "How many different female users have rated movies from France?",
+    "evidence": "France is a country; Female users mean that u_gender = 'F'",
+    "SQL": "SELECT COUNT(DISTINCT T2.userid) FROM users AS T1 INNER JOIN u2base AS T2 ON T1.userid = T2.userid INNER JOIN movies AS T3 ON T2.movieid = T3.movieid WHERE T1.u_gender = 'F' AND T3.country = 'France'",
+    "difficulty": "unknown",
+    "source_row_index": 36
+  },
+  {
+    "question_id": 2284,
+    "db_id": "movielens",
+    "question": "For different directors who direct well, how many of them have directed an action film?",
+    "evidence": "direct well means the quality of directing is good, which means d_quality = 4.",
+    "SQL": "SELECT COUNT(DISTINCT T2.directorid) FROM movies2directors AS T2 INNER JOIN directors AS T3 ON T2.directorid = T3.directorid WHERE T2.genre = 'Action' AND T3.d_quality = 4",
+    "difficulty": "unknown",
+    "source_row_index": 37
+  },
+  {
+    "question_id": 2288,
+    "db_id": "movielens",
+    "question": "What is the highest average rating for action movies made in the USA?",
+    "evidence": "USA is a country",
+    "SQL": "SELECT AVG(T2.rating) FROM movies AS T1 INNER JOIN u2base AS T2 ON T1.movieid = T2.movieid INNER JOIN movies2directors AS T3 ON T1.movieid = T3.movieid WHERE T1.country = 'USA' AND T3.genre = 'Action' GROUP BY T1.movieid ORDER BY AVG(T2.rating) DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 41
+  },
+  {
+    "question_id": 2291,
+    "db_id": "movielens",
+    "question": "How many of the users who rate the movie with the id '2462959' are female?",
+    "evidence": "Female users mean that u_gender = 'F'",
+    "SQL": "SELECT COUNT(T1.userid) FROM users AS T1 INNER JOIN u2base AS T2 ON T1.userid = T2.userid WHERE T2.userid = 2462959 AND T1.u_gender = 'F'",
+    "difficulty": "unknown",
+    "source_row_index": 44
+  },
+  {
+    "question_id": 2294,
+    "db_id": "movielens",
+    "question": "Which directors with the best quality directed the most films?",
+    "evidence": "d_quality = 5 refers to direct the best",
+    "SQL": "SELECT T1.directorid FROM directors AS T1 INNER JOIN movies2directors AS T2 ON T1.directorid = T2.directorid WHERE T1.d_quality = 5 GROUP BY T1.directorid ORDER BY COUNT(T2.movieid) DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 47
+  },
+  {
+    "question_id": 2301,
+    "db_id": "movielens",
+    "question": "List the cast and the director of the movie with the id 1949144.",
+    "evidence": "",
+    "SQL": "SELECT T1.actorid, T2.directorid FROM movies2actors AS T1 INNER JOIN movies2directors AS T2 ON T1.movieid = T2.movieid WHERE T1.movieid = 1949144",
+    "difficulty": "unknown",
+    "source_row_index": 54
+  },
+  {
+    "question_id": 2302,
+    "db_id": "movielens",
+    "question": "Among the actors who acted in UK movies, what percentage of actors received a rating of at least 3?",
+    "evidence": "UK is a country",
+    "SQL": "SELECT CAST(SUM(IIF(T3.a_quality >= 3, 1, 0)) AS REAL) * 100 / COUNT(T1.movieid) FROM movies AS T1 INNER JOIN movies2actors AS T2 ON T1.movieid = T2.movieid INNER JOIN actors AS T3 ON T2.actorid = T3.actorid WHERE T1.country = 'UK'",
+    "difficulty": "unknown",
+    "source_row_index": 55
+  },
+  {
+    "question_id": 2305,
+    "db_id": "movielens",
+    "question": "Who are cast members in an English movie which has a running time equal to 2? Please list their IDs.",
+    "evidence": "isEnglish = 'T' means English movie",
+    "SQL": "SELECT T2.actorid FROM movies AS T1 INNER JOIN movies2actors AS T2 ON T1.movieid = T2.movieid WHERE T1.runningtime = 2 AND T1.isEnglish = 'T'",
+    "difficulty": "unknown",
+    "source_row_index": 58
+  },
+  {
+    "question_id": 2306,
+    "db_id": "movielens",
+    "question": "Which actor has acted in at least 2 French films? Please list their IDs.",
+    "evidence": "France is a country",
+    "SQL": "SELECT T2.actorid FROM movies AS T1 INNER JOIN movies2actors AS T2 ON T1.movieid = T2.movieid WHERE T1.country = 'France' GROUP BY T2.actorid HAVING COUNT(T1.movieid) > 2",
+    "difficulty": "unknown",
+    "source_row_index": 59
+  },
+  {
+    "question_id": 2309,
+    "db_id": "movielens",
+    "question": "How many actors have acted in both US or UK films?",
+    "evidence": "US and UK are 2 countries",
+    "SQL": "SELECT COUNT(T1.actorid) FROM movies2actors AS T1 INNER JOIN movies AS T2 ON T1.movieid = T2.movieid WHERE T2.country = 'USA' OR T2.country = 'UK'",
+    "difficulty": "unknown",
+    "source_row_index": 62
+  },
+  {
+    "question_id": 2310,
+    "db_id": "movielens",
+    "question": "How many directors with average revenue of 4 have made either action or adventure films?",
+    "evidence": "",
+    "SQL": "SELECT COUNT(T1.directorid) FROM directors AS T1 INNER JOIN movies2directors AS T2 ON T1.directorid = T2.directorid WHERE T1.avg_revenue = 4 AND (T2.genre = 'Adventure' OR T2.genre = 'Action')",
+    "difficulty": "unknown",
+    "source_row_index": 63
+  },
+  {
+    "question_id": 2312,
+    "db_id": "movielens",
+    "question": "How many American comedies are there?",
+    "evidence": "USA is a country",
+    "SQL": "SELECT COUNT(T1.movieid) FROM movies AS T1 INNER JOIN movies2directors AS T2 ON T1.movieid = T2.movieid WHERE T1.country = 'USA' AND T2.genre = 'comedy'",
+    "difficulty": "unknown",
+    "source_row_index": 65
+  },
+  {
+    "question_id": 2314,
+    "db_id": "movielens",
+    "question": "What horror movies have a running time of at least 2? Please list movie IDs.",
+    "evidence": "Higher value of running time means running time is longer",
+    "SQL": "SELECT T1.movieid FROM movies2directors AS T1 INNER JOIN movies AS T2 ON T1.movieid = T2.movieid WHERE T2.runningtime >= 2 AND T1.genre = 'Horror'",
+    "difficulty": "unknown",
+    "source_row_index": 67
+  },
+  {
+    "question_id": 2315,
+    "db_id": "movielens",
+    "question": "Please calculate negative critical reception of American movies",
+    "evidence": "'negative critical reception' refers to percentage of movies with a rating of 1, which = [count(rating = 1) / count(all movies)] * 100% ",
+    "SQL": "SELECT CAST(SUM(IIF(T1.rating = 1, 1, 0)) AS REAL) * 100 / COUNT(T1.movieid) FROM u2base AS T1 INNER JOIN movies AS T2 ON T1.movieid = T2.movieid WHERE T2.country = 'USA'",
+    "difficulty": "unknown",
+    "source_row_index": 68
+  },
+  {
+    "question_id": 2325,
+    "db_id": "movielens",
+    "question": "How many different actors have played a role in the highest rating movie?",
+    "evidence": "highest rating of a movie is 5",
+    "SQL": "SELECT COUNT(DISTINCT T2.actorid) FROM u2base AS T1 INNER JOIN movies2actors AS T2 ON T1.movieid = T2.movieid WHERE T1.rating = 5",
+    "difficulty": "unknown",
+    "source_row_index": 78
+  },
+  {
+    "question_id": 2332,
+    "db_id": "movielens",
+    "question": "How many of the worst actors are men and how many of the worst actors are women? Indicate your answer in ratio form.",
+    "evidence": "The worst actors means a_quality = 0; Men and male share the same meaning; men actors refers to a_gender = 'M'",
+    "SQL": "SELECT CAST(SUM(IIF(a_gender = 'M', 1, 0)) AS REAL) / SUM(IIF(a_gender = 'F', 1, 0)) FROM actors WHERE a_quality = 0",
+    "difficulty": "unknown",
+    "source_row_index": 85
+  },
+  {
+    "question_id": 2334,
+    "db_id": "movielens",
+    "question": "What is the most popular genre of film directed by directors?",
+    "evidence": "Most popular genre indicates that the genre has the most number of movies",
+    "SQL": "SELECT genre FROM movies2directors GROUP BY genre ORDER BY COUNT(movieid) DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 87
+  },
+  {
+    "question_id": 2336,
+    "db_id": "movielens",
+    "question": "What non-English American film/s has received the lowest user ratings? Mention the movie's I.D.",
+    "evidence": "USA is a country; non-English means isEnglish = 'F'",
+    "SQL": "SELECT T2.movieid FROM movies AS T1 INNER JOIN u2base AS T2 ON T1.movieid = T2.movieid WHERE T1.isEnglish = 'F' AND T1.country = 'USA' ORDER BY T2.rating LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 89
+  },
+  {
+    "question_id": 2796,
+    "db_id": "professional_basketball",
+    "question": "Among the winning game from the team, what is the percentage of the winning was home game.",
+    "evidence": "percentage of winning at the home = Divide(homeWon, won) * 100",
+    "SQL": "SELECT CAST(homeWon AS REAL) * 100 / won  FROM teams",
+    "difficulty": "unknown",
+    "source_row_index": 262
+  },
+  {
+    "question_id": 2800,
+    "db_id": "professional_basketball",
+    "question": "What is the percentage of the teams who had post season (playoff) were ranked number 1?",
+    "evidence": "had post season (play off) refers to playoff is not null; percentage = Divide (Count(Team where rank = 1, Count(Team))) * 100",
+    "SQL": "SELECT CAST(SUM(CASE WHEN rank = 1 THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(name) FROM teams",
+    "difficulty": "unknown",
+    "source_row_index": 266
+  },
+  {
+    "question_id": 2802,
+    "db_id": "professional_basketball",
+    "question": "Who is the longest serving coach from year 1970 to 1980. List the coach ID and the team(s) he served.",
+    "evidence": "1970 to 1980 refers to year between 1970 and 1980; longest serving coach Max(Count(coachID)); team(s) he served refers to tmID",
+    "SQL": "SELECT coachID, tmID FROM coaches WHERE year BETWEEN 1970 AND 1980 ORDER BY stint DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 268
+  },
+  {
+    "question_id": 2803,
+    "db_id": "professional_basketball",
+    "question": "In year 2000, who are the coaches with more than 50 games won. List the coachID, team name and number of game won at home game.",
+    "evidence": "more than 50 games won refers to won > 50",
+    "SQL": "SELECT T1.coachID, T2.name, T2.won FROM coaches AS T1 INNER JOIN teams AS T2 ON T1.tmID = T2.tmID AND T1.year = T2.year WHERE T1.year = 2000 AND T2.won > 50",
+    "difficulty": "unknown",
+    "source_row_index": 269
+  },
+  {
+    "question_id": 2806,
+    "db_id": "professional_basketball",
+    "question": "Which team(s) had 90% games won. List the coach ID for the team and year played.",
+    "evidence": "team with 90% games won refers to Divide (won, games) > 0.9",
+    "SQL": "SELECT DISTINCT T2.name, T1.year, T1.coachID FROM coaches AS T1 INNER JOIN teams AS T2 ON T1.tmID = T2.tmID WHERE CAST(T2.won AS REAL) * 100 / T2.games > 90",
+    "difficulty": "unknown",
+    "source_row_index": 272
+  },
+  {
+    "question_id": 2816,
+    "db_id": "professional_basketball",
+    "question": "in which year costela01 obtained the best balance of games won as a coach?",
+    "evidence": "\"costela01\" is the coachID; best balance of game won refers to Max(Divide(won, Sum(won, lost)))",
+    "SQL": "SELECT year FROM coaches WHERE coachID = 'costela01' ORDER BY CAST(won AS REAL) / (won + lost) DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 282
+  },
+  {
+    "question_id": 2835,
+    "db_id": "professional_basketball",
+    "question": "Which teams have winning rate less than 50%?",
+    "evidence": "team with winning rate less than 50% refers to Divide (won, Sum(won, lost)) < 0.5",
+    "SQL": "SELECT name FROM teams WHERE CAST(won AS REAL) * 100 / (won + lost) < 50",
+    "difficulty": "unknown",
+    "source_row_index": 301
+  },
+  {
+    "question_id": 2838,
+    "db_id": "professional_basketball",
+    "question": "How many teams have played more than 3800 points and have player with \"Most Valuable Player\" award?",
+    "evidence": "played more than 3800 points refers to Sum(points) > = 3800",
+    "SQL": "SELECT COUNT(DISTINCT T4.name) FROM ( SELECT T1.name, SUM(T2.points) FROM teams AS T1 INNER JOIN players_teams AS T2 ON T1.tmID = T2.tmID AND T1.year = T2.year INNER JOIN awards_players AS T3 ON T2.playerID = T3.playerID WHERE T3.award = 'Most Valuable Player' GROUP BY T1.name HAVING SUM(T2.points) >= 3800 ) AS T4",
+    "difficulty": "unknown",
+    "source_row_index": 304
+  },
+  {
+    "question_id": 2845,
+    "db_id": "professional_basketball",
+    "question": "Please list the last names and first names of all-star players who are higher than 75 inch.",
+    "evidence": "higher than 75 inch refers to height > 75",
+    "SQL": "SELECT DISTINCT T1.lastName, T1.firstName FROM players AS T1 INNER JOIN player_allstar AS T2 ON T1.playerID = T2.playerID WHERE T1.height > 75",
+    "difficulty": "unknown",
+    "source_row_index": 311
+  },
+  {
+    "question_id": 2846,
+    "db_id": "professional_basketball",
+    "question": "What is the minimum weight of all-star players coming from UCLA college?",
+    "evidence": "minimum weight refers to Min(weight)",
+    "SQL": "SELECT MIN(T1.weight) FROM players AS T1 INNER JOIN player_allstar AS T2 ON T1.playerID = T2.playerID WHERE T1.college = 'UCLA'",
+    "difficulty": "unknown",
+    "source_row_index": 312
+  },
+  {
+    "question_id": 2851,
+    "db_id": "professional_basketball",
+    "question": "Please list the team names which have at least 3 all-star players.",
+    "evidence": "team with at least 3 all star player refers to tmID where Count(player_allstar.playerID) > = 3",
+    "SQL": "SELECT T1.tmID FROM players_teams AS T1 INNER JOIN player_allstar AS T2 ON T1.playerID = T2.playerID GROUP BY T1.tmID HAVING COUNT(DISTINCT T1.playerID) >= 3",
+    "difficulty": "unknown",
+    "source_row_index": 317
+  },
+  {
+    "question_id": 2860,
+    "db_id": "professional_basketball",
+    "question": "What are the basketball players' BMI ranges?",
+    "evidence": "BMI = Multiply(Divide(weight, Multiply(height, height)), 703)",
+    "SQL": "SELECT MIN(CAST(weight AS REAL) / (height * height)) , MAX(CAST(weight AS REAL) / (height * height)) FROM players",
+    "difficulty": "unknown",
+    "source_row_index": 326
+  },
+  {
+    "question_id": 2866,
+    "db_id": "professional_basketball",
+    "question": "What is the average BMI of an All-star player?",
+    "evidence": "average BMI refers to AVG (Multiply(Divide(weight, Multiply(height, height)), 703))",
+    "SQL": "SELECT AVG(CAST(T1.weight AS REAL) / (T1.height * T1.height)) FROM players AS T1 INNER JOIN player_allstar AS T2 ON T1.playerID = T2.playerID",
+    "difficulty": "unknown",
+    "source_row_index": 332
+  },
+  {
+    "question_id": 2867,
+    "db_id": "professional_basketball",
+    "question": "What is the full name of the team with the fastest growth in winning rate in the 'ABA' league from 1972 to 1973?",
+    "evidence": "\"ABA\" is the lgID; from 1972 to 1973 refers to year = 1972 and year = 1973; team with the fastest growth in winning rate = Max(Subtract(Divide(won where year = 1973, Sum(won, lost)),Divide(won where year = 1972, Sum(won, lost))))",
+    "SQL": "SELECT T1.name FROM teams AS T1 INNER JOIN ( SELECT * FROM teams WHERE lgID = 'ABA' AND year = 1972 ) AS T2 ON T1.tmID = T2.tmID WHERE T1.lgID = 'ABA' AND T1.year = 1973 ORDER BY (CAST(T1.won AS REAL) / (T1.won + T1.lost) - (CAST(T2.won AS REAL) / (T2.won + T2.lost))) DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 333
+  },
+  {
+    "question_id": 2869,
+    "db_id": "professional_basketball",
+    "question": "What is the average height of an East conference All-star player?",
+    "evidence": "average height refers to avg(height)",
+    "SQL": "SELECT AVG(DISTINCT height) FROM players AS T1 INNER JOIN player_allstar AS T2 ON T1.playerID = T2.playerID WHERE conference = 'East'",
+    "difficulty": "unknown",
+    "source_row_index": 335
+  },
+  {
+    "question_id": 2884,
+    "db_id": "professional_basketball",
+    "question": "List out all the coach ID who have served more than 2 different teams.",
+    "evidence": "more than 2 different teams refers to count(tmID) > 2",
+    "SQL": "SELECT coachID FROM coaches GROUP BY coachID HAVING COUNT(DISTINCT tmID) > 2",
+    "difficulty": "unknown",
+    "source_row_index": 350
+  },
+  {
+    "question_id": 2887,
+    "db_id": "professional_basketball",
+    "question": "List the first name, last name, height and weight of the players who has all free throw attempted successfully made.",
+    "evidence": "all free throw attempted successfully made refers to ftAttempted > 0 and ftAttempted = ftMade",
+    "SQL": "SELECT DISTINCT T1.firstName, T1.lastName, T1.height, T1.weight FROM players AS T1 INNER JOIN player_allstar AS T2 ON T1.playerID = T2.playerID WHERE T2.ft_attempted > 0 AND ft_attempted = ft_made",
+    "difficulty": "unknown",
+    "source_row_index": 353
+  },
+  {
+    "question_id": 2889,
+    "db_id": "professional_basketball",
+    "question": "List the full name and age of the player when he won the \"Finals MVP\" in 2003.",
+    "evidence": "full name refers to firstName, middleName, lastName; age = subtract(2003, year(birthDate)); won the \"Finals MVP\" refers to award = 'Finals MVP'; in 2003 refers to year = 2003",
+    "SQL": "SELECT T1.firstName, T1.middleName, T1.lastName , 2003 - strftime('%Y', T1.birthDate) FROM awards_players AS T2 JOIN players AS T1 ON T2.playerID = T1.playerID WHERE T2.award = 'Finals MVP' AND T2.year = 2003",
+    "difficulty": "unknown",
+    "source_row_index": 355
+  },
+  {
+    "question_id": 2908,
+    "db_id": "professional_basketball",
+    "question": "What were the difference of the CHS team's winning rate between 1946 and 1947 in the post-season series games? Please provide your answer in percentages.",
+    "evidence": "CHS team refers to tmIDWinner = 'CHS'; difference = subtract(divide(count(series_post where year = 1947 and tmIDWinner = 'CHS'), count(series_post where year = 1947)), divide(count(series_post where year = 1946 and tmIDWinner = 'CHS'), count(series_post where year = 1946)))",
+    "SQL": "SELECT CAST(SUM(CASE WHEN year = 1947 AND tmIDWinner = 'CHS' THEN 1 ELSE 0 END) AS REAL) * 100 / SUM(CASE WHEN year = 1947 THEN 1 ELSE 0 END) - CAST(SUM(CASE WHEN year = 1946 AND tmIDWinner = 'CHS' THEN 1 ELSE 0 END) AS REAL) * 100 / SUM(CASE WHEN year = 1946 THEN 1 ELSE 0 END) FROM series_post",
+    "difficulty": "unknown",
+    "source_row_index": 374
+  },
+  {
+    "question_id": 2915,
+    "db_id": "professional_basketball",
+    "question": "Among the NBA winning coaches, which are from STL team? Please list their coach id.",
+    "evidence": "NBA refers to lgID = 'NBA'; STL team refers to tmID = 'STL'",
+    "SQL": "SELECT DISTINCT T2.coachID FROM coaches AS T1 INNER JOIN awards_coaches AS T2 ON T1.coachID = T2.coachID WHERE T1.tmID = 'STL' AND T1.lgID = 'NBA'",
+    "difficulty": "unknown",
+    "source_row_index": 381
+  },
+  {
+    "question_id": 2932,
+    "db_id": "professional_basketball",
+    "question": "What's the name of the player in 1996 who had the most steals that didn't play in the playoffs?",
+    "evidence": "name of the player refers to first_name, middle_name, last_name; in 1996 refers to year = 1996; the most steals refers to max(steals); didn't play in the playoffs refers to playoff = null",
+    "SQL": "SELECT T1.playerID FROM players AS T1 INNER JOIN players_teams AS T2 ON T1.playerID = T2.playerID WHERE T2.year = 1996 AND T2.PostGP = 0 ORDER BY T2.steals DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 398
+  },
+  {
+    "question_id": 2935,
+    "db_id": "professional_basketball",
+    "question": "Which non-playoffs team had the most points in the regular season in the year 1998?",
+    "evidence": "non-playoff refers to PostGP = 0; in the year 1998 refers to year = 1998; the most points refers to max(o_pts)",
+    "SQL": "SELECT T2.tmID FROM players_teams AS T1 INNER JOIN teams AS T2 ON T1.tmID = T2.tmID AND T1.year = T2.year WHERE T1.year = 1998 AND T1.PostGP = 0 ORDER BY T1.points DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 401
+  },
+  {
+    "question_id": 2938,
+    "db_id": "professional_basketball",
+    "question": "For the player who was drafted in the 1st round, 6th position in 1976, which team did he play in that year?",
+    "evidence": "drafted in the 1st round refers to draftRound = 1; 6th position refers to draftSelection = 6; in 1976 refers to year = 1976; team refers to tmID",
+    "SQL": "SELECT T2.tmID FROM draft AS T1 INNER JOIN teams AS T2 ON T1.tmID = T2.tmID AND T1.draftYear = T2.year WHERE T1.draftRound = 1 AND T1.draftSelection = 6 AND T1.draftYear = 1976",
+    "difficulty": "unknown",
+    "source_row_index": 404
+  },
+  {
+    "question_id": 2941,
+    "db_id": "professional_basketball",
+    "question": "Where was the high school of the player who had the most rebounds in the NBA allstar history?",
+    "evidence": "the most rebounds refers to max(rebounds)",
+    "SQL": "SELECT T2.highSchool FROM player_allstar AS T1 INNER JOIN players AS T2 ON T1.playerID = T2.playerID ORDER BY T1.rebounds DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 407
+  },
+  {
+    "question_id": 2947,
+    "db_id": "professional_basketball",
+    "question": "For all the full attendence players in 1995, which player had most turnovers? Give the full name of the player.",
+    "evidence": "full attendance refers to GP = 82; in 1995 refers to year = 1995; the most turnovers refers to max(turnovers); full name refers to first_name, last_name",
+    "SQL": "SELECT T1.firstName, T1.middleName, T1.lastName FROM players AS T1 INNER JOIN players_teams AS T2 ON T1.playerID = T2.playerID WHERE T2.GP = 82 AND T2.year = 1995 ORDER BY T2.turnovers DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 413
+  },
+  {
+    "question_id": 2579,
+    "db_id": "regional_sales",
+    "question": "List all the order numbers along with its product name for each order under the sales team of 'Douglas Tucker'.",
+    "evidence": "",
+    "SQL": "SELECT DISTINCT T1.ProductID, T1.`Product Name` FROM Products AS T1 INNER JOIN `Sales Orders` AS T2 ON T2._ProductID = T1.ProductID INNER JOIN `Sales Team` AS T3 ON T3.SalesTeamID = T2._SalesTeamID WHERE T3.`Sales Team` = 'Douglas Tucker'",
+    "difficulty": "unknown",
+    "source_row_index": 102
+  },
+  {
+    "question_id": 2582,
+    "db_id": "regional_sales",
+    "question": "Name the most expensive ordered? Who, when was it ordered?",
+    "evidence": "the most expensive refers to MAX(Unit Cost); who refers to Customer Names; when refers to OrderDate;",
+    "SQL": "SELECT T2.OrderNumber, T1.`Customer Names`, T2.OrderDate FROM Customers AS T1 INNER JOIN `Sales Orders` AS T2 ON T2._CustomerID = T1.CustomerID INNER JOIN Products AS T3 ON T3.ProductID = T2._ProductID ORDER BY T2.`Unit Cost` DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 105
+  },
+  {
+    "question_id": 2600,
+    "db_id": "regional_sales",
+    "question": "List the store located cities with regions in no water area of California state.",
+    "evidence": "cities refer to City Name; no water area refers to Water Area = 0;",
+    "SQL": "SELECT DISTINCT T2.`City Name` FROM Regions AS T1 INNER JOIN `Store Locations` AS T2 ON T2.StateCode = T1.StateCode WHERE T2.State = 'California' AND T2.`Water Area` = '0'",
+    "difficulty": "unknown",
+    "source_row_index": 123
+  },
+  {
+    "question_id": 2601,
+    "db_id": "regional_sales",
+    "question": "Calculate the order percentage by \"Carlos Miller\" sales team.",
+    "evidence": "DIVIDE(COUNT(OrderNumber where Sales Team = 'Carlos Miller'), COUNT(OrderNumber)) as percentage;",
+    "SQL": "SELECT CAST(SUM(CASE WHEN T2.`Sales Team` = 'Carlos Miller' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(T1.OrderNumber) FROM `Sales Orders` AS T1 INNER JOIN `Sales Team` AS T2 ON T2.SalesTeamID = T1._SalesTeamID",
+    "difficulty": "unknown",
+    "source_row_index": 124
+  },
+  {
+    "question_id": 2619,
+    "db_id": "regional_sales",
+    "question": "List out the discount levels applied for all orders from Ole Group.",
+    "evidence": "Ole Group is the name of the customer; discount levels applied refer to Discount Applied NOT NULL;",
+    "SQL": "SELECT T FROM ( SELECT DISTINCT CASE  WHEN T1.`Customer Names` = 'Ole Group' THEN T2.`Discount Applied` END AS T FROM Customers T1 INNER JOIN `Sales Orders` T2 ON T2._CustomerID = T1.CustomerID ) WHERE T IS NOT NULL",
+    "difficulty": "unknown",
+    "source_row_index": 142
+  },
+  {
+    "question_id": 2628,
+    "db_id": "regional_sales",
+    "question": "Which product has the highest net profit in 2019?",
+    "evidence": "net profit can be computed as SUBTRACT(Unit Price, Unit Cost); the highest net profit in 2019 refers to MAX(Net Profit) where OrderDate LIKE '%/19'; product refers to Product Name;",
+    "SQL": "SELECT T2.`Product Name` FROM `Sales Orders` AS T1 INNER JOIN Products AS T2 ON T2.ProductID = T1._ProductID WHERE T1.OrderDate LIKE '%/%/19' ORDER BY REPLACE(T1.`Unit Price`, ',', '') - REPLACE(T1.`Unit Cost`, ',', '') DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 151
+  },
+  {
+    "question_id": 2644,
+    "db_id": "regional_sales",
+    "question": "How many sales team were from Northeast?",
+    "evidence": "Northeast is the name of the region;",
+    "SQL": "SELECT SUM(CASE WHEN Region = 'Northeast' THEN 1 ELSE 0 END) FROM `Sales Team`",
+    "difficulty": "unknown",
+    "source_row_index": 167
+  },
+  {
+    "question_id": 2649,
+    "db_id": "regional_sales",
+    "question": "Which product was ordered the most in 2018?",
+    "evidence": "product refers to Product Name; ordered the most in 2018 refers to MAX(COUNT(OrderNumber)) where SUBSTR(OrderDate, -2) = '18';",
+    "SQL": "SELECT T2.`Product Name` FROM `Sales Orders` AS T1 INNER JOIN Products AS T2 ON T2.ProductID = T1._ProductID WHERE T1.OrderDate LIKE '%/%/18' GROUP BY T1._ProductID ORDER BY COUNT(T1._ProductID) DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 172
+  },
+  {
+    "question_id": 2671,
+    "db_id": "regional_sales",
+    "question": "List the order numbers and product names which were ordered on 6th June, 2018.",
+    "evidence": "ordered on 6th June 2018 refers to OrderDate = '6/5/18'",
+    "SQL": "SELECT DISTINCT OrderNumber, `Product Name` FROM ( SELECT IIF(T2.OrderDate = '6/6/18', T2.OrderNumber, NULL) AS \"OrderNumber\" , IIF(T2.OrderDate = '6/6/18', T1.`Product Name`, NULL) AS \"Product Name\" FROM Products T1 INNER JOIN `Sales Orders` T2 ON T2._ProductID = T1.ProductID ) WHERE OrderNumber IS NOT NULL AND `Product Name` IS NOT NULL",
+    "difficulty": "unknown",
+    "source_row_index": 194
+  },
+  {
+    "question_id": 2686,
+    "db_id": "regional_sales",
+    "question": "What sales channels are used the most in the 3 places with the highest median income?",
+    "evidence": "highest median income refers to Max(Median Income)",
+    "SQL": "SELECT `Sales Channel` FROM ( SELECT T1.`Sales Channel` FROM `Sales Orders` AS T1 INNER JOIN `Store Locations` AS T2 ON T2.StoreID = T1._StoreID ORDER BY T2.`Median Income` DESC LIMIT 3 ) GROUP BY `Sales Channel` ORDER BY COUNT(`Sales Channel`) DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 209
+  },
+  {
+    "question_id": 2687,
+    "db_id": "regional_sales",
+    "question": "List the 5 sales teams that have made sales with the highest net profits.",
+    "evidence": "highest net profit = Max(Subtract (Unit Price, Unit Cost))",
+    "SQL": "SELECT T2.`Sales Team` FROM `Sales Orders` AS T1 INNER JOIN `Sales Team` AS T2 ON T2.SalesTeamID = T1._SalesTeamID ORDER BY REPLACE(T1.`Unit Price`, ',', '') - REPLACE(T1.`Unit Cost`, ',', '') DESC LIMIT 5",
+    "difficulty": "unknown",
+    "source_row_index": 210
+  },
+  {
+    "question_id": 2688,
+    "db_id": "regional_sales",
+    "question": "What is the highest discount applied by the store located in a city of the state of Colorado whose land area is 111039036.",
+    "evidence": "highest discount applied refers to Max(Discount Applied)",
+    "SQL": "SELECT MAX(T1.`Discount Applied`) FROM `Sales Orders` AS T1 INNER JOIN `Store Locations` AS T2 ON T2.StoreID = T1._StoreID WHERE T2.State = 'Colorado' AND T2.`Land Area` = 111039036",
+    "difficulty": "unknown",
+    "source_row_index": 211
+  },
+  {
+    "question_id": 2692,
+    "db_id": "regional_sales",
+    "question": "In which city is the store with the highest sales order unit price located?",
+    "evidence": "highest sales order unit price refers to Max(Unit Price)",
+    "SQL": "SELECT T2.`City Name` FROM `Sales Orders` AS T1 INNER JOIN `Store Locations` AS T2 ON T2.StoreID = T1._StoreID WHERE REPLACE(T1.`Unit Price`, ',', '') = ( SELECT REPLACE(T1.`Unit Price`, ',', '') FROM `Sales Orders` AS T1 INNER JOIN `Store Locations` AS T2 ON T2.StoreID = T1._StoreID ORDER BY REPLACE(T1.`Unit Price`, ',', '') DESC LIMIT 1 ) ORDER BY REPLACE(T1.`Unit Price`, ',', '') DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 215
+  },
+  {
+    "question_id": 2693,
+    "db_id": "regional_sales",
+    "question": "How many online purchases did Ole Group make in May 2019?",
+    "evidence": "\"Ole Group\" is the Customer Names; online purchase refers to Sales Channel = 'Online'; made in May 2019 refers to OrderDate LIKE '5/%/19'",
+    "SQL": "SELECT SUM(CASE WHEN T1.`Sales Channel` = 'Online' AND T2.`Customer Names` = 'Ole Group' AND T1.OrderDate LIKE '5/%/19' THEN 1 ELSE 0 END) FROM `Sales Orders` AS T1 INNER JOIN Customers AS T2 ON T2.CustomerID = T1._CustomerID",
+    "difficulty": "unknown",
+    "source_row_index": 216
+  },
+  {
+    "question_id": 2697,
+    "db_id": "regional_sales",
+    "question": "What percentage of sell orders on 04/04/2020 were for the state of New York?",
+    "evidence": "sales order on 04/04/2020 refers to OrderDate = '4/4/20'; 'New York' is\u00a0 the City Name; percentage = Divide (Sum(OrderNumber where City Name = 'New York'), Count (OrderNumber)) * 100",
+    "SQL": "SELECT CAST(SUM(CASE WHEN T2.State = 'New York' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(T1.OrderNumber) FROM `Sales Orders` AS T1 INNER JOIN `Store Locations` AS T2 ON T2.StoreID = T1._StoreID WHERE T1.OrderDate = '4/4/20'",
+    "difficulty": "unknown",
+    "source_row_index": 220
+  },
+  {
+    "question_id": 2698,
+    "db_id": "regional_sales",
+    "question": "What is the average land area of \u200b\u200bthe cities in which stores that purchased products for a unit price of 998.30 are located?",
+    "evidence": "average land area = Divide (Sum(Land Area), Count(Land Area))",
+    "SQL": "SELECT AVG(T2.`Land Area`) FROM `Sales Orders` AS T1 INNER JOIN `Store Locations` AS T2 ON T2.StoreID = T1._StoreID WHERE T1.`Unit Price` = '998.30'",
+    "difficulty": "unknown",
+    "source_row_index": 221
+  },
+  {
+    "question_id": 2701,
+    "db_id": "regional_sales",
+    "question": "Indicate order numbers with an order date after 1/1/2018.",
+    "evidence": "order date after 1/1/2018 refers to OrderDate > '1/1/2018'",
+    "SQL": "SELECT DISTINCT T FROM ( SELECT CASE  WHEN OrderDate > '1/1/18' THEN OrderNumber ELSE NULL END AS T FROM `Sales Orders` ) WHERE T IS NOT NULL",
+    "difficulty": "unknown",
+    "source_row_index": 224
+  },
+  {
+    "question_id": 2703,
+    "db_id": "regional_sales",
+    "question": "Which sales team has the other with the highest unit price?",
+    "evidence": "highest unit price refers to Max(Unit Price)",
+    "SQL": "SELECT T2.`Sales Team` FROM `Sales Orders` AS T1 INNER JOIN `Sales Team` AS T2 ON T2.SalesTeamID = T1._SalesTeamID WHERE REPLACE(T1.`Unit Price`, ',', '') = ( SELECT REPLACE(T1.`Unit Price`, ',', '') FROM `Sales Orders` AS T1 INNER JOIN `Sales Team` AS T2 ON T2.SalesTeamID = T1._SalesTeamID ORDER BY REPLACE(T1.`Unit Price`, ',', '') DESC LIMIT 1 ) ORDER BY REPLACE(T1.`Unit Price`, ',', '') DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 226
+  },
+  {
+    "question_id": 2704,
+    "db_id": "regional_sales",
+    "question": "Which regions have online sales channels that have the most discounts?",
+    "evidence": "most discount refers to Max(Discount Applied)",
+    "SQL": "SELECT T2.Region FROM `Sales Orders` AS T1 INNER JOIN `Sales Team` AS T2 ON T2.SalesTeamID = T1._SalesTeamID WHERE T1.`Sales Channel` = 'Online' ORDER BY T1.`Discount Applied` DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 227
+  },
+  {
+    "question_id": 2710,
+    "db_id": "regional_sales",
+    "question": "Among sales teams in Midwest region, which sales team has an order quantity greater than 5?",
+    "evidence": "order quantity greater than 5 refers to Order Quantity > 5",
+    "SQL": "SELECT DISTINCT T2.`Sales Team` FROM `Sales Orders` AS T1 INNER JOIN `Sales Team` AS T2 ON T2.SalesTeamID = T1._SalesTeamID WHERE T2.Region = 'Midwest' AND T1.`Order Quantity` > 5",
+    "difficulty": "unknown",
+    "source_row_index": 233
+  },
+  {
+    "question_id": 2714,
+    "db_id": "regional_sales",
+    "question": "Which region is Joshua Bennet located in?",
+    "evidence": "\"Joshua Bennett\" is the name of Sales Team",
+    "SQL": "SELECT T FROM ( SELECT DISTINCT CASE  WHEN `Sales Team` = 'Joshua Bennett' THEN Region ELSE NULL END AS T FROM `Sales Team` ) WHERE T IS NOT NULL",
+    "difficulty": "unknown",
+    "source_row_index": 237
+  },
+  {
+    "question_id": 2715,
+    "db_id": "regional_sales",
+    "question": "What is the store id of the store located in the most populous county?",
+    "evidence": "most populous country refers to Max(Population)",
+    "SQL": "SELECT CASE WHEN MAX(Population) THEN StoreID END FROM `Store Locations`",
+    "difficulty": "unknown",
+    "source_row_index": 238
+  },
+  {
+    "question_id": 2719,
+    "db_id": "regional_sales",
+    "question": "How much is the discount applied to the order with the highest unit price?",
+    "evidence": "highest unit price refers to Max(Unit Price)",
+    "SQL": "SELECT `Discount Applied` FROM `Sales Orders` WHERE REPLACE(`Unit Price`, ',', '') = ( SELECT REPLACE(`Unit Price`, ',', '') FROM `Sales Orders` ORDER BY REPLACE(`Unit Price`, ',', '') DESC LIMIT 1 ) ORDER BY REPLACE(`Unit Price`, ',', '') DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 242
+  },
+  {
+    "question_id": 2722,
+    "db_id": "regional_sales",
+    "question": "In which region can you find the stores located in the state whose median income is no more than 30,000?",
+    "evidence": "median income no more than 30,000 refers to Median Income < 30,000",
+    "SQL": "SELECT T FROM ( SELECT DISTINCT CASE  WHEN T2.`Median Income` < 30000 THEN T1.Region END AS T FROM Regions T1 INNER JOIN `Store Locations` T2 ON T2.StateCode = T1.StateCode ) WHERE T IS NOT NULL",
+    "difficulty": "unknown",
+    "source_row_index": 245
+  },
+  {
+    "question_id": 2725,
+    "db_id": "regional_sales",
+    "question": "In 2019, how many orders were shipped by the sales team with the highest number of orders in the said year? Provide the name of the sales team.",
+    "evidence": "shipped refers to ShipDate; in 2019 refers to shipped in 2019 refers to SUBSTR(ShipDate, -2) = '19'; order in the said year refers to SUBSTR(OrderDate, -2) = '19'; highest number of order refers to Max(Count(OrderNumber))",
+    "SQL": "SELECT COUNT(T1.OrderNumber), T2.`Sales Team` FROM `Sales Orders` AS T1 INNER JOIN `Sales Team` AS T2 ON T2.SalesTeamID = T1._SalesTeamID WHERE T1.OrderDate LIKE '%/%/19' AND T1.ShipDate LIKE '%/%/19' GROUP BY T2.`Sales Team` ORDER BY COUNT(T1.OrderNumber) DESC LIMIT 1",
+    "difficulty": "unknown",
+    "source_row_index": 248
+  }
+]
