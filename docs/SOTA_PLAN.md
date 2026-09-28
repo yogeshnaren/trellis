@@ -26,6 +26,24 @@ paired evidence; no public dev score predicts hidden-test performance.
   - figure corrections;
   - constraint checks in candidate selection.
 
+**Training-label quality checkpoint (2026-09-27; free, no gate look):** BIRD's
+filtered train has 6,601 rows. Excluding every evaluation database leaves 5,115
+candidate examples on 54 train databases; 4,146 have a local SQLite database and
+all compile with SQLite `EXPLAIN`, while 969 lack a local database. A frozen,
+43-database/100-row stratified sample of the local tier received a conservative
+single-reviewer semantic screen: 18 clear question/evidence/SQL defects; the
+other 82 are unresolved, not certified clean. Database-weighted clear defects
+are 17.52% of this sample even treating unresolved rows as sound. This crosses
+the plan's 15% re-filter trigger as a screening point estimate, not a population
+confidence bound. A separate 24-case sample of stable-wrong `train_dev` outputs
+has 18 clear gold defects, one genuine model mistake, three mixed and two
+uncertain cases; it is deliberately selected and not a prevalence estimate.
+**Do not train on the candidate pool yet.** Re-filter and independently review
+labels first. Evaluation-set database IDs and normalized question text were used solely for
+leakage checks; no gate SQL, prediction, result or failure was inspected.
+See `benchmark/results/training_quality_audit.md` and
+`benchmark/results/model_error_audit.md`.
+
 The v2.6 changes are:
 - a two-track acceptance rule;
 - a parallel generation/training track;
@@ -1267,7 +1285,10 @@ use is a separate review.
 5. **Jev shadow comparisons on the bank** (rank 3 → 6); promote only decisions that
    improve a live paired run.
 6. **In parallel, free:** price SFT/RFT and serving; build and audit training data from
-   `bird23-train-filtered`. The paid pilot follows step 4 and the audit.
+   `bird23-train-filtered`. The initial 100-row semantic screen found 18 clear defects,
+   so **re-filter and second-rate labels before any paid SFT**. The 969 rows without
+   local databases require a separate verification path. A paid pilot still requires
+   a confirmed generator-headroom result and its own budget.
 
 **Owner decisions needed:**
 1. The two-track acceptance rule and its ceilings (§5.7: $0.01/answer, P90 30s).

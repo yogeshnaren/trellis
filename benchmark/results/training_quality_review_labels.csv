@@ -1,0 +1,101 @@
+sample_index,filtered_row_index,db_id,review_label,reason
+0,2059,address,unresolved,
+1,2073,address,unresolved,
+2,4589,address,unresolved,
+3,4700,airline,unresolved,
+4,4727,airline,unresolved,
+5,1026,app_store,unresolved,
+6,2137,beer_factory,unresolved,
+7,2138,beer_factory,unresolved,
+8,55,book_publishing_company,unresolved,
+9,68,book_publishing_company,unresolved,
+10,2412,books,unresolved,
+11,2433,books,unresolved,
+12,2456,books,unresolved,
+13,6365,books,unresolved,
+14,648,car_retails,unresolved,
+15,669,car_retails,unresolved,
+16,1261,cars,unresolved,
+17,4283,cars,clear_defect,UNION ALL emits the numeric average and car names in one column rather than a coherent answer with both requested fields.
+18,5115,chicago_crime,unresolved,
+19,5125,chicago_crime,unresolved,
+20,5129,chicago_crime,clear_defect,Question asks for crime report numbers; SQL returns a single count.
+21,1611,citeseer,unresolved,
+22,1422,college_completion,unresolved,
+23,4342,college_completion,unresolved,
+24,425,computer_student,unresolved,
+25,3948,computer_student,unresolved,
+26,3569,cookbook,unresolved,
+27,3571,cookbook,clear_defect,Question asks which recipe uses the most; SQL has no comparison or ordering by quantity.
+28,3562,craftbeer,unresolved,
+29,3924,cs_semester,unresolved,
+30,5265,cs_semester,unresolved,
+31,1839,disney,unresolved,
+32,5522,disney,unresolved,
+33,3515,food_inspection,unresolved,
+34,3529,food_inspection,unresolved,
+35,1010,genes,clear_defect,Question specifies cellular transport; SQL filters Function = TRANSCRIPTION.
+36,3057,hockey,unresolved,
+37,3062,hockey,unresolved,
+38,3080,hockey,unresolved,
+39,3606,human_resources,unresolved,
+40,5167,human_resources,unresolved,
+41,2958,image_and_language,unresolved,
+42,2969,image_and_language,clear_defect,"Question and evidence request X,Y,W,H; SQL projects X,Y,H,W."
+43,474,law_episode,unresolved,
+44,518,law_episode,unresolved,
+45,1894,legislator,unresolved,
+46,4529,legislator,unresolved,
+47,4542,legislator,unresolved,
+48,6225,mental_health_survey,clear_defect,Question requires female AND Nebraska; SQL UNION counts users meeting either condition.
+49,6226,mental_health_survey,clear_defect,Question asks number of questions; SQL counts Answer rows across respondents.
+50,5586,menu,unresolved,
+51,6304,menu,unresolved,
+52,3289,mondial_geo,unresolved,
+53,3324,mondial_geo,unresolved,
+54,3349,mondial_geo,unresolved,
+55,3368,mondial_geo,unresolved,
+56,3727,movie_3,clear_defect,"Question asks actor with most films; SQL ranks SUM(film_id), not film count."
+57,5195,movie_3,clear_defect,Question asks all addresses ordered by city id; SQL keeps only the minimum city id.
+58,5201,movie_3,unresolved,
+59,6594,movie_3,unresolved,
+60,185,movies_4,clear_defect,Question says at least 200 movies; SQL uses HAVING COUNT > 200.
+61,249,movies_4,unresolved,
+62,5245,movies_4,unresolved,
+63,863,music_tracker,unresolved,
+64,1457,public_review_platform,unresolved,
+65,1464,public_review_platform,unresolved,
+66,1468,public_review_platform,unresolved,
+67,4366,public_review_platform,unresolved,
+68,5455,public_review_platform,unresolved,
+69,2580,retail_world,unresolved,
+70,2584,retail_world,clear_defect,Question asks first name only; SQL also returns last name.
+71,2213,sales,unresolved,
+72,4654,sales,clear_defect,Question asks first names only; SQL also returns last names.
+73,4267,shakespeare,unresolved,
+74,6050,shakespeare,unresolved,
+75,1000,shooting,unresolved,
+76,1653,simpson_episodes,clear_defect,Question names a specific episode; SQL has no episode filter.
+77,1684,simpson_episodes,unresolved,
+78,4411,simpson_episodes,unresolved,
+79,331,social_media,unresolved,
+80,3899,social_media,unresolved,
+81,5075,software_company,unresolved,
+82,6539,software_company,clear_defect,Question says education level 4 and below; SQL uses EDUCATIONNUM < 4.
+83,1775,student_loan,unresolved,
+84,4452,student_loan,unresolved,
+85,5510,student_loan,unresolved,
+86,6022,superstore,unresolved,
+87,6023,superstore,unresolved,
+88,294,trains,unresolved,
+89,1315,video_games,unresolved,
+90,1372,video_games,unresolved,
+91,4315,video_games,unresolved,
+92,2714,works_cycles,clear_defect,Question asks address of latest updated account; SQL selects latest Address row without joining Account.
+93,2797,works_cycles,unresolved,
+94,2875,works_cycles,clear_defect,Question asks product subcategory IDs; SQL returns ProductCategoryID.
+95,2919,works_cycles,unresolved,
+96,4845,works_cycles,clear_defect,Question requires PayFrequency = 1 AND Rate > 50; SQL tests Rate * PayFrequency > 50.
+97,5664,works_cycles,unresolved,
+98,4949,world,unresolved,
+99,4978,world,clear_defect,Question asks life expectancy for countries using Japanese; SQL returns their average as one value.
