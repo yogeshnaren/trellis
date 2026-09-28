@@ -674,3 +674,26 @@ stays as a named constant for provenance and pricing.
 - Decision: official EX stays the acceptance metric. Get the hidden-test score before
   rank G, and filter any training data by `bird23-train-filtered` at minimum. No spend.
   Details: benchmark/results/answer_key_review.md.
+
+## 2026-09-28 — BIRD reply: submit via OpenRouter pinned to Fireworks; caps set
+- BIRD accepts API-call evaluations through "official and verified providers, including
+  OpenRouter, OpenAI, Anthropic, DeepSeek, and Google Gemini". Asked about Fireworks
+  by name, the reply did not list it.
+- Also answered:
+  - local preprocessing is allowed (whole evaluation ideally ≤ 48 h, ≤ 50 GB of
+    generated data);
+  - bounded read-only probe queries are allowed;
+  - fine-tuned models must be uploaded to Hugging Face (not served via a hosted API);
+  - bird-sql-dev-1106 is the preferred dev split;
+  - `column_meaning.json` is optional;
+  - predictions use the `predict_dev.json` format (`"SQL\t----- bird -----\tdb_id"`).
+- Not answered: a per-question time limit (we keep 30s), and how to report
+  intentional empty results. Both go in the submission README.
+- **Decision:** route the submission through OpenRouter, pinned to the Fireworks
+  endpoint of `deepseek/deepseek-v4.1-flash` with no fallback. Check parity on 100
+  `train_dev` rows × 2 before the official dev-1106 run (the last cleaned-dev look).
+- **Caps:**
+  - The owner created a separate OpenRouter key for BIRD's test run, with a $5 credit
+    limit, to reset after evaluation. It never enters the repository or `.env`.
+  - The shared ledger cap is raised to **$8.50** (spend $7.47 on 2026-09-28) for the
+    parity check and the dev-1106 run. Runs pass `--budget 8.50`.
