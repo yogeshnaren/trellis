@@ -659,3 +659,18 @@ stays as a named constant for provenance and pricing.
   already are.
 - Recommendation: get the hidden-test number of the current system first (≈ $1 if API
   submissions are accepted), then decide on training.
+
+## 2026-09-27 — Answer-key review: keys often wrong; no rejected experiment reverses
+- Reviewed all 252 practice-set disagreements. The owner judged 166; Sonnet 5 agents
+  judged the other 86 following the owner's notes (8 marked low confidence).
+- The key is wrong in 153 (61%) and ours in 74 (29%); 20 both acceptable, 5 ambiguous.
+  BIRD's quality filter removed most bad keys (77% of removed cases), but 46% of the
+  reviewed cases it kept also had wrong keys.
+- Rejections stand after review: reasoning low −1.0, reasoning high −2.5, few-shot 0,
+  dictionary +0.9, column notes −0.5. None of the 40 flipped rows had a wrong key.
+- 82 of the 93 unanimous-but-wrong rank 4 questions are actually correct (`direct`
+  69.5% → 85.8% on `train_dev` re-scoring only those rows). Numbers stored as text:
+  30.4% → 74.7%.
+- Decision: official EX stays the acceptance metric. Get the hidden-test score before
+  rank G, and filter any training data by `bird23-train-filtered` at minimum. No spend.
+  Details: benchmark/results/answer_key_review.md.

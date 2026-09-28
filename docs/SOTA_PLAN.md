@@ -5,7 +5,7 @@ evaluation, then pursue >80% on the hidden test. Start with the largest credible
 gains that can be tested for free or for pennies. Decide on fine-tuning from current,
 paired evidence; no public dev score predicts hidden-test performance.
 
-**Status:** v2.9 proposal, 2026-09-26.
+**Status:** v2.9 proposal, 2026-09-26; answer-key review logged 2026-09-27.
 - v2.5 folded in the later runs (§0.4) and the findings in §2 from
   `docs/POSTMORTEM_V2.md`.
 - v2.6 added a principal-level review (§0.5).
@@ -1440,10 +1440,22 @@ looks for bundled checkpoints.
      - A real selector on the 102 disagreement questions might recover about half the
        +4.0 ceiling, at ≈ 4× generation cost (inside the submission ceilings).
        Jev-`choice` selection is untested: there is no OpenRouter key yet.
-     - Owner review is under way on the 252 practice-set disagreements
-       (`benchmark/review_packet.py`, a private review page with stored verdicts). It
-       asks whether the answer keys or our answers are wrong, and re-scores rejected
-       experiments.
+     - **Answer-key review completed (2026-09-27)** on the 252 practice-set
+       disagreements (`benchmark/review_packet.py`; aggregates in
+       benchmark/results/answer_key_review.md). The owner judged 166 cases and Sonnet 5
+       agents the other 86, following the owner's notes.
+       - The key is wrong in 153 (61%), ours in 74 (29%); 20 both acceptable,
+         5 ambiguous. The key is wrong in 77% of filter-removed cases and 46% of kept.
+       - No rejected experiment flips to "adopt": reasoning low −1.0, high −2.5,
+         few-shot 0, dictionary +0.9, column notes −0.5 after review. None of the
+         40 flipped rows had a wrong key.
+       - On 82 of the 93 unanimous-but-wrong bank questions our answer is correct:
+         `direct` would be 85.8% on `train_dev` if only those rows were re-scored
+         (not an official score).
+       - Numbers stored as text: 30.4% officially, 74.7% after review.
+       - Consequence: the bad keys lower practice scores without steering paired
+         decisions. The hidden-test number (multi-gold, human-reviewed) comes before
+         rank G; training rows are filtered by `bird23-train-filtered` at minimum.
 
    - **Rank 4 candidate-bank diagnostic (2026-09-26, no new calls for this review).**
      Four saved candidates on all 501 train_dev questions: direct 69.5%, decompose
