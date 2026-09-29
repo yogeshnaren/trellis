@@ -669,3 +669,24 @@ def test_jev_annotations_require_complete_matching_questions(
     annotations.write_text(json.dumps(payload))
     with pytest.raises(ValueError, match="database fingerprints"):
         load_row_annotations(annotations, questions)
+
+
+def test_promotion_gates_flag_easy_losses_and_protected_cases() -> None:
+    from benchmark.analyze import easy_slice, promotion_gates
+    from benchmark.bird import BirdQuestion
+
+    easy_sql = "SELECT name FROM t"
+    questions = {
+        i: BirdQuestion(i, "db", f"q{i}", "", easy_sql if i < 30 else
+                        "SELECT a, COUNT(*) FROM t JOIN u ON t.id = u.id JOIN v ON v.id = u.id GROUP BY a",
+                        "unknown", i)
+        for i in range(40)
+    }
+    assert easy_slice(questions[0]) and not easy_slice(questions[35])
+    was = {i: 1.0 for i in range(40)}
+    now = {i: (0.0 if i < 10 else 1.0) for i in range(40)}  # ten easy questions lost
+    lines = "\n".join(promotion_gates(list(range(40)), questions, was, now, 200, 0))
+    assert "**FAIL**" in lines
+    assert "Protected correct cases lost: **10** (10 easy)" in lines
+    same = "\n".join(promotion_gates(list(range(40)), questions, was, dict(was), 200, 0))
+    assert "**pass**" in same and "lost: **0**" in same

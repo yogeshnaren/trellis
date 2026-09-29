@@ -264,3 +264,17 @@ def test_shared_client_is_reused_within_a_loop_and_not_across_loops(
     other, _ = asyncio.run(two_calls())
     assert other is not first  # a new loop gets its own client
     assert len(llm._CLIENTS) == 1  # the finished loop's client was dropped
+
+
+def test_provider_routing_by_model_prefix() -> None:
+    from src.costs import cost_usd
+    from src.llm import api_model_name, model_request_options, provider_of
+
+    assert provider_of("accounts/fireworks/models/deepseek-v4p1-flash") == "fireworks"
+    assert provider_of("openrouter/qwen/qwen3-coder-next") == "openrouter"
+    assert provider_of("local/arctic-7b") == "local"
+    assert api_model_name("openrouter/qwen/qwen3-coder-next") == "qwen/qwen3-coder-next"
+    assert api_model_name("local/arctic-7b") == "arctic-7b"
+    assert cost_usd("local/arctic-7b", 10_000, 0, 1_000) == 0.0
+    assert cost_usd("openrouter/qwen/qwen3-coder-next", 1_000_000, 0, 0) == 0.12
+    assert model_request_options("openrouter/qwen/qwen3-coder-next")["extra_body"]["provider"]["require_parameters"]

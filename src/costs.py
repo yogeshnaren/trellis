@@ -45,7 +45,14 @@ PRICING: dict[str, dict[str, float]] = {
     "accounts/fireworks/models/nemotron-3-ultra-nvfp4": {"input": 0.60, "cached": 0.12, "output": 2.40},
     # Added 2026-09-25 from the same pricing page for the cheap-model Pareto pilots.
     "accounts/fireworks/models/nemotron-lightning-3p5-30b-a3b": {"input": 0.05, "cached": 0.01, "output": 0.20},
+    # OpenRouter list prices (openrouter.ai/api/v1/models, 2026-09-29); no cached discount is
+    # assumed. Routed through ``openrouter/<id>`` model names (src/llm.py).
+    "openrouter/qwen/qwen3-coder-next": {"input": 0.12, "cached": 0.12, "output": 0.80},
+    "openrouter/deepseek/deepseek-v4.1-flash": {"input": 0.30, "cached": 0.30, "output": 1.20},
 }
+# Models served on this machine (``local/<name>``, e.g. a llama.cpp server) cost nothing per call.
+LOCAL_PREFIX = "local/"
+OPENROUTER_PREFIX = "openrouter/"
 # SQLite spend ledger; a legacy JSON ledger at the same stem is imported once on first use.
 DEFAULT_LEDGER = Path("benchmark/results/.spend.sqlite")
 # Fireworks bills batch inference at 50% of serverless pricing on input and output.
@@ -68,6 +75,8 @@ def cost_usd(
     batch: bool = False,
 ) -> float:
     """Price uncached input, cached input, and output independently (batch: 50% off)."""
+    if model.startswith(LOCAL_PREFIX):
+        return 0.0
     rates = PRICING[model]
     cached = min(max(cached_tokens, 0), max(input_tokens, 0))
     uncached = max(input_tokens - cached, 0)

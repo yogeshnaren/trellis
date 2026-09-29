@@ -1,4 +1,10 @@
-"""Instrumented Fireworks OpenAI-compatible client."""
+"""Instrumented OpenAI-compatible client: Fireworks by default, plus OpenRouter and local servers.
+
+A model name selects its provider: ``openrouter/<id>`` goes to OpenRouter (key
+``OPENROUTER_API_KEY``, spend charged against its own cap in the shared ledger),
+``local/<name>`` to an OpenAI-compatible server on this machine (``LOCAL_LLM_BASE_URL``,
+default http://127.0.0.1:8080/v1; free), and anything else to Fireworks, unchanged.
+"""
 
 from __future__ import annotations
 
@@ -18,10 +24,13 @@ from openai import (
 )
 
 from src.costs import (
+    LOCAL_PREFIX,
     MODEL_DEEPSEEK,
     MODEL_DEEPSEEK_V4P1,
     MODEL_GPT_OSS,
+    OPENROUTER_PREFIX,
     BudgetGuard,
+    Reservation,
     cost_usd,
     get_shared_budget,
 )
@@ -67,6 +76,9 @@ def model_request_options(model: str) -> dict[str, Any]:
     "Extra inputs are not permitted". GPT-OSS/Harmony models only accept
     low/medium/high (``"none"`` errors), so they get an explicit low effort instead.
     """
+    if model.startswith(OPENROUTER_PREFIX):
+        # Only route to hosts that honour every request parameter (e.g. strict JSON schema).
+        return {"extra_body": {"provider": {"require_parameters": True}}}
     if model == MODEL_GPT_OSS:
         return {"reasoning_effort": "low"}
     if model in {MODEL_DEEPSEEK, MODEL_DEEPSEEK_V4P1}:
@@ -84,25 +96,74 @@ def _cached_tokens(usage: Any) -> int:
 
 
 FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
-# One client (and so one pooled HTTPS connection set) per event loop. A fresh client per
-# call paid a new TCP + TLS handshake on every request; the per-request timeout is passed
-# on each call instead. Keyed by loop because an httpx client can't cross event loops.
-_CLIENTS: dict[int, tuple[asyncio.AbstractEventLoop, AsyncOpenAI]] = {}
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+LOCAL_BASE_URL = "http://127.0.0.1:8080/v1"
+# One client (and so one pooled HTTPS connection set) per event loop and provider. A fresh
+# client per call paid a new TCP + TLS handshake on every request; the per-request timeout is
+# passed on each call instead. Keyed by loop because an httpx client can't cross event loops.
+_CLIENTS: dict[tuple[int, str], tuple[asyncio.AbstractEventLoop, AsyncOpenAI]] = {}
 
 
-def shared_client() -> AsyncOpenAI:
+def provider_of(model: str) -> str:
+    if model.startswith(OPENROUTER_PREFIX):
+        return "openrouter"
+    if model.startswith(LOCAL_PREFIX):
+        return "local"
+    return "fireworks"
+
+
+def api_model_name(model: str) -> str:
+    """The provider's own model id (routing prefixes removed)."""
+    for prefix in (OPENROUTER_PREFIX, LOCAL_PREFIX):
+        if model.startswith(prefix):
+            return model.removeprefix(prefix)
+    return model
+
+
+def _new_client(provider: str) -> AsyncOpenAI:
+    if provider == "openrouter":
+        return AsyncOpenAI(api_key=os.environ.get("OPENROUTER_API_KEY"), base_url=OPENROUTER_BASE_URL)
+    if provider == "local":
+        return AsyncOpenAI(api_key="local", base_url=os.environ.get("LOCAL_LLM_BASE_URL", LOCAL_BASE_URL))
+    return AsyncOpenAI(api_key=os.environ.get("FIREWORKS_API_KEY"), base_url=FIREWORKS_BASE_URL)
+
+
+def shared_client(provider: str = "fireworks") -> AsyncOpenAI:
     loop = asyncio.get_running_loop()
-    entry = _CLIENTS.get(id(loop))
+    entry = _CLIENTS.get((id(loop), provider))
     if entry is None or entry[0] is not loop:
         for key, (old_loop, _) in list(_CLIENTS.items()):
             if old_loop.is_closed():
                 del _CLIENTS[key]  # drop clients of finished loops (e.g. asyncio.run in tests)
-        entry = (
-            loop,
-            AsyncOpenAI(api_key=os.environ.get("FIREWORKS_API_KEY"), base_url=FIREWORKS_BASE_URL),
-        )
-        _CLIENTS[id(loop)] = entry
+        entry = (loop, _new_client(provider))
+        _CLIENTS[(id(loop), provider)] = entry
     return entry[1]
+
+
+async def _reserve(guard: BudgetGuard, model: str, provider: str, estimated_input: int,
+                   max_tokens: int) -> Reservation | None:
+    if provider == "local":
+        return None
+    if provider == "openrouter":
+        amount = max(cost_usd(model, estimated_input, 0, max_tokens), 1e-6)
+        return await guard.reserve_openrouter_usd(
+            amount,
+            provider_ceiling_usd=float(os.getenv("OPENROUTER_BUDGET_USD", "5")),
+            session_ceiling_usd=float(os.getenv("OPENROUTER_SESSION_BUDGET_USD", "5")),
+            session_id=os.getenv("OPENROUTER_SESSION_ID", "bench"),
+            label=model,
+        )
+    return await guard.reserve(model, estimated_input, max_tokens)
+
+
+async def _settle(guard: BudgetGuard, reservation: Reservation | None, provider: str,
+                  cost: float | None) -> None:
+    if reservation is None:
+        return
+    if provider == "openrouter":
+        await guard.settle(reservation, cost, source="openrouter")
+    else:
+        await guard.settle(reservation, cost)
 
 
 async def complete(
@@ -119,8 +180,9 @@ async def complete(
     """Complete once, retrying transient failures while preserving hard budget reserve."""
     guard = budget or get_shared_budget(float(os.getenv("FIREWORKS_BUDGET_USD", "6.00")))
     estimated_input = sum(len(message["content"]) for message in messages) // 3 + 256
-    reservation = await guard.reserve(model, estimated_input, max_tokens)
-    client = shared_client()
+    provider = provider_of(model)
+    reservation = await _reserve(guard, model, provider, estimated_input, max_tokens)
+    client = shared_client(provider)
     options = model_request_options(model)
     options.update(request_options or {})
     started = time.perf_counter()
@@ -131,7 +193,7 @@ async def complete(
         for attempt in range(2):
             try:
                 response = await create(
-                    model=model,
+                    model=api_model_name(model),
                     messages=messages,
                     response_format=response_format,
                     max_tokens=max_tokens,
@@ -152,7 +214,7 @@ async def complete(
         output_tokens = int(usage.completion_tokens if usage else 0)
         cached_tokens = _cached_tokens(usage) if usage else 0
         actual_cost = cost_usd(model, input_tokens, cached_tokens, output_tokens)
-        await guard.settle(reservation, actual_cost)
+        await _settle(guard, reservation, provider, actual_cost)
         choice = response.choices[0]
         message = choice.message
         reasoning_content = getattr(message, "reasoning_content", None) or ""
@@ -169,8 +231,8 @@ async def complete(
             finish_reason=str(getattr(choice, "finish_reason", None) or ""),
         )
     except (AuthenticationError, RateLimitError, APIConnectionError, APITimeoutError):
-        await guard.settle(reservation, None)
+        await _settle(guard, reservation, provider, None)
         raise
     except Exception:
-        await guard.settle(reservation, None)
+        await _settle(guard, reservation, provider, None)
         raise

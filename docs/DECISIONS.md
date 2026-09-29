@@ -714,3 +714,80 @@ stays as a named constant for provenance and pricing.
 - **`train_dev2` is partly used:** 100 questions (25 per database) plus 50
   `professional_basketball` rows fed the Jev pilots. A fresh candidate bank must use
   the unused rows or other train databases.
+
+## 2026-09-29 — First-principles workstreams: P08, P42, P02/P38, P05–P07 (free parts)
+- **Scope (owner):** proceed with the review's workstreams except the BIRD submission.
+  The ledger cap is raised to **$10** for the P03 candidate bank. A local SQL specialist
+  (Arctic-Text2SQL-R1-7B, 4-bit, Apache-2.0) and llama.cpp are approved for P16. They
+  live outside the repository.
+- **P08, empty-result retry: keep as is.** Measured offline from saved runs
+  (`benchmark/empty_retry_audit.py`):
+
+  | Set | Fired | Rescues | Damage | Net |
+  |---|---:|---:|---:|---:|
+  | Cleaned dev | 47 | 7 | 0 | +0.46 pts |
+  | Mini-Dev | 52 | 7 | 0 | +0.47 pts |
+  | Original dev | 44 | 5 | 0 | +0.48 pts |
+
+  - On `train_dev`, all 6 apparent damages were rescues against broken keys (literals
+    that aren't stored: 'Danville', 'San Francisco', 'avenida de las pulgas').
+  - Replacements are about half literal-only and half structural, and both kinds rescue.
+    A "keep the original predicates" guard would lose 2–5 rescues per set and prevent no
+    measured damage.
+- **P42, promotion gates added** to `analyze flips`:
+  - easy-slice non-inferiority (lower CI bound ≥ −1.5);
+  - protected correct cases lost;
+  - paired Δ per gold-SQL feature.
+- **P02/P38, answer keys adjudicated.** Two independent Sonnet 5.5 passes plus
+  adjudication; 432 of 435 settled; corrected SQL was executed for every defect.
+  - All 353 unused `train_dev2` questions: 223 sound, **102 defective (29%)**,
+    25 ambiguous.
+  - The 82 unresolved training-pool rows: 68 sound, 11 defective, 3 ambiguous. The
+    100-row screen's weighted defect rate is **29.8%** (the earlier 17.5% was a lower
+    bound). The 15% SFT gate is not met.
+- **P05–P07, detectors** (`benchmark/sql_checks.py`, offline):
+  - Text-number and integer-division detectors rarely fire; the model already casts.
+  - "Ranked extra column" is wrong 68–88% of the time it fires. Deterministically
+    dropping the column nets −1 on training data (12 fires: 1 rescue, 2 damages)
+    because some questions ask for the value. An intent check is needed; no fix
+    adopted.
+  - Fan-out COUNT is too noisy (33–40% wrong when fired).
+
+## 2026-09-29 — Fresh candidate bank (P03/P16) and selection (Experiment C)
+- **Bank:** 353 unused `train_dev2` questions, accepted configuration. Unused means not
+  in `jev_live_pilot_manifest.json` `source_row_indices` or `jev_table_pb_v1_results.json`
+  `row_index`.
+  - Routes: current v4p1 (2 repeats), gpt-oss-120b (Fireworks), qwen3-coder-next
+    (OpenRouter), and the local specialist Arctic-Text2SQL-R1-7B (4-bit, llama.cpp,
+    native prompt).
+  - Report: `benchmark/results/candidate_bank_train_dev2.md`.
+- **Label noise dominates the official view.** The current model scores 58.9% on
+  official keys and 72.0% on the adjudicated corrected keys.
+- **Diversity pays; repeats don't** (corrected-key oracle coverage):
+  - current model 72.0%; plus a repeat 74.6%; plus Arctic 81.4%; all four families 86.0%.
+  - Arctic ties the current model on official keys (59.2% vs 58.9%) and adds the most
+    unique correct answers (33), at zero API cost. It takes about 12 s per question
+    locally (P90 15.5 s).
+  - qwen3-coder-next is the best route on official keys (59.2%) but the worst on
+    corrected keys (66.0%): it reproduces BIRD's key conventions, including their errors.
+- **Selection, all against corrected keys, on the same questions:**
+
+  | Selector | Accuracy | Fixes / breaks |
+  |---|---:|---:|
+  | Current model alone | 72.0% | — |
+  | Majority vote | 72–73% | — |
+  | Pre-registered rules (best: family majority) | ≤ 74.3% | 11 / 3 |
+  | Learned feature selector (leave-one-database-out) | 72.0% | — |
+  | LLM judge, gpt-oss-120b (high reasoning) | 76.9% | 29 / 12 |
+  | LLM judge, v4p1 (high reasoning) | **77.4%** | 28 / 9 |
+
+  - The v4p1 judge is +2.3 on official keys (61.2%). It costs about $0.0011 per judged
+    question; the whole bank plus judge is about $0.002 per question.
+  - Not adopted yet: this is one bank. The fixed judge prompt must be confirmed on a
+    fresh labelled set and pass the P42 gates before any change to the live path.
+- **Spend:** bank and judges cost $0.65 on Fireworks and $0.12 on OpenRouter.
+  - 322 judge calls failed locally before sending (the API key wasn't loaded). The ledger
+    had booked them as $1.214 of provisional charges.
+  - With the owner's approval they were settled to $0 through `BudgetGuard.settle`, which
+    records a reversal plus a final $0 charge.
+  - Fireworks ledger now $8.09 of the $10 cap.

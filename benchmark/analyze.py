@@ -715,6 +715,7 @@ def flips_report(
     for band in ("low", "medium", "high", "unparsed"):
         if bands.get(band):
             lines.append(_flip_rows(band, bands[band], was, now))
+    lines += promotion_gates(shared, by_row, was, now, iterations, seed)
     consistent = [r for r in shared if abs(now[r] - was[r]) == 1.0]
     lines += [
         "",
@@ -732,6 +733,66 @@ def flips_report(
         for r in consistent
     ] or ["- none"]
     return "\n".join(lines) + "\n"
+
+
+def easy_slice(question: BirdQuestion) -> bool:
+    """BIRD 'simple' where labelled; otherwise the low gold-SQL complexity band."""
+    if question.difficulty != "unknown":
+        return question.difficulty == "simple"
+    return sql_complexity(question.gold_sql) == "low"
+
+
+def promotion_gates(
+    shared: list[int],
+    by_row: dict[int, BirdQuestion],
+    was: dict[int, float],
+    now: dict[int, float],
+    iterations: int,
+    seed: int,
+) -> list[str]:
+    """Regression-protected promotion evidence (P42), reported next to the acceptance rule.
+
+    - Easy-slice non-inferiority: the easy questions' paired CI lower bound must be
+      ≥ −NON_INFERIORITY_MARGIN_PTS, so a gain on hard questions cannot hide easy losses.
+    - Protected correct cases: questions correct in every control repeat that are wrong in
+      every variant repeat. Each needs inspection; zero is not proof of safety.
+    - Mechanism slices: paired Δ by gold-SQL feature, for investigation, not voting.
+    """
+    from benchmark.patterns import gold_sql_tags
+
+    easy = [r for r in shared if easy_slice(by_row[r])]
+    lines = ["", "## Promotion gates (P42)", ""]
+    if easy:
+        per_db: dict[str, list[float]] = defaultdict(list)
+        for r in easy:
+            per_db[by_row[r].db_id].append(now[r] - was[r])
+        delta = sum(now[r] - was[r] for r in easy) / len(easy)
+        (lo, hi), _ = _bootstrap(per_db, iterations, seed)
+        ok = lo * 100 >= -NON_INFERIORITY_MARGIN_PTS
+        lines.append(
+            f"- Easy-slice non-inferiority ({len(easy)} questions): Δ {delta * 100:+.2f} pts, "
+            f"95% CI [{lo * 100:+.2f}, {hi * 100:+.2f}]: **{'pass' if ok else 'FAIL'}** "
+            f"(lower bound ≥ −{NON_INFERIORITY_MARGIN_PTS:.1f})."
+        )
+    protected = [r for r in shared if was[r] == 1.0 and now[r] == 0.0]
+    easy_protected = [r for r in protected if easy_slice(by_row[r])]
+    lines.append(
+        f"- Protected correct cases lost: **{len(protected)}** ({len(easy_protected)} easy). "
+        "Inspect each before promotion; zero observed losses is not proof of safety."
+    )
+    lines += [
+        "",
+        "| Gold-SQL feature | N | Old | New | Δ pts | Regressions | Fixes | McNemar p |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    slices: dict[str, list[int]] = defaultdict(list)
+    for r in shared:
+        for tag in gold_sql_tags(by_row[r].gold_sql):
+            slices[tag.removeprefix("sql: ")].append(r)
+    for tag in sorted(slices, key=lambda t: -len(slices[t])):
+        if len(slices[tag]) >= 10:
+            lines.append(_flip_rows(tag, slices[tag], was, now))
+    return lines
 
 
 def _majority_correct(sample: list[dict[str, Any]]) -> bool:
