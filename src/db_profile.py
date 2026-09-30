@@ -29,7 +29,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-PROFILE_VERSION = 2
+PROFILE_VERSION = 3  # 3: numbers with separators only on large values are "thousands"
 DEFAULT_CACHE_DIR = Path("data/profiles")
 SAMPLE_ROWS = 20_000
 MAX_INDEXED_DISTINCT = 50_000
@@ -128,7 +128,14 @@ def text_format(values: list[str]) -> str | None:
     if not counts:
         return None
     name, count = counts.most_common(1)[0]
-    return name if count / len(values) >= FORMAT_SHARE else None
+    if count / len(values) >= FORMAT_SHARE:
+        return name
+    # Numbers where only the large values carry separators ('1,963.10' next to '781.22') are
+    # one format: casting them without removing the commas silently truncates the large ones.
+    numeric = counts["thousands"] + counts["integer-text"] + counts["decimal-text"]
+    if counts["thousands"] and numeric / len(values) >= FORMAT_SHARE:
+        return "thousands"
+    return None
 
 
 def _profile_column(

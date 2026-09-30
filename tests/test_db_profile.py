@@ -59,3 +59,12 @@ def test_retrieve_values_prefers_quoted_phrases(db: Path, tmp_path: Path) -> Non
     assert hits[0] == ("film", "title", "Bruce Almighty")
     assert ("studio", "name", "Toho") in retrieve_values(profile, "films by toho", k=5)
     assert retrieve_values(profile, "?!", k=5) == []
+
+
+def test_numbers_with_separators_only_on_large_values_are_thousands() -> None:
+    from src.db_profile import text_format
+
+    mixed = ["1,963.10", "781.22", "2,004.50", "12", "3,000"] * 4
+    assert text_format(mixed) == "thousands"
+    assert text_format(["781.22", "12.5", "3.0"] * 4) == "decimal-text"  # no separators: unchanged
+    assert text_format(["1,963.10", "abc", "def", "ghi"] * 4) is None  # mostly not numbers

@@ -895,3 +895,72 @@ Every comparison is paired, with 95% CIs by database.
   selectors so far (feature selector, v4p1 and gpt-oss judges, Jev v1/v2 and now this) fail
   to replicate.
 - Scripts and raw decisions: `data/bird/research/2026-09-30/` (not committed).
+
+## 2026-09-30 — Agreement cascade gated on Mini-Dev; Experiments A and D; text-number profile fix
+- **Budget.** The owner raised the Fireworks cap to **$15** (`.env` default updated).
+  - A run launched on the whole `train_design` split instead of its 194-question subset cost
+    **$2.09** by mistake. It is kept as a full current-configuration training run.
+  - Ledger: Fireworks $12.99 of $15; OpenRouter $0.92 of $5.
+- **Agreement cascade** (`Agent(cascade_models=...)`, `run_bird --cascade-models`), no
+  Arctic:
+  - **How it works:** deepseek-v4p1 and qwen3-coder-next (OpenRouter) answer concurrently. A
+    matching non-empty result is delivered. Otherwise gpt-oss-120b answers and the majority
+    result is delivered; ties go to the primary. An error is never delivered while another
+    answer runs.
+  - **Replay on the saved banks:** +1.6 [+0.4, +2.9] at 1.70× cost.
+  - **Mini-Dev look 4** (last allowed look; 500 × 3; paired against the primary's own answer
+    in the same run):
+
+    | Measure | Result |
+    |---|---|
+    | Accuracy | 64.5% → **66.5%**, Δ **+2.0 [+0.4, +3.6]** |
+    | Questions better / worse | 22 / 7 |
+    | Easy slice (148 questions) | 75.0% → 74.8% (3/3); **fails** the −1.5 non-inferiority bound (lower 95% bound −2.25; the interval is too wide) |
+    | Moderate and challenging | 60.1% → 63.1% (19/4) |
+    | Cost per answer | $0.00117 uncached (1.75×), $0.00066 measured with caching |
+    | Latency | p50 2.25 s, p90 6.74 s (stage 2 p90 12.8 s) |
+    | Share reaching stage 2 | 30% |
+
+    Within all submission ceilings. **Adoption is the owner's decision** because the easy
+    gate failed.
+- **Prompt caching:** the schema is already in the system prompt ahead of the question.
+  Cached calls are no slower (1.40 vs 1.46 s) and cached input costs 2% of list price, with
+  no write premium, so nothing changes.
+- **Experiment A** (689 labelled training questions, corrected keys; pre-registered in
+  `data/bird/research/2026-09-30/expA/expA.py`):
+
+  | Arm | Accuracy | Δ [95% CI] | Fixes / breaks |
+  |---|---:|---:|---:|
+  | Direct | 76.9% | — | — |
+  | Model writes its own requirements contract first | 72.4% | **−4.5 [−7.0, −2.3]** | 21 / 52 |
+  | Contract written from the adjudicated answer (ceiling) | **99.0%** | **+22.1 [+19.2, +25.0]** | 154 / 2 |
+
+  - **Reading:** generation isn't the bottleneck; understanding the question is. A
+    self-written contract locks in misreadings.
+  - A first version of the reference contracts leaked answer values (91 of 150). It was
+    regenerated with a no-answers rule before any scoring.
+  - **The 154 cases the ceiling fixes** (classified by Sonnet 5.5):
+
+    | Cause | Cases |
+    |---|---:|
+    | Value format (how values are stored) | 36 |
+    | Ambiguous question | 34 |
+    | Misread | 27 |
+    | Open convention | 24 |
+    | Evidence misapplied | 12 |
+    | Extra or missing columns | 16 |
+    | Other | 5 |
+
+    About 87 are recoverable from the question alone (≈12.6 points). About 67 need the key's
+    arbitrary choice (≈9.7 points).
+- **Experiment D** (18 fixture questions with answers computed in Python: arithmetic and units
+  on text-stored numbers, grain, NULL, projection; 3 repeats): direct, model contract and
+  correct contract all score **54/54**. There are no language-to-contract or compiler errors
+  on clearly worded questions with the facts on. The numeric rewrite had nothing to fix.
+- **Text-number fix (P05):** `text_format` now classifies numbers whose large values carry
+  thousands separators ('1,963.10' beside '781.22') as `thousands`; `PROFILE_VERSION` is 3.
+  - Only `regional_sales` Unit Price/Unit Cost change, across all training and dev databases.
+  - Its 139 bank questions: **69.1% → 79.9%** (+19/−4, corrected keys) from the facts alone.
+  - The deterministic rewrite (`benchmark/numeric_fix.py`) adds nothing on top. It stays an
+    offline prototype: 17/0 alone on the old run, and 7 fires with 0/0 over 5,851
+    current answers.
