@@ -88,9 +88,23 @@ def extract_sql(text: str) -> str | None:
 
 
 async def run(args: argparse.Namespace) -> Path:
-    questions = load_questions(args.questions)
-    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
-    raw = RESULTS / f"bird_raw_{stamp}.jsonl"
+    all_questions = load_questions(args.questions)
+    previous: list[dict[str, Any]] = []
+    if args.resume:
+        # Continue an interrupted run: keep its saved answers, skip their rows, append the rest.
+        raw = Path(args.resume)
+        stamp = raw.stem.removeprefix("bird_raw_")
+        for line in raw.read_text().splitlines():
+            try:
+                previous.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue  # a line cut off by the interruption: that question is redone
+        raw.write_text("".join(json.dumps(r, default=str) + "\n" for r in previous))
+    else:
+        stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+        raw = RESULTS / f"bird_raw_{stamp}.jsonl"
+    done = {int(r["row_index"]) for r in previous}
+    questions = [q for q in all_questions if q.row_index not in done]
     schemas: dict[str, str] = {}
     sem = asyncio.Semaphore(args.concurrency)
 
@@ -134,8 +148,8 @@ async def run(args: argparse.Namespace) -> Path:
         record["t_total_ms"] = (time.perf_counter() - started) * 1_000
         return record
 
-    records = []
-    with raw.open("w") as fh:
+    records: list[dict[str, Any]] = list(previous)
+    with raw.open("a" if args.resume else "w") as fh:
         for task in asyncio.as_completed([one(q) for q in questions]):
             rec = await task
             records.append(rec)
@@ -143,11 +157,13 @@ async def run(args: argparse.Namespace) -> Path:
             fh.flush()
             if len(records) % 25 == 0:
                 ok = sum(r["official_ex"] for r in records)
-                print(f"{len(records)}/{len(questions)} EX {ok / len(records):.1%}", flush=True)
+                print(f"{len(records)}/{len(all_questions)} EX {ok / len(records):.1%}", flush=True)
     meta = {
         "questions": str(args.questions), "dataset_sha256_16": dataset_fingerprint(args.questions),
-        "db_dir": str(args.db_dir), "question_count": len(questions), "repeats": 1,
-        "expected_repeats": 1, "expected_rows": [q.row_index for q in questions], "complete": True,
+        "db_dir": str(args.db_dir), "question_count": len(all_questions), "repeats": 1,
+        "expected_repeats": 1, "expected_rows": [q.row_index for q in all_questions],
+        "complete": {int(r["row_index"]) for r in records} == {q.row_index for q in all_questions},
+        "resumed": bool(args.resume),
         "config": {"models": [args.model], "prompt_profile": "specialist-native", "temperature": 0.0,
                    "max_tokens": args.max_tokens},
         "config_sha256_16": hashlib.sha256(f"{args.model}|{PROMPT}|{args.max_tokens}".encode()).hexdigest()[:16],
@@ -167,6 +183,7 @@ def main() -> None:
     parser.add_argument("--timeout", type=float, default=300.0)
     parser.add_argument("--concurrency", type=int, default=1)
     parser.add_argument("--limit", type=int, default=0)
+    parser.add_argument("--resume", help="path of an interrupted run's bird_raw_*.jsonl to continue")
     args = parser.parse_args()
     if args.limit:
         subset = load_questions(args.questions)[: args.limit]

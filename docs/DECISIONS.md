@@ -791,3 +791,37 @@ stays as a named constant for provenance and pricing.
   - With the owner's approval they were settled to $0 through `BudgetGuard.settle`, which
     records a reversal plus a final $0 charge.
   - Fireworks ledger now $8.09 of the $10 cap.
+
+## 2026-09-29 — Confirmation: LLM judge not adopted; family majority and fallback replicate
+- **Fresh set, fixed in advance:** 350 `train_design` questions, excluding the 194
+  numbers-as-text rows. Order by `sha256('confirm-v1:'+row)`, at most 9 per database,
+  first 350 (43 databases).
+  - Same four routes; answer keys adjudicated with the same two-pass protocol: 235 sound,
+    94 defective, 18 ambiguous, 3 excluded.
+  - Reports: `benchmark/results/candidate_bank_train_design_confirm.md` and the
+    refreshed `candidate_bank_train_dev2.md`, both with per-rule 95% CIs.
+- **Headroom replicates, smaller.** Current model 79.9% on corrected keys; all four
+  families 87.3% (+7.4). The first bank was 72.0% → 86.0%.
+- **LLM judge fails confirmation; not adopted.**
+  - v4p1 judge: +0.3 [−2.06, +2.65], 9 fixes / 8 breaks, with 26 of 115 judge calls
+    failing.
+  - gpt-oss-120b judge: +0.9 [−1.47, +3.54].
+  - The first bank's +5.4 did not hold.
+- **Pre-registered rules replicate:**
+
+  | Rule | First bank (corrected) | Confirmation (corrected) | Official keys |
+  |---|---:|---:|---:|
+  | S1 family majority | +2.3 [+0.3, +4.3] | +2.1 [+0.3, +4.1] | +2.3, +2.6 |
+  | S2 fallback when the incumbent's answer is empty or an error | +0.6 [0.0, +1.4] | +1.5 [+0.3, +2.7] | — |
+
+  - S1 has 3 breaks per bank; S2 has zero breaks on both.
+- **Cost against the acceptance rule:**
+  - S1 needs all four routes on every question (≈ 2× hosted cost plus local Arctic).
+    It fails the product track's cost-adjusted minimum, but is inside the submission
+    ceilings.
+  - S2 needs a second route only when the incumbent fails (3–5% of questions), so it
+    costs almost nothing.
+- **Next:** neither rule is in the live path. Both need a gate look on the frozen
+  configuration before adoption.
+- **Spend:** the confirmation work cost about $0.9 Fireworks and $0.24 OpenRouter.
+  Fireworks ledger $9.04 of $10.

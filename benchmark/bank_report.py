@@ -27,7 +27,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from benchmark.analyze import answer_uncached_cost, delivered_sql, load_runs
+from benchmark.analyze import _bootstrap, answer_uncached_cost, delivered_sql, load_runs
 from benchmark.bank import majority_correct
 from benchmark.bird import db_path_for, load_questions
 from benchmark.sql_checks import check_sql
@@ -51,11 +51,11 @@ def load_route(spec: str, questions: list[Any]) -> tuple[str, dict[int, dict[str
 
 
 def reference_signatures(questions: list[Any], db_dir: Path, labels: dict[str, Any],
-                         label_rows: list[int]) -> dict[int, set[str] | None]:
+                         label_rows: list[int], prefix: str = "train_dev2") -> dict[int, set[str] | None]:
     """Accepted result signatures per bank row under corrected keys (None = excluded)."""
     out: dict[int, set[str] | None] = {}
     for q in questions:
-        entry = labels.get(f"train_dev2:{label_rows[q.row_index]}")
+        entry = labels.get(f"{prefix}:{label_rows[q.row_index]}")
         path = db_path_for(q.db_id, db_dir=db_dir)
         conn = connect_readonly(path, timeout_seconds=timeout_for_database(path, default=30.0))
         try:
@@ -109,7 +109,7 @@ def report(args: argparse.Namespace) -> str:
     rows = sorted(set.intersection(*(set(r) for r in routes.values())))
     sigs = candidate_signatures(routes, questions, Path(args.db_dir))
     refs = reference_signatures([q for q in questions if q.row_index in rows], Path(args.db_dir),
-                                labels, label_rows) if labels else {}
+                                labels, label_rows, args.label_prefix) if labels else {}
     names = list(routes)
     incumbent = names[0]
 
@@ -180,8 +180,8 @@ def report(args: argparse.Namespace) -> str:
         return inc
 
     lines += ["## Pre-registered selection rules (Experiment C)", "",
-              "| Rule | Official EX | Corrected EX | Switched away from incumbent | Switches: fix / break (corrected) |",
-              "|---|---:|---:|---:|---:|"]
+              "| Rule | Official EX | Corrected EX | Corrected Δ, 95% CI | Switched away from incumbent | Switches: fix / break (corrected) |",
+              "|---|---:|---:|---:|---:|---:|"]
     corr_rows = [r for r in rows if all(ok(n, r, "corrected") is not None for n in names)] if labels else []
     for policy in POLICIES:
         picks = {r: choose(policy, r) for r in rows}
@@ -190,7 +190,15 @@ def report(args: argparse.Namespace) -> str:
         switched = [r for r in rows if picks[r] != incumbent]
         fix = sum(1 for r in switched if r in corr_rows and ok(picks[r], r, "corrected") and not ok(incumbent, r, "corrected"))
         brk = sum(1 for r in switched if r in corr_rows and not ok(picks[r], r, "corrected") and ok(incumbent, r, "corrected"))
-        lines.append(f"| {policy} | {off:.1%} | {'—' if cor is None else f'{cor:.1%}'} | {len(switched)} | {fix} / {brk} |")
+        deltas: dict[str, list[float]] = {}
+        for r in corr_rows:
+            deltas.setdefault(by_row[r].db_id, []).append(
+                float(bool(ok(picks[r], r, "corrected"))) - float(bool(ok(incumbent, r, "corrected"))))
+        ci = "—"
+        if deltas and policy[:2] != "S0":
+            (lo, hi), _ = _bootstrap(deltas, 2000, 0)
+            ci = f"[{lo * 100:+.1f}, {hi * 100:+.1f}]"
+        lines.append(f"| {policy} | {off:.1%} | {'—' if cor is None else f'{cor:.1%}'} | {ci} | {len(switched)} | {fix} / {brk} |")
     lines.append("")
     agree = Counter(len({sigs[n][r] for n in names if sigs[n][r]}) for r in rows)
     lines += ["## Diversity", "", "Distinct non-empty result signatures per question: "
@@ -203,7 +211,8 @@ def main() -> None:
     parser.add_argument("--questions", type=Path, required=True)
     parser.add_argument("--db-dir", type=Path, required=True)
     parser.add_argument("--labels", type=Path, help="adjudicated labels keyed train_dev2:<row>")
-    parser.add_argument("--label-rows", type=Path, help="bank row → train_dev2 row mapping")
+    parser.add_argument("--label-rows", type=Path, help="bank row → source row mapping")
+    parser.add_argument("--label-prefix", default="train_dev2", help="label id prefix, e.g. train_design")
     parser.add_argument("routes", nargs="+", help="label=RUN or label=RUN:repeat; first is the incumbent")
     args = parser.parse_args()
     print(report(args))

@@ -21,7 +21,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 import benchmark.bank_report as br
-from benchmark.analyze import delivered_sql
+from benchmark.analyze import NON_INFERIORITY_MARGIN_PTS, _bootstrap, delivered_sql, easy_slice
 from benchmark.bird import db_path_for, load_questions
 from src.costs import get_shared_budget
 from src.db import connect_readonly, execute_candidate, timeout_for_database
@@ -62,7 +62,7 @@ async def main_async(args: argparse.Namespace) -> None:
     sigs = br.candidate_signatures(routes, questions, args.db_dir)
     labels = json.loads(Path(args.labels).read_text())
     lrows = json.loads(Path(args.label_rows).read_text())["source_rows"]
-    refs = br.reference_signatures([by_row[r] for r in rows], args.db_dir, labels, lrows)
+    refs = br.reference_signatures([by_row[r] for r in rows], args.db_dir, labels, lrows, args.label_prefix)
     guard = get_shared_budget(args.budget)
     options = {"reasoning_effort": args.reasoning} if args.reasoning else None
     sem = asyncio.Semaphore(args.concurrency)
@@ -111,8 +111,23 @@ async def main_async(args: argparse.Namespace) -> None:
         sel = sum(ok(picks[r], r, view) for r in pool)
         fix = sum(1 for r in pool if ok(picks[r], r, view) and not ok(names[0], r, view))
         brk = sum(1 for r in pool if not ok(picks[r], r, view) and ok(names[0], r, view))
+        per_db: dict[str, list[float]] = {}
+        easy: dict[str, list[float]] = {}
+        for r in pool:
+            d = float(ok(picks[r], r, view)) - float(ok(names[0], r, view))
+            per_db.setdefault(by_row[r].db_id, []).append(d)
+            if easy_slice(by_row[r]):
+                easy.setdefault(by_row[r].db_id, []).append(d)
+        (lo, hi), _ = _bootstrap(per_db, 2000, 0)
+        gates: dict[str, object] = {"ci": [round(100 * lo, 2), round(100 * hi, 2)]}
+        if easy:
+            (elo, _), _ = _bootstrap(easy, 2000, 0)
+            gates["easy_questions"] = sum(len(v) for v in easy.values())
+            gates["easy_ci_low"] = round(100 * elo, 2)
+            gates["easy_non_inferior"] = elo * 100 >= -NON_INFERIORITY_MARGIN_PTS
+        gates["protected_lost"] = brk
         out[view] = {"questions": len(pool), "incumbent": round(100 * base / len(pool), 1),
-                     "judge": round(100 * sel / len(pool), 1), "fixes": fix, "breaks": brk}
+                     "judge": round(100 * sel / len(pool), 1), "fixes": fix, "breaks": brk, **gates}
     print(json.dumps(out))
     Path(args.log).write_text(json.dumps(log, indent=1, default=str))
 
@@ -123,6 +138,7 @@ def main() -> None:
     parser.add_argument("--db-dir", type=Path, required=True)
     parser.add_argument("--labels", type=Path, required=True)
     parser.add_argument("--label-rows", type=Path, required=True)
+    parser.add_argument("--label-prefix", default="train_dev2")
     parser.add_argument("--judge", required=True)
     parser.add_argument("--reasoning", default=None)
     parser.add_argument("--max-tokens", type=int, default=4000)
