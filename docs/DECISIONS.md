@@ -825,3 +825,73 @@ stays as a named constant for provenance and pricing.
   configuration before adoption.
 - **Spend:** the confirmation work cost about $0.9 Fireworks and $0.24 OpenRouter.
   Fireworks ledger $9.04 of $10.
+
+## 2026-09-30 — Error escalation built; empty escalation shadow-only (review P08/P31/P32)
+- **Split** after the first-principles review (P08: never replace an answer only because the
+  new one returns rows; P31: keep availability fallback separate from quality escalation;
+  P32: keep a candidate ledger):
+  - **Error escalation** (`Agent(escalation_models=...)`, `run_bird --escalation-models`):
+    when the primary answer is an error, the escalation models are asked in order. Each is
+    single-turn from the same context with its own request defaults, and the first answer
+    that runs is delivered. An error is never a correct answer, so this cannot break one.
+  - **Empty escalation is shadow-only** (`--shadow-empty-escalation`): for an empty or
+    all-NULL answer (the `[(NULL,)]` gap is now covered), alternatives are logged in
+    `candidates` but never delivered. It stays that way until the P08 experiment has enough
+    independently labelled, legitimately empty controls.
+  - Every escalated question records the full candidate ledger: model, SQL, row count,
+    error, delivered.
+- **Evidence from both banks** (corrected keys, order gpt-oss → qwen → Arctic):
+
+  | Trigger | Rescues | Breaks |
+  |---|---:|---:|
+  | Error | 4 | 0 |
+  | Empty | 6 | 0 |
+
+  - Only 5 genuinely empty questions existed across both banks, which is too few to
+    call empty replacement safe.
+  - Offline net gains: gpt-oss only +2/+2; plus qwen +2/+3; plus Arctic +2/+5.
+- **When it stays off:** budget and credential failures never escalate; both switches are
+  off by default; config keys are written only when on.
+- **Tests:** four agent tests. A live smoke test on 5 training questions confirmed the
+  wiring.
+- **Next:** gate error escalation on the frozen configuration before adoption.
+
+## 2026-09-30 — Pre-generation routing and Jev selection with richer inputs: neither adopted
+Both tests use the two frozen candidate banks: 689 questions, 47 databases, corrected keys.
+Every comparison is paired, with 95% CIs by database.
+
+- **Router before generation (free).** A logistic model on question tags, schema size and
+  question text, trained leave-one-database-out, picked a model family per question.
+  - Tags only: 74.6% vs always-direct 75.9%, Δ −1.3 [−2.2, −0.4], 2 fixes / 11 breaks.
+  - With text: Δ −0.7 [−1.6, +0.1], 4 fixes / 9 breaks.
+  - The ceiling (any family right) is 86.6%. The question gives no visible sign of when
+    another family wins, so a fine-tuned router isn't justified on this data. A Jev
+    router can't be restricted to our families, and "Kev" doesn't exist on OpenRouter.
+- **Jev after generation, richer state** (`typesafe/jev-1.13-20260917`, 276 calls, 0
+  failures, $0.0124).
+  - **Jev received:**
+    - one candidate per distinct result;
+    - the number of generators that agreed on it;
+    - columns, row count and first 5 rows;
+    - detector flags;
+    - the verified columns of the tables it uses.
+  - **The rule was fixed in advance:** switch away from family majority (S1) only when Jev
+    picks something else with confidence ≥ 0.80.
+  - **Primary rule (gated):** identical to S1 on every question, with 0 fixes and 0 breaks.
+    All 39 confident non-"none" picks matched the majority; its confidence tracks agreement.
+  - **Jev's raw choice, compared with S1:**
+
+    | Bank | Δ vs S1 [95% CI] | Fixes / breaks |
+    |---|---:|---:|
+    | `train_dev2` | +3.1 [+0.0, +6.6] | 24 / 13 |
+    | Confirmation set | −0.6 [−2.7, +1.5] | 6 / 8 |
+    | Pooled | +1.3 [−0.6, +3.2] | — |
+
+    The confirmation set failed, the same pattern as the LLM judge earlier.
+  - **Outcome:** the pre-registered decision (fixes > breaks on both banks and pooled lower
+    bound > 0) failed, so Jev selection is not adopted.
+- **Standing position:** the only rules that replicate are result-based. Family majority
+  gives +2.2 [+0.9, +3.6] pooled vs direct, plus error escalation. All learned or LLM
+  selectors so far (feature selector, v4p1 and gpt-oss judges, Jev v1/v2 and now this) fail
+  to replicate.
+- Scripts and raw decisions: `data/bird/research/2026-09-30/` (not committed).

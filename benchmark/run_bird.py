@@ -205,6 +205,8 @@ async def benchmark(args: argparse.Namespace) -> Path:
                     pipeline_repairs=args.pipeline_repairs,
                     llm_timeout_s=args.llm_timeout,
                     truncation_retry_tokens=args.truncation_retry,
+                    escalation_models=tuple(getattr(args, "escalation_models", None) or ()),
+                    shadow_empty_escalation=getattr(args, "shadow_empty_escalation", False),
                 )
                 prompt = (
                     STRATEGIES[args.strategy]
@@ -362,6 +364,12 @@ def run_metadata(args: argparse.Namespace, questions: list[BirdQuestion]) -> dic
         "max_repairs": 1,
         # Recorded only when on, so runs without it keep the accepted config hash.
         **({"truncation_retry_tokens": args.truncation_retry} if args.truncation_retry else {}),
+        **(
+            {"escalation_models": list(args.escalation_models)}
+            if getattr(args, "escalation_models", None)
+            else {}
+        ),
+        **({"shadow_empty_escalation": True} if getattr(args, "shadow_empty_escalation", False) else {}),
         **({"profile_facts": True} if getattr(args, "profile_facts", False) else {}),
         **(
             {"profile_value_facts": False}
@@ -594,6 +602,20 @@ def parse_args() -> argparse.Namespace:
         metavar="TOKENS",
         help="Re-ask once with this max_tokens when an answer was cut off by the cap "
         "(finish_reason 'length'); 0 = off.",
+    )
+    parser.add_argument(
+        "--escalation-models",
+        nargs="+",
+        default=None,
+        metavar="MODEL",
+        help="When the answer is an error, ask these models in order and deliver the first "
+        "answer that runs (error escalation); off by default.",
+    )
+    parser.add_argument(
+        "--shadow-empty-escalation",
+        action="store_true",
+        help="Also ask the escalation models when the answer is empty or all-NULL, but only log "
+        "their answers in the candidate ledger; never deliver them.",
     )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(

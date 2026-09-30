@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import sqlite3
 import time
 from collections.abc import Awaitable, Callable
@@ -51,6 +52,11 @@ class AgentResult:
     empty_retried: bool = False
     truncation_retried: bool = False
     truncated: bool = False
+    # Model whose answer was delivered by error escalation (None: the primary answer stands).
+    escalation_model: str | None = None
+    # Candidate ledger (P32): every answer produced for this question, in order, with its
+    # model, SQL, row count, error and whether it was delivered. Empty when escalation is off.
+    candidates: list[dict[str, Any]] = field(default_factory=list)
     llm_calls: list[LLMResult] = field(default_factory=list)
     t_schema_ms: float = 0.0
     t_llm_ms: float = 0.0
@@ -94,6 +100,8 @@ class Agent:
         pipeline_repairs: bool = False,
         llm_timeout_s: float = 20.0,
         truncation_retry_tokens: int = 0,
+        escalation_models: tuple[str, ...] = (),
+        shadow_empty_escalation: bool = False,
     ):
         self.model = model
         self.conn = conn
@@ -113,8 +121,54 @@ class Agent:
         # When > 0: an answer cut off by max_tokens (finish_reason "length") is re-asked once
         # with this larger cap, instead of raising every call's cap. Off by default.
         self.truncation_retry_tokens = truncation_retry_tokens
+        # Benchmark-mode escalation (docs/DECISIONS.md 2026-09-30), split per review P08/P31/P32:
+        # - an ERROR answer is always wrong, so the escalation models are asked in order and the
+        #   first answer that runs is delivered;
+        # - an EMPTY or all-NULL answer may be legitimately correct, so with
+        #   ``shadow_empty_escalation`` the models are asked but their answers are only logged in
+        #   the candidate ledger, never delivered.
+        # Both are off by default (the CLI never uses them). This is a quality escalation, not an
+        # availability fallback for an unavailable model.
+        self.escalation_models = escalation_models
+        self.shadow_empty_escalation = shadow_empty_escalation
 
     async def ask(self, question: str, ctx: ConversationContext) -> AgentResult:
+        started = time.perf_counter()
+        before = copy.deepcopy(ctx) if self.escalation_models else None
+        result = await self._ask(question, ctx)
+        if before is None:
+            return result
+        trigger = escalation_trigger(result)
+        if trigger is None or (trigger == "empty" and not self.shadow_empty_escalation):
+            return result
+        result.candidates.append(_candidate(self.model, result, delivered=True))
+        primary_model, primary_options = self.model, self.request_options
+        try:
+            for model in self.escalation_models:
+                # Each model uses its own request defaults (e.g. gpt-oss rejects reasoning_effort
+                # "none") and a fresh copy of the pre-question context: same prompt, schema, facts.
+                self.model, self.request_options = model, None
+                alt = await self._ask(question, copy.deepcopy(before))
+                result.llm_calls.extend(alt.llm_calls)
+                result.t_llm_ms += alt.t_llm_ms
+                result.t_exec_ms += alt.t_exec_ms
+                deliver = trigger == "error" and alt.ok and alt.response_type == "query"
+                result.candidates.append(_candidate(model, alt, delivered=deliver))
+                if deliver:
+                    result.candidates[0]["delivered"] = False
+                    for name in ("response_type", "message", "sql", "rows", "columns", "error",
+                                 "error_category", "truncated"):
+                        setattr(result, name, getattr(alt, name))
+                    result.escalation_model = model
+                    break
+                if alt.error_category == "budget-exceeded":
+                    break
+        finally:
+            self.model, self.request_options = primary_model, primary_options
+        result.t_total_ms = (time.perf_counter() - started) * 1_000
+        return result
+
+    async def _ask(self, question: str, ctx: ConversationContext) -> AgentResult:
         started = time.perf_counter()
         result = AgentResult(question=question)
         messages = ctx.build_messages(question)
@@ -324,3 +378,22 @@ class Agent:
         result.error_category = category
         result.t_total_ms = (time.perf_counter() - started) * 1_000
         return result
+
+
+def escalation_trigger(result: AgentResult) -> str | None:
+    """'error' for a failed answer (not budget/credentials), 'empty' for a query answer with no
+    rows or only NULLs (e.g. ``[(None,)]`` from an aggregate over nothing), else None."""
+    if result.error_category in ("budget-exceeded", "authentication-failed"):
+        return None
+    if result.error is not None:
+        return "error"
+    if result.response_type == "query" and (
+        not result.rows or all(value is None for row in result.rows for value in row)
+    ):
+        return "empty"
+    return None
+
+
+def _candidate(model: str, result: AgentResult, *, delivered: bool) -> dict[str, Any]:
+    return {"model": model, "sql": result.sql, "row_count": len(result.rows or []),
+            "error_category": result.error_category, "delivered": delivered}

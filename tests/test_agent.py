@@ -303,3 +303,68 @@ def test_truncation_retry_only_for_length_cutoffs(tmp_path: Path) -> None:
     assert other.error_category == "structured-output-failed" and caps == [400]
     twice, caps = run([cut, cut], 1200)  # retried at most once
     assert twice.error_category == "structured-output-failed" and caps == [400, 1200]
+
+
+def _run_with_escalation(
+    tmp_path: Path, responses: list[LLMResult], models: tuple[str, ...], *, shadow_empty: bool = False
+) -> tuple[Any, list[str]]:
+    """Run one question with repairs off and the given escalation models; return the result and
+    the model each LLM call went to."""
+    import asyncio
+
+    queue = iter(responses)
+    called: list[str] = []
+
+    async def fake_complete(messages: list[dict[str, str]], model: str, *args: Any, **kwargs: Any) -> LLMResult:
+        called.append(model)
+        return next(queue)
+
+    async def scenario() -> Any:
+        conn = connect_readonly()
+        try:
+            agent = Agent(
+                MODEL_GPT_OSS,
+                conn,
+                BudgetGuard(1.0, tmp_path / "spend.sqlite"),
+                complete_fn=fake_complete,
+                escalation_models=models,
+                shadow_empty_escalation=shadow_empty,
+            )
+            return await agent.ask("q", ConversationContext(get_schema()))
+        finally:
+            conn.close()
+
+    return asyncio.run(scenario()), called
+
+
+EMPTY = "SELECT Name FROM Artist WHERE Name = 'nobody'"
+FOUND = "SELECT Name FROM Artist WHERE Name LIKE 'AC%'"
+
+
+def test_error_escalation_delivers_the_next_models_answer(tmp_path: Path) -> None:
+    result, called = _run_with_escalation(tmp_path, [_query("DELETE FROM Artist"), _query(FOUND)], ("m2",))
+    assert result.ok and result.rows and result.escalation_model == "m2"
+    assert called == [MODEL_GPT_OSS, "m2"]
+    assert [c["delivered"] for c in result.candidates] == [False, True]
+
+
+def test_empty_answers_are_never_replaced_even_in_shadow_mode(tmp_path: Path) -> None:
+    result, called = _run_with_escalation(tmp_path, [_query(EMPTY), _query(FOUND)], ("m2",), shadow_empty=True)
+    assert result.ok and result.rows == [] and result.escalation_model is None
+    assert called == [MODEL_GPT_OSS, "m2"]
+    assert [(c["model"], c["delivered"]) for c in result.candidates] == [(MODEL_GPT_OSS, True), ("m2", False)]
+    assert result.candidates[0]["row_count"] == 0 and result.candidates[1]["row_count"] > 0
+
+
+def test_empty_answers_do_not_escalate_without_shadow_mode(tmp_path: Path) -> None:
+    result, called = _run_with_escalation(tmp_path, [_query(EMPTY)], ("m2",))
+    assert result.rows == [] and called == [MODEL_GPT_OSS] and result.candidates == []
+
+
+def test_all_null_answers_count_as_empty_for_escalation() -> None:
+    from src.agent import AgentResult, escalation_trigger
+
+    assert escalation_trigger(AgentResult("q", response_type="query", rows=[(None,)])) == "empty"
+    assert escalation_trigger(AgentResult("q", response_type="query", rows=[(1,)])) is None
+    assert escalation_trigger(AgentResult("q", error="x", error_category="execute-failed")) == "error"
+    assert escalation_trigger(AgentResult("q", error="x", error_category="budget-exceeded")) is None

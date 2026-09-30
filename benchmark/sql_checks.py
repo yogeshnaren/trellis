@@ -111,8 +111,7 @@ def check_sql(sql: str, db_path: str | Path) -> list[str]:
         if fmt in NUMERIC_TEXT and not _under_cast(col):
             parent = col.parent
             numeric_use = isinstance(parent, (exp.GT, exp.GTE, exp.LT, exp.LTE, exp.Between,
-                                              exp.Add, exp.Sub, exp.Mul, exp.Div, exp.AggFunc)) \
-                or isinstance(parent, exp.Ordered)
+                                              exp.Add, exp.Sub, exp.Mul, exp.Div, exp.AggFunc, exp.Ordered))
             if isinstance(parent, (exp.GT, exp.GTE, exp.LT, exp.LTE)):
                 other = parent.expression if parent.this is col else parent.this
                 numeric_use = isinstance(other, exp.Literal) and other.is_number or not isinstance(other, exp.Literal)

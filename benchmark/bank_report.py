@@ -59,7 +59,7 @@ def reference_signatures(questions: list[Any], db_dir: Path, labels: dict[str, A
         path = db_path_for(q.db_id, db_dir=db_dir)
         conn = connect_readonly(path, timeout_seconds=timeout_for_database(path, default=30.0))
         try:
-            def sig(sql: str | None) -> str | None:
+            def sig(sql: str | None, conn: Any = conn, path: Path = path) -> str | None:
                 if not sql:
                     return None
                 res = execute_candidate(conn, sql, db_path=path)

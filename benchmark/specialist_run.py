@@ -55,7 +55,7 @@ In your answer, please enclose the generated SQL query in a code block:
 ```
 
 Take a deep breath and think step by step to find the correct SQL query."""
-_SQL_BLOCK = re.compile(r"```sql\s*(.*?)```", re.S | re.I)
+_SQL_BLOCK = re.compile(r"```sql\s*(.*?)```", re.DOTALL | re.IGNORECASE)
 
 
 def native_schema(db_path: Path, examples: int = 3) -> str:
