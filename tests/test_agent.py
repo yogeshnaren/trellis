@@ -368,3 +368,83 @@ def test_all_null_answers_count_as_empty_for_escalation() -> None:
     assert escalation_trigger(AgentResult("q", response_type="query", rows=[(1,)])) is None
     assert escalation_trigger(AgentResult("q", error="x", error_category="execute-failed")) == "error"
     assert escalation_trigger(AgentResult("q", error="x", error_category="budget-exceeded")) is None
+
+
+def _run_cascade(tmp_path: Path, by_model: dict[str, LLMResult], models: tuple[str, ...]) -> tuple[Any, list[str]]:
+    """One question through the agreement cascade; each model always returns its own answer."""
+    import asyncio
+
+    called: list[str] = []
+
+    async def fake_complete(messages: list[dict[str, str]], model: str, *args: Any, **kwargs: Any) -> LLMResult:
+        called.append(model)
+        return by_model[model]
+
+    async def scenario() -> Any:
+        conn = connect_readonly()
+        try:
+            agent = Agent(MODEL_GPT_OSS, conn, BudgetGuard(1.0, tmp_path / "spend.sqlite"),
+                          complete_fn=fake_complete, cascade_models=models)
+            return await agent.ask("q", ConversationContext(get_schema()))
+        finally:
+            conn.close()
+
+    return asyncio.run(scenario()), called
+
+
+OTHER = "SELECT Name FROM Artist WHERE Name LIKE 'B%'"
+
+
+def test_cascade_stops_when_the_first_two_models_agree(tmp_path: Path) -> None:
+    result, called = _run_cascade(
+        tmp_path, {MODEL_GPT_OSS: _query(FOUND), "m2": _query(FOUND), "m3": _query(OTHER)}, ("m2", "m3"))
+    assert sorted(called) == sorted([MODEL_GPT_OSS, "m2"]) and result.cascade_stage == 1
+    assert result.sql == FOUND and result.escalation_model is None
+    assert [c["delivered"] for c in result.candidates] == [True, False]
+
+
+def test_cascade_delivers_the_majority_after_disagreement(tmp_path: Path) -> None:
+    result, called = _run_cascade(
+        tmp_path, {MODEL_GPT_OSS: _query(OTHER), "m2": _query(FOUND), "m3": _query(FOUND)}, ("m2", "m3"))
+    assert "m3" in called and result.cascade_stage == 2
+    assert result.sql == FOUND and result.escalation_model == "m2"
+    assert [c["delivered"] for c in result.candidates] == [False, True, False]
+    assert len(result.llm_calls) == 3
+
+
+def test_cascade_three_way_tie_keeps_the_primary(tmp_path: Path) -> None:
+    third = "SELECT Name FROM Artist WHERE Name LIKE 'C%'"
+    result, _ = _run_cascade(
+        tmp_path, {MODEL_GPT_OSS: _query(OTHER), "m2": _query(FOUND), "m3": _query(third)}, ("m2", "m3"))
+    assert result.sql == OTHER and result.escalation_model is None and result.cascade_stage == 2
+
+
+def test_cascade_never_delivers_an_error_when_another_answer_runs(tmp_path: Path) -> None:
+    result, _ = _run_cascade(
+        tmp_path, {MODEL_GPT_OSS: _query("DELETE FROM Artist"), "m2": _query(EMPTY), "m3": _query("DROP TABLE x")},
+        ("m2", "m3"))
+    assert result.ok and result.rows == [] and result.escalation_model == "m2"
+
+
+def test_cascade_first_stage_runs_concurrently(tmp_path: Path) -> None:
+    import asyncio
+
+    async def scenario() -> Any:
+        partner_started = asyncio.Event()
+
+        async def fake_complete(messages: list[dict[str, str]], model: str, *args: Any, **kwargs: Any) -> LLMResult:
+            if model == MODEL_GPT_OSS:  # the primary waits until the partner has been called
+                await asyncio.wait_for(partner_started.wait(), timeout=2)
+            else:
+                partner_started.set()
+            return _query(FOUND)
+
+        conn = connect_readonly()
+        try:
+            agent = Agent(MODEL_GPT_OSS, conn, BudgetGuard(1.0, tmp_path / "spend.sqlite"),
+                          complete_fn=fake_complete, cascade_models=("m2", "m3"))
+            return await agent.ask("q", ConversationContext(get_schema()))
+        finally:
+            conn.close()
+
+    assert asyncio.run(scenario()).cascade_stage == 1

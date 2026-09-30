@@ -207,6 +207,7 @@ async def benchmark(args: argparse.Namespace) -> Path:
                     truncation_retry_tokens=args.truncation_retry,
                     escalation_models=tuple(getattr(args, "escalation_models", None) or ()),
                     shadow_empty_escalation=getattr(args, "shadow_empty_escalation", False),
+                    cascade_models=tuple(getattr(args, "cascade_models", None) or ()),
                 )
                 prompt = (
                     STRATEGIES[args.strategy]
@@ -370,6 +371,11 @@ def run_metadata(args: argparse.Namespace, questions: list[BirdQuestion]) -> dic
             else {}
         ),
         **({"shadow_empty_escalation": True} if getattr(args, "shadow_empty_escalation", False) else {}),
+        **(
+            {"cascade_models": list(args.cascade_models)}
+            if getattr(args, "cascade_models", None)
+            else {}
+        ),
         **({"profile_facts": True} if getattr(args, "profile_facts", False) else {}),
         **(
             {"profile_value_facts": False}
@@ -616,6 +622,15 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Also ask the escalation models when the answer is empty or all-NULL, but only log "
         "their answers in the candidate ledger; never deliver them.",
+    )
+    parser.add_argument(
+        "--cascade-models",
+        nargs="+",
+        default=None,
+        metavar="MODEL",
+        help="Agreement cascade: the first model answers at the same time as --models; if their "
+        "results match, that answer is delivered, otherwise the rest answer and the majority "
+        "result is delivered (ties to the primary). Off by default.",
     )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(

@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import asyncio
 import copy
 import sqlite3
 import time
+from collections import Counter
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -22,7 +24,14 @@ from pydantic import ValidationError
 
 from src.conversation import ConversationContext, Turn
 from src.costs import BudgetExceeded, BudgetGuard
-from src.db import execute, identifier_hint, is_recoverable_rejection, is_safe, validate
+from src.db import (
+    execute,
+    identifier_hint,
+    is_recoverable_rejection,
+    is_safe,
+    result_signature,
+    validate,
+)
 from src.llm import ErrorCategory, LLMResult, complete
 from src.prompts import (
     EMPTY_RESULT_PROMPT,
@@ -52,10 +61,13 @@ class AgentResult:
     empty_retried: bool = False
     truncation_retried: bool = False
     truncated: bool = False
-    # Model whose answer was delivered by error escalation (None: the primary answer stands).
+    # Model whose answer was delivered instead of the primary's, by error escalation or the
+    # agreement cascade (None: the primary answer stands).
     escalation_model: str | None = None
+    # Agreement cascade: 1 when the first two models agreed, 2 when the rest were asked.
+    cascade_stage: int | None = None
     # Candidate ledger (P32): every answer produced for this question, in order, with its
-    # model, SQL, row count, error and whether it was delivered. Empty when escalation is off.
+    # model, SQL, row count, error and whether it was delivered. Empty when both are off.
     candidates: list[dict[str, Any]] = field(default_factory=list)
     llm_calls: list[LLMResult] = field(default_factory=list)
     t_schema_ms: float = 0.0
@@ -102,6 +114,7 @@ class Agent:
         truncation_retry_tokens: int = 0,
         escalation_models: tuple[str, ...] = (),
         shadow_empty_escalation: bool = False,
+        cascade_models: tuple[str, ...] = (),
     ):
         self.model = model
         self.conn = conn
@@ -131,8 +144,16 @@ class Agent:
         # availability fallback for an unavailable model.
         self.escalation_models = escalation_models
         self.shadow_empty_escalation = shadow_empty_escalation
+        # Benchmark-mode agreement cascade (docs/DECISIONS.md 2026-09-30): the primary model and
+        # cascade_models[0] answer at the same time; if their results match (non-empty), that
+        # answer is delivered. Otherwise the remaining cascade models answer (also at the same
+        # time) and the result most models share is delivered, ties going to the primary. An
+        # error is never delivered while another model has an answer that runs. Off by default.
+        self.cascade_models = cascade_models
 
     async def ask(self, question: str, ctx: ConversationContext) -> AgentResult:
+        if self.cascade_models:
+            return await self._cascade(question, ctx)
         started = time.perf_counter()
         before = copy.deepcopy(ctx) if self.escalation_models else None
         result = await self._ask(question, ctx)
@@ -142,33 +163,81 @@ class Agent:
         if trigger is None or (trigger == "empty" and not self.shadow_empty_escalation):
             return result
         result.candidates.append(_candidate(self.model, result, delivered=True))
-        primary_model, primary_options = self.model, self.request_options
-        try:
-            for model in self.escalation_models:
-                # Each model uses its own request defaults (e.g. gpt-oss rejects reasoning_effort
-                # "none") and a fresh copy of the pre-question context: same prompt, schema, facts.
-                self.model, self.request_options = model, None
-                alt = await self._ask(question, copy.deepcopy(before))
-                result.llm_calls.extend(alt.llm_calls)
-                result.t_llm_ms += alt.t_llm_ms
-                result.t_exec_ms += alt.t_exec_ms
-                deliver = trigger == "error" and alt.ok and alt.response_type == "query"
-                result.candidates.append(_candidate(model, alt, delivered=deliver))
-                if deliver:
-                    result.candidates[0]["delivered"] = False
-                    for name in ("response_type", "message", "sql", "rows", "columns", "error",
-                                 "error_category", "truncated"):
-                        setattr(result, name, getattr(alt, name))
-                    result.escalation_model = model
-                    break
-                if alt.error_category == "budget-exceeded":
-                    break
-        finally:
-            self.model, self.request_options = primary_model, primary_options
+        for model in self.escalation_models:
+            # Each model uses its own request defaults (e.g. gpt-oss rejects reasoning_effort
+            # "none") and a fresh copy of the pre-question context: same prompt, schema, facts.
+            alt = await self._ask(question, copy.deepcopy(before), model=model, options=None)
+            _absorb(result, alt)
+            deliver = trigger == "error" and alt.ok and alt.response_type == "query"
+            result.candidates.append(_candidate(model, alt, delivered=deliver))
+            if deliver:
+                result.candidates[0]["delivered"] = False
+                _deliver(result, alt, model)
+                break
+            if alt.error_category == "budget-exceeded":
+                break
         result.t_total_ms = (time.perf_counter() - started) * 1_000
         return result
 
-    async def _ask(self, question: str, ctx: ConversationContext) -> AgentResult:
+    async def _cascade(self, question: str, ctx: ConversationContext) -> AgentResult:
+        started = time.perf_counter()
+        before = copy.deepcopy(ctx)
+        first, *rest = self.cascade_models
+
+        def other(model: str) -> Awaitable[AgentResult]:
+            return self._ask(question, copy.deepcopy(before), model=model, options=None)
+
+        primary, partner = await asyncio.gather(self._ask(question, ctx), other(first))
+        answers = [(self.model, primary), (first, partner)]
+        sigs = [self._signature(a) for _, a in answers]
+        agreed = sigs[0] is not None and sigs[0] == sigs[1]
+        if not agreed and rest:
+            extra = await asyncio.gather(*(other(model) for model in rest))
+            answers += list(zip(rest, extra, strict=True))
+            sigs += [self._signature(a) for a in extra]
+        pick = 0 if agreed else _vote([a for _, a in answers], sigs)
+        result = primary
+        for i, (model, answer) in enumerate(answers):
+            if i:
+                _absorb(result, answer)
+            result.candidates.append(_candidate(model, answer, delivered=i == pick)
+                                     | {"signature": sigs[i]})
+        if pick:
+            model, chosen = answers[pick]
+            _deliver(result, chosen, model)
+            if ctx.turns and ctx.turns[-1].question == question:
+                ctx.turns.pop()  # the primary recorded its own (not delivered) answer
+            if chosen.sql is not None and chosen.rows is not None:
+                ctx.record(Turn(question, chosen.sql, len(chosen.rows), chosen.truncated))
+        result.cascade_stage = 1 if agreed else 2
+        result.t_total_ms = (time.perf_counter() - started) * 1_000
+        return result
+
+    def _signature(self, answer: AgentResult) -> str | None:
+        """Result signature of a non-empty query answer (None for errors, refusals, no rows)."""
+        if not answer.ok or answer.response_type != "query" or not answer.rows or not answer.sql:
+            return None
+        rows = answer.rows
+        if answer.truncated:
+            try:
+                rows = execute(self.conn, answer.sql, limit=None)[1]
+            except sqlite3.Error:
+                return None
+        return result_signature(rows)
+
+    async def _ask(
+        self,
+        question: str,
+        ctx: ConversationContext,
+        *,
+        model: str | None = None,
+        options: dict[str, Any] | None | bool = False,
+    ) -> AgentResult:
+        """One model's full answer. ``model``/``options`` default to the agent's own; they are
+        parameters (not swapped attributes) so several models can answer concurrently."""
+        model = model or self.model
+        request_options = self.request_options if options is False else options
+        assert request_options is None or isinstance(request_options, dict)
         started = time.perf_counter()
         result = AgentResult(question=question)
         messages = ctx.build_messages(question)
@@ -180,11 +249,11 @@ class Agent:
             try:
                 llm_result = await self.complete_fn(
                     messages,
-                    self.model,
+                    model,
                     response_format=SQL_SCHEMA,
                     max_tokens=max_tokens,
                     budget=self.budget,
-                    request_options=self.request_options,
+                    request_options=request_options,
                     temperature=self.temperature,
                     timeout_s=self.llm_timeout_s,
                 )
@@ -197,7 +266,7 @@ class Agent:
             except (NotFoundError, PermissionDeniedError) as exc:
                 # The key cannot call this model (retired, not deployed, or not granted).
                 return self._finish(
-                    result, f"Model {self.model} is not available to this API key: {exc}",
+                    result, f"Model {model} is not available to this API key: {exc}",
                     "model-unavailable", started,
                 )
             except RateLimitError as exc:
@@ -305,7 +374,9 @@ class Agent:
                 return self._finish(result, str(exc), category, started)
             result.t_exec_ms += (time.perf_counter() - exec_started) * 1_000
             if self.pipeline_repairs and not rows:
-                retried = await self._retry_empty(messages, llm_result.text, sql, result)
+                retried = await self._retry_empty(
+                    messages, llm_result.text, sql, result, model, request_options
+                )
                 if retried is not None:
                     sql, (columns, rows, truncated) = retried
                     result.sql = sql
@@ -320,6 +391,8 @@ class Agent:
         answer: str,
         sql: str,
         result: AgentResult,
+        model: str,
+        request_options: dict[str, Any] | None,
     ) -> tuple[str, tuple[list[str], list[tuple[Any, ...]], bool]] | None:
         """One guarded re-check of an empty result.
 
@@ -336,11 +409,11 @@ class Agent:
         try:
             llm_result = await self.complete_fn(
                 retry_messages,
-                self.model,
+                model,
                 response_format=SQL_SCHEMA,
                 max_tokens=self.max_tokens,
                 budget=self.budget,
-                request_options=self.request_options,
+                request_options=request_options,
                 temperature=self.temperature,
                 timeout_s=self.llm_timeout_s,
             )
@@ -397,3 +470,27 @@ def escalation_trigger(result: AgentResult) -> str | None:
 def _candidate(model: str, result: AgentResult, *, delivered: bool) -> dict[str, Any]:
     return {"model": model, "sql": result.sql, "row_count": len(result.rows or []),
             "error_category": result.error_category, "delivered": delivered}
+
+
+def _vote(answers: list[AgentResult], signatures: list[str | None]) -> int:
+    """Index of the answer whose result most models share; ties go to the earliest (the
+    primary first). With no non-empty result, the first answer that ran without error."""
+    votes = Counter(sig for sig in signatures if sig is not None)
+    if votes:
+        best = max(votes.values())
+        return next(i for i, sig in enumerate(signatures) if sig is not None and votes[sig] == best)
+    return next((i for i, a in enumerate(answers) if a.ok and a.response_type == "query"), 0)
+
+
+def _absorb(result: AgentResult, other: AgentResult) -> None:
+    """Charge another model's calls and time to this question's result."""
+    result.llm_calls.extend(other.llm_calls)
+    result.t_llm_ms += other.t_llm_ms
+    result.t_exec_ms += other.t_exec_ms
+
+
+def _deliver(result: AgentResult, chosen: AgentResult, model: str) -> None:
+    for name in ("response_type", "message", "sql", "rows", "columns", "error", "error_category",
+                 "truncated"):
+        setattr(result, name, getattr(chosen, name))
+    result.escalation_model = model

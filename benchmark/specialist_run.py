@@ -114,8 +114,8 @@ async def run(args: argparse.Namespace) -> Path:
             schemas[q.db_id] = native_schema(db_path)
         question = f"{q.evidence}\n{q.question}" if q.evidence else q.question
         messages = [{"role": "user", "content": PROMPT.format(schema=schemas[q.db_id], question=question)}]
-        started = time.perf_counter()
         async with sem:
+            started = time.perf_counter()  # service time, not time queued for the slot
             try:
                 result = await complete(messages, args.model, max_tokens=args.max_tokens,
                                         temperature=0.0, timeout_s=args.timeout)
