@@ -964,3 +964,45 @@ Every comparison is paired, with 95% CIs by database.
   - The deterministic rewrite (`benchmark/numeric_fix.py`) adds nothing on top. It stays an
     offline prototype: 17/0 alone on the old run, and 7 fires with 0/0 over 5,851
     current answers.
+
+## 2026-10-01 — Correction on Experiment A's 99%; cascade adopted; stored-value hints
+- **The 99% "reference contract" arm is answer leakage by construction, not evidence that
+  only understanding is missing.**
+  - Its contracts were written by Sonnet 5.5 *from the adjudicated reference SQL and
+    result*. They give the exact output columns, filters (including stored values),
+    aggregation, ordering, limit and formatting: a plain-English paraphrase of the answer.
+    It was then scored against that same reference.
+  - **Checks:**
+    - On the 188 questions whose key was corrected, A2 scores 97.3% on the corrected key
+      but **9.6% on BIRD's official key** (direct: 14.9%). It reproduces whichever
+      reference it was told.
+    - Its SQL moves toward the reference's tokens (overlap 0.68 → 0.74 on sound keys,
+      0.69 → 0.79 on corrected ones).
+    - Only 28 contracts repeat a database value absent from the question, so the leak is
+      mostly structural rather than literal values.
+  - **What it does show:** when the exact requirements are spelled out, the model can write
+    the SQL (the dictation test). It does not show how much a fair reader of the question
+    could recover. The 154-case classification estimates about 87 recoverable cases and
+    about 67 that need the key's own choices.
+  - The honest numbers are the direct arm (76.9% on corrected training keys), the
+    self-written contract (−4.5) and the Mini-Dev gate (official keys).
+- **Cascade adopted by the owner** as the frozen configuration (`config 6f95c1e4`, README
+  updated). The easy-slice gate failed on width (75.0% → 74.8%, 3/3).
+- **Replaying the cascade on the classified misses:** it fixes only 8 of the 80 recoverable
+  misses that the bank's own direct answer also got wrong (misread 3, evidence 3, extra
+  columns 1, value format 1). The other families mostly share the same misreadings.
+- **Stored-value hints** (`src/value_hints.py`, `run_bird --value-hints`, off by default).
+  - **How it works:** after an empty or all-NULL answer, each text literal compared with a
+    column is checked against the database. If it isn't stored, up to three similar stored
+    values are listed ('Allen' → 'Allen County', trailing spaces and periods, 'Kazakstan'),
+    plus slash-date formats, inside the existing one-time empty retry. Its replacement guard
+    is unchanged.
+  - **Offline:** 13 of the 17 non-comma stored-value misses get a correct hint.
+  - **Paired run** on the 689 labelled questions (corrected keys; pre-set rule: fixes ≥ 2×
+    breaks where it fires, and no overall loss):
+    - fired with hints on 19 questions: 9 → 15, **6 fixes / 0 breaks**;
+    - any retry: 7 / 0;
+    - excluding `regional_sales` (whose profile also changed): −0.5 [−2.2, +1.1], which is
+      rerun noise.
+  - **Rule passed.** Adoption into the frozen configuration awaits the owner; no Mini-Dev
+    look remains to gate it.
