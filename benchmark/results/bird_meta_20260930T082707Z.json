@@ -1,0 +1,68 @@
+{
+ "questions": "data/bird/splits/train_dev.json",
+ "dataset_sha256_16": "e5503cce83be1678",
+ "db_dir": "data/bird/train/train_databases",
+ "database_sha256_16": {
+  "movie": "4d87ad371470f07a",
+  "restaurant": "39dbaf39bf244e10",
+  "sales_in_weather": "470eb5d25cd28104",
+  "soccer_2016": "84651eed21dbfae9"
+ },
+ "question_count": 12,
+ "effective_prompt_sha256_16": "a5288b1c7019d28f",
+ "effective_prompt_by_db": {
+  "movie": "b24326fc4f1a79ae",
+  "restaurant": "0d1eae3e198d53b0",
+  "sales_in_weather": "ce05894bda661123",
+  "soccer_2016": "a448dd34df22c02f"
+ },
+ "config": {
+  "models": [
+   "accounts/fireworks/models/deepseek-v4p1-flash"
+  ],
+  "prompt_profile": "benchmark",
+  "quote_identifiers": true,
+  "pipeline_repairs": true,
+  "dictionary": false,
+  "fewshot": 0,
+  "fewshot_pool_sha256_16": null,
+  "temperature": 0.0,
+  "max_tokens": 400,
+  "reasoning_effort": "none",
+  "llm_timeout_s": 60.0,
+  "max_repairs": 1,
+  "truncation_retry_tokens": 1200,
+  "cascade_models": [
+   "openrouter/qwen/qwen3-coder-next",
+   "accounts/fireworks/models/gpt-oss-120b"
+  ],
+  "profile_facts": true
+ },
+ "config_sha256_16": "6f95c1e4ad7ca163",
+ "git_commit": "318ba6aed9da29ab6c5df6580f7c61c8f6c99548",
+ "code_state_sha256_16": "15c4717bebe693a5",
+ "git_dirty": true,
+ "repeats": 1,
+ "difficulty": null,
+ "db": null,
+ "limit": 12,
+ "per_db": null,
+ "ids": null,
+ "seed": 0,
+ "expected_rows": [
+  26,
+  56,
+  108,
+  130,
+  201,
+  231,
+  326,
+  366,
+  370,
+  419,
+  431,
+  459
+ ],
+ "expected_repeats": 1,
+ "complete": true
+}

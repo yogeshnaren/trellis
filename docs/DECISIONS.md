@@ -899,7 +899,7 @@ Every comparison is paired, with 95% CIs by database.
 ## 2026-09-30 — Agreement cascade gated on Mini-Dev; Experiments A and D; text-number profile fix
 - **Budget.** The owner raised the Fireworks cap to **$15** (`.env` default updated).
   - A run launched on the whole `train_design` split instead of its 194-question subset cost
-    **$2.09** by mistake. It is kept as a full current-configuration training run.
+    **$2.09** by mistake. It is kept locally as a full current-configuration training run (13 MB, `20260930T094211Z`, not committed).
   - Ledger: Fireworks $12.99 of $15; OpenRouter $0.92 of $5.
 - **Agreement cascade** (`Agent(cascade_models=...)`, `run_bird --cascade-models`), no
   Arctic:
@@ -1006,3 +1006,6 @@ Every comparison is paired, with 95% CIs by database.
       rerun noise.
   - **Rule passed.** Adoption into the frozen configuration awaits the owner; no Mini-Dev
     look remains to gate it.
+- **Stored-value hints adopted by the owner (2026-10-01).** The frozen configuration is now
+  the cascade plus `--value-hints`, as in the README. The combination has no Mini-Dev look;
+  its evidence is the paired training result above (7 fixes / 0 breaks where it fires).
