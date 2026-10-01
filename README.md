@@ -199,24 +199,28 @@ identifiers, one retry of a refusal, and one re-check of an empty result. Forbid
 **How results are protected from self-deception.** Runs are pinned by content (database hashes,
 effective prompt, config, code state) and refuse comparison if anything but the declared variable
 differs. Iteration happens on held-out train databases, with a separate lockbox, and Mini-Dev is an
-infrequent gate (2 of 4 looks used). Mini-Dev failures were read to find causes, so it is a gate and not an
+infrequent gate (all 4 looks used; the last one gated the agreement cascade). Mini-Dev failures were read to find causes, so it is a gate and not an
 untouched set. One cross-process ledger enforces spend. The dated log, including reversals, is in
 [`docs/DECISIONS.md`](docs/DECISIONS.md).
 
 ## Reproduce
 
-The frozen configuration (`config baff9689`) runs on the default model with the flags below. `--budget` is
-the ledger ceiling in dollars, so a run stops before overspending.
+The frozen configuration (`config 6f95c1e4`, adopted 2026-09-30 with the agreement cascade) runs
+deepseek-v4p1-flash with qwen3-coder-next (OpenRouter) answering at the same time and gpt-oss-120b
+asked only when the two disagree. `--budget` is the ledger ceiling in dollars, so a run stops before
+overspending.
 
 ```bash
 uvx --with-editable . pytest && uvx --with-editable . ruff check src benchmark tests
 uv run python -m benchmark.preflight --models accounts/fireworks/models/deepseek-v4p1-flash  # is the model callable?
 ./scripts/setup_bird_minidev.sh           # ~800MB download, data/bird/ is gitignored
 
-# BIRD Mini-Dev, 500 x 3 (about $0.3, about 40 minutes at concurrency 8)
+# BIRD Mini-Dev, 500 x 3 (about $1.0 at measured prices, about 75 minutes at concurrency 3)
 uv run python -m benchmark.run_bird --prompt-profile benchmark --quote-identifiers \
-  --pipeline-repairs --reasoning-effort none --llm-timeout 60 --repeats 3 --concurrency 8 \
-  --seed 0 --budget 6.00 --report benchmark/results/bird_report_mine.md
+  --pipeline-repairs --profile-facts --truncation-retry 1200 --reasoning-effort none \
+  --llm-timeout 60 --cascade-models openrouter/qwen/qwen3-coder-next \
+  accounts/fireworks/models/gpt-oss-120b --repeats 3 --concurrency 3 --seed 0 --budget 15.00 \
+  --report benchmark/results/bird_report_mine.md
 
 # Chinook dev set, product prompt, with the raw-prompt control arm
 uv run python -m benchmark.run_bench --models accounts/fireworks/models/deepseek-v4p1-flash \

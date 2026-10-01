@@ -42,6 +42,7 @@ from src.prompts import (
     SQLResponse,
 )
 from src.schema import DEFAULT_DB_PATH
+from src.value_hints import value_hints as stored_value_hints
 
 CompleteFn = Callable[..., Awaitable[LLMResult]]
 
@@ -115,6 +116,7 @@ class Agent:
         escalation_models: tuple[str, ...] = (),
         shadow_empty_escalation: bool = False,
         cascade_models: tuple[str, ...] = (),
+        value_hints: bool = False,
     ):
         self.model = model
         self.conn = conn
@@ -150,6 +152,10 @@ class Agent:
         # time) and the result most models share is delivered, ties going to the primary. An
         # error is never delivered while another model has an answer that runs. Off by default.
         self.cascade_models = cascade_models
+        # Benchmark-mode stored-value hints (docs/DECISIONS.md 2026-09-30): the empty-result
+        # retry also covers all-NULL answers and is told which compared literals the database
+        # does not store, with similar stored values and slash-date formats. Off by default.
+        self.value_hints = value_hints
 
     async def ask(self, question: str, ctx: ConversationContext) -> AgentResult:
         if self.cascade_models:
@@ -373,7 +379,7 @@ class Agent:
                 category = "repair-exhausted" if result.repaired else "execute-failed"
                 return self._finish(result, str(exc), category, started)
             result.t_exec_ms += (time.perf_counter() - exec_started) * 1_000
-            if self.pipeline_repairs and not rows:
+            if self.pipeline_repairs and (not rows or (self.value_hints and _all_null(rows))):
                 retried = await self._retry_empty(
                     messages, llm_result.text, sql, result, model, request_options
                 )
@@ -401,10 +407,15 @@ class Agent:
         so this can add a call but never turn a delivered answer into an error.
         """
         result.empty_retried = True
+        prompt = EMPTY_RESULT_PROMPT.format(sql=sql)
+        if self.value_hints:
+            hints = stored_value_hints(sql, self.db_path)
+            if hints:
+                prompt += "\nStored-value checks:\n" + "\n".join(f"- {hint}" for hint in hints)
         retry_messages = [
             *messages,
             {"role": "assistant", "content": answer},
-            {"role": "user", "content": EMPTY_RESULT_PROMPT.format(sql=sql)},
+            {"role": "user", "content": prompt},
         ]
         try:
             llm_result = await self.complete_fn(
@@ -438,7 +449,8 @@ class Agent:
             return None
         finally:
             result.t_exec_ms += (time.perf_counter() - exec_started) * 1_000
-        return (candidate, outcome) if outcome[1] else None
+        rows = outcome[1]
+        return (candidate, outcome) if rows and not (self.value_hints and _all_null(rows)) else None
 
     @staticmethod
     def _finish(
@@ -494,3 +506,7 @@ def _deliver(result: AgentResult, chosen: AgentResult, model: str) -> None:
                  "truncated"):
         setattr(result, name, getattr(chosen, name))
     result.escalation_model = model
+
+
+def _all_null(rows: list[tuple[Any, ...]]) -> bool:
+    return bool(rows) and all(value is None for row in rows for value in row)

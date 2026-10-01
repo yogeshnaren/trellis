@@ -208,6 +208,7 @@ async def benchmark(args: argparse.Namespace) -> Path:
                     escalation_models=tuple(getattr(args, "escalation_models", None) or ()),
                     shadow_empty_escalation=getattr(args, "shadow_empty_escalation", False),
                     cascade_models=tuple(getattr(args, "cascade_models", None) or ()),
+                    value_hints=getattr(args, "value_hints", False),
                 )
                 prompt = (
                     STRATEGIES[args.strategy]
@@ -371,6 +372,7 @@ def run_metadata(args: argparse.Namespace, questions: list[BirdQuestion]) -> dic
             else {}
         ),
         **({"shadow_empty_escalation": True} if getattr(args, "shadow_empty_escalation", False) else {}),
+        **({"value_hints": True} if getattr(args, "value_hints", False) else {}),
         **(
             {"cascade_models": list(args.cascade_models)}
             if getattr(args, "cascade_models", None)
@@ -631,6 +633,12 @@ def parse_args() -> argparse.Namespace:
         help="Agreement cascade: the first model answers at the same time as --models; if their "
         "results match, that answer is delivered, otherwise the rest answer and the majority "
         "result is delivered (ties to the primary). Off by default.",
+    )
+    parser.add_argument(
+        "--value-hints",
+        action="store_true",
+        help="Empty-result retry also covers all-NULL answers and lists filter literals the "
+        "database does not store, with similar stored values (benchmark mode; off by default).",
     )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(

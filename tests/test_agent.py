@@ -448,3 +448,49 @@ def test_cascade_first_stage_runs_concurrently(tmp_path: Path) -> None:
             conn.close()
 
     assert asyncio.run(scenario()).cascade_stage == 1
+
+
+def test_value_hints_name_similar_stored_values() -> None:
+    from src.schema import DEFAULT_DB_PATH
+    from src.value_hints import value_hints
+
+    hints = value_hints("SELECT Name FROM Artist WHERE Name = 'ac/dc '", DEFAULT_DB_PATH)
+    assert hints and "'AC/DC'" in hints[0]
+    assert value_hints("SELECT Name FROM Artist WHERE Name = 'AC/DC'", DEFAULT_DB_PATH) == []  # stored: no hint
+
+
+def _run_empty_retry(tmp_path: Path, first: str, second: str, *, hints: bool) -> tuple[Any, list[str]]:
+    import asyncio
+
+    prompts: list[str] = []
+    queue = iter([_query(first), _query(second)])
+
+    async def fake_complete(messages: list[dict[str, str]], model: str, *args: Any, **kwargs: Any) -> LLMResult:
+        prompts.append(messages[-1]["content"])
+        return next(queue)
+
+    async def scenario() -> Any:
+        conn = connect_readonly()
+        try:
+            agent = Agent(MODEL_GPT_OSS, conn, BudgetGuard(1.0, tmp_path / "spend.sqlite"),
+                          complete_fn=fake_complete, pipeline_repairs=True, value_hints=hints)
+            return await agent.ask("q", ConversationContext(get_schema()))
+        finally:
+            conn.close()
+
+    return asyncio.run(scenario()), prompts
+
+
+def test_empty_retry_carries_stored_value_hints(tmp_path: Path) -> None:
+    result, prompts = _run_empty_retry(
+        tmp_path, "SELECT Name FROM Artist WHERE Name = 'ac/dc '", "SELECT Name FROM Artist WHERE Name = 'AC/DC'", hints=True)
+    assert result.empty_retried and result.rows == [("AC/DC",)]
+    assert "Stored-value checks" in prompts[1] and "'AC/DC'" in prompts[1]
+
+
+def test_all_null_answers_retry_only_with_value_hints(tmp_path: Path) -> None:
+    null_sql = "SELECT MAX(Name) FROM Artist WHERE Name = 'nobody'"
+    result, prompts = _run_empty_retry(tmp_path, null_sql, FOUND, hints=True)
+    assert result.empty_retried and result.sql == FOUND and len(prompts) == 2
+    result, prompts = _run_empty_retry(tmp_path, null_sql, FOUND, hints=False)
+    assert not result.empty_retried and result.rows == [(None,)] and len(prompts) == 1
