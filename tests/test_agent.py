@@ -494,3 +494,43 @@ def test_all_null_answers_retry_only_with_value_hints(tmp_path: Path) -> None:
     assert result.empty_retried and result.sql == FOUND and len(prompts) == 2
     result, prompts = _run_empty_retry(tmp_path, null_sql, FOUND, hints=False)
     assert not result.empty_retried and result.rows == [(None,)] and len(prompts) == 1
+
+
+def _run_cascade_projection(tmp_path: Path, by_model: dict[str, LLMResult]) -> tuple[Any, list[str]]:
+    import asyncio
+
+    called: list[str] = []
+
+    async def fake_complete(messages: list[dict[str, str]], model: str, *args: Any, **kwargs: Any) -> LLMResult:
+        called.append(model)
+        return by_model[model]
+
+    async def scenario() -> Any:
+        conn = connect_readonly()
+        try:
+            agent = Agent(MODEL_GPT_OSS, conn, BudgetGuard(1.0, tmp_path / "spend.sqlite"), complete_fn=fake_complete,
+                          cascade_models=("m2", "m3"), cascade_projection=True)
+            return await agent.ask("q", ConversationContext(get_schema()))
+        finally:
+            conn.close()
+
+    return asyncio.run(scenario()), called
+
+
+WIDE = "SELECT Name, ArtistId FROM Artist WHERE Name LIKE 'AC%'"
+
+
+def test_projection_cascade_prefers_the_narrower_result_at_stage_one(tmp_path: Path) -> None:
+    result, called = _run_cascade_projection(tmp_path, {MODEL_GPT_OSS: _query(WIDE), "m2": _query(FOUND), "m3": _query(OTHER)})
+    assert "m3" not in called and result.cascade_stage == 1
+    assert result.sql == FOUND and result.escalation_model == "m2"
+
+
+def test_projection_cascade_narrows_the_voted_answer(tmp_path: Path) -> None:
+    result, called = _run_cascade_projection(tmp_path, {MODEL_GPT_OSS: _query(WIDE), "m2": _query(OTHER), "m3": _query(WIDE)})
+    assert "m3" in called and result.cascade_stage == 2 and result.sql == WIDE  # nothing narrower agrees
+
+
+def test_projection_cascade_keeps_unrelated_results(tmp_path: Path) -> None:
+    result, _ = _run_cascade_projection(tmp_path, {MODEL_GPT_OSS: _query(FOUND), "m2": _query(OTHER), "m3": _query(FOUND)})
+    assert result.sql == FOUND and result.cascade_stage == 2

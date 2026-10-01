@@ -1048,3 +1048,10 @@ Every comparison is paired, with 95% CIs by database.
   - Priced for the record (Fireworks, 2026-10-01): LoRA SFT costs $0.50, $3 or $10 per 1M
     training tokens for models up to 16B, 16–80B and over 300B. DeepSeek V4 Flash supports
     LoRA training, but a tuned model needs a dedicated deployment to serve.
+- **Projection-aware vote adopted by the owner (2026-10-01).** It is
+  `Agent(cascade_projection=True)` and `run_bird --cascade-projection`, now in the README's
+  frozen configuration.
+  - A narrower result at stage 1 is delivered without asking gpt-oss.
+  - After a vote, a result narrower than the winner (the winner minus extra columns) replaces
+    it.
+  - Wide results over 6 columns are skipped. Three agent tests cover it.

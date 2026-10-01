@@ -209,6 +209,7 @@ async def benchmark(args: argparse.Namespace) -> Path:
                     shadow_empty_escalation=getattr(args, "shadow_empty_escalation", False),
                     cascade_models=tuple(getattr(args, "cascade_models", None) or ()),
                     value_hints=getattr(args, "value_hints", False),
+                    cascade_projection=getattr(args, "cascade_projection", False),
                 )
                 prompt = (
                     STRATEGIES[args.strategy]
@@ -373,6 +374,7 @@ def run_metadata(args: argparse.Namespace, questions: list[BirdQuestion]) -> dic
         ),
         **({"shadow_empty_escalation": True} if getattr(args, "shadow_empty_escalation", False) else {}),
         **({"value_hints": True} if getattr(args, "value_hints", False) else {}),
+        **({"cascade_projection": True} if getattr(args, "cascade_projection", False) else {}),
         **(
             {"cascade_models": list(args.cascade_models)}
             if getattr(args, "cascade_models", None)
@@ -633,6 +635,12 @@ def parse_args() -> argparse.Namespace:
         help="Agreement cascade: the first model answers at the same time as --models; if their "
         "results match, that answer is delivered, otherwise the rest answer and the majority "
         "result is delivered (ties to the primary). Off by default.",
+    )
+    parser.add_argument(
+        "--cascade-projection",
+        action="store_true",
+        help="Agreement cascade treats a result equal to another's minus extra columns as the "
+        "same answer and delivers the narrower one (off by default).",
     )
     parser.add_argument(
         "--value-hints",

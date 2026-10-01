@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import copy
+import itertools
 import sqlite3
 import time
 from collections import Counter
@@ -117,6 +118,7 @@ class Agent:
         shadow_empty_escalation: bool = False,
         cascade_models: tuple[str, ...] = (),
         value_hints: bool = False,
+        cascade_projection: bool = False,
     ):
         self.model = model
         self.conn = conn
@@ -152,6 +154,10 @@ class Agent:
         # time) and the result most models share is delivered, ties going to the primary. An
         # error is never delivered while another model has an answer that runs. Off by default.
         self.cascade_models = cascade_models
+        # Projection-aware cascade (2026-10-01): a result equal to another's minus extra columns
+        # counts as the same answer and the narrower one is preferred ("which X has the most
+        # Y" asks for X, not Y). On the frozen banks the narrower was right 21 times, the wider 0.
+        self.cascade_projection = cascade_projection
         # Benchmark-mode stored-value hints (docs/DECISIONS.md 2026-09-30): the empty-result
         # retry also covers all-NULL answers and is told which compared literals the database
         # does not store, with similar stored values and slash-date formats. Off by default.
@@ -197,11 +203,23 @@ class Agent:
         answers = [(self.model, primary), (first, partner)]
         sigs = [self._signature(a) for _, a in answers]
         agreed = sigs[0] is not None and sigs[0] == sigs[1]
+        narrow_first = None
+        if not agreed and self.cascade_projection:
+            if self._projects(primary, partner):
+                narrow_first = 1
+            elif self._projects(partner, primary):
+                narrow_first = 0
+        if narrow_first is not None:
+            agreed = True
         if not agreed and rest:
             extra = await asyncio.gather(*(other(model) for model in rest))
             answers += list(zip(rest, extra, strict=True))
             sigs += [self._signature(a) for a in extra]
-        pick = 0 if agreed else _vote([a for _, a in answers], sigs)
+        pick = (narrow_first or 0) if agreed else _vote([a for _, a in answers], sigs)
+        if self.cascade_projection and not agreed:
+            narrower = [i for i, (_, a) in enumerate(answers) if i != pick and self._projects(answers[pick][1], a)]
+            if narrower:
+                pick = min(narrower, key=lambda i: len(answers[i][1].columns or []))
         result = primary
         for i, (model, answer) in enumerate(answers):
             if i:
@@ -218,6 +236,33 @@ class Agent:
         result.cascade_stage = 1 if agreed else 2
         result.t_total_ms = (time.perf_counter() - started) * 1_000
         return result
+
+    def _full_rows(self, answer: AgentResult) -> list[tuple[Any, ...]] | None:
+        if not answer.ok or answer.response_type != "query" or not answer.rows or not answer.sql:
+            return None
+        if not answer.truncated:
+            return answer.rows
+        try:
+            return execute(self.conn, answer.sql, limit=None)[1]
+        except sqlite3.Error:
+            return None
+
+    def _projects(self, wide: AgentResult, narrow: AgentResult) -> bool:
+        """True when ``narrow``'s row set equals ``wide``'s rows restricted to some ordered
+        subset of its columns (strictly fewer columns; wide results over 6 columns skipped)."""
+        wide_rows, narrow_rows = self._full_rows(wide), self._full_rows(narrow)
+        if not wide_rows or not narrow_rows:
+            return False
+        k, n = len(wide_rows[0]), len(narrow_rows[0])
+        if n >= k or k > 6:
+            return False
+
+        def norm(v: Any) -> Any:
+            return float(v) if isinstance(v, int | float) and not isinstance(v, bool) else v
+
+        target = {tuple(map(norm, row)) for row in narrow_rows}
+        return any({tuple(norm(row[i]) for i in idx) for row in wide_rows} == target
+                   for idx in itertools.permutations(range(k), n))
 
     def _signature(self, answer: AgentResult) -> str | None:
         """Result signature of a non-empty query answer (None for errors, refusals, no rows)."""

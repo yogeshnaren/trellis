@@ -208,7 +208,8 @@ untouched set. One cross-process ledger enforces spend. The dated log, including
 The frozen configuration (`config 6f95c1e4`, adopted 2026-09-30 with the agreement cascade) runs
 deepseek-v4p1-flash with qwen3-coder-next (OpenRouter) answering at the same time and gpt-oss-120b
 asked only when the two disagree. An empty or all-NULL answer gets one retry told which filter
-values the database does not store, with similar stored values (`--value-hints`). `--budget` is the ledger ceiling in dollars, so a run stops before
+values the database does not store, with similar stored values (`--value-hints`). Two results that differ only by extra columns count as
+the same answer and the narrower one is delivered (`--cascade-projection`). `--budget` is the ledger ceiling in dollars, so a run stops before
 overspending.
 
 ```bash
@@ -219,7 +220,7 @@ uv run python -m benchmark.preflight --models accounts/fireworks/models/deepseek
 # BIRD Mini-Dev, 500 x 3 (about $1.0 at measured prices, about 75 minutes at concurrency 3)
 uv run python -m benchmark.run_bird --prompt-profile benchmark --quote-identifiers \
   --pipeline-repairs --profile-facts --truncation-retry 1200 --reasoning-effort none \
-  --llm-timeout 60 --value-hints --cascade-models openrouter/qwen/qwen3-coder-next \
+  --llm-timeout 60 --value-hints --cascade-projection --cascade-models openrouter/qwen/qwen3-coder-next \
   accounts/fireworks/models/gpt-oss-120b --repeats 3 --concurrency 3 --seed 0 --budget 15.00 \
   --report benchmark/results/bird_report_mine.md
 
