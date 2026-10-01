@@ -1055,3 +1055,20 @@ Every comparison is paired, with 95% CIs by database.
   - After a vote, a result narrower than the winner (the winner minus extra columns) replaces
     it.
   - Wide results over 6 columns are skipped. Three agent tests cover it.
+
+## 2026-10-01 — Full current configuration measured on the 689 labelled training questions
+- **Configuration:** cascade + projection vote + value hints + profile v3. Runs
+  `20261001T090159Z` and `20261001T091025Z` (commit `527a6ae`), compared with our model
+  alone on 2026-09-29 (same questions, paired by database).
+
+  | Keys | 09-29 our model alone | Full configuration | Δ [95% CI] | Excluding `regional_sales` |
+  |---|---:|---:|---:|---:|
+  | Corrected | 75.9% | **81.7%** | +5.8 [+3.9, +8.0] (52 fixes / 12 breaks) | +3.6 [+1.6, +5.8] |
+  | BIRD official | 62.0% | **65.7%** | +3.8 [+2.0, +5.8] (35 / 9) | +2.5 [+0.9, +4.2] |
+
+- Against our model + value hints + profile fix (the cascade's own contribution): +1.7 corrected,
+  +1.6 official.
+- **Cost and latency:** $0.00158 per answer uncached ($0.00096 measured); p50 2.48 s, p90
+  6.90 s. 79% of questions stopped at stage 1. Within all submission ceilings.
+- **Dev estimate (unmeasured):** about 68–69% (66.5% + about 2 from the cascade). These are
+  training questions; the dev and hidden-test effects can differ.
