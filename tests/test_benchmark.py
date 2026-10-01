@@ -690,3 +690,14 @@ def test_promotion_gates_flag_easy_losses_and_protected_cases() -> None:
     assert "Protected correct cases lost: **10** (10 easy)" in lines
     same = "\n".join(promotion_gates(list(range(40)), questions, was, dict(was), 200, 0))
     assert "**pass**" in same and "lost: **0**" in same
+
+
+def test_efficiency_gate_requires_a_measured_gain_for_extra_cost_or_latency() -> None:
+    from benchmark.analyze import efficiency_gate
+
+    same = efficiency_gate((0.0002, 0.00067, 1.6), (0.0002, 0.00068, 1.7), 3.0, 3.2, 0.0, -0.01)
+    assert "pass" in same and "within tolerance" in same
+    costly_no_gain = efficiency_gate((0.0002, 0.00067, 1.6), (0.0004, 0.00117, 2.2), 3.0, 6.7, 0.004, -0.002)
+    assert "FAIL" in costly_no_gain and "cost ×1.75" in costly_no_gain
+    costly_gain = efficiency_gate((0.0002, 0.00067, 1.6), (0.0004, 0.00117, 2.2), 3.0, 6.7, 0.02, 0.004)
+    assert "**pass**" in costly_gain and "pts per +100% cost" in costly_gain

@@ -474,6 +474,10 @@ NON_INFERIORITY_MARGIN_PTS = 1.5
 SUBMISSION_MAX_UNCACHED_USD = 0.01  # mean per answer, all per-question charges included
 SUBMISSION_MAX_ANSWER_USD = 0.05  # hard cap for any single answer
 SUBMISSION_MAX_P90_S = 30.0
+# Efficiency gate (2026-10-01): a change may add cost or latency only for a measured gain.
+COST_TOLERANCE = 0.10  # +10% uncached $/answer
+P50_TOLERANCE_S = 0.5
+P90_TOLERANCE_S = 1.0
 
 
 def p90_seconds(runs: dict[int, list[dict[str, Any]]]) -> float:
@@ -606,6 +610,7 @@ def flips_report(
     old_cost = cost_latency({r: old[r] for r in shared})
     new_cost = cost_latency({r: new[r] for r in shared})
     new_p90 = p90_seconds({r: new[r] for r in shared})
+    old_p90 = p90_seconds({r: old[r] for r in shared})
     new_max = max_answer_cost({r: new[r] for r in shared})
     ceilings_ok = within_submission_ceilings(new_cost[1], new_max, new_p90)
     if track == "submission":
@@ -658,10 +663,10 @@ def flips_report(
             f"[{macro_ci[0] * 100:+.2f}, {macro_ci[1] * 100:+.2f}] |"
         ),
         "",
-        "| Run | $/answer measured | $/answer uncached-equivalent | P50 (s) |",
-        "|---|---:|---:|---:|",
-        f"| old | {old_cost[0]:.6f} | {old_cost[1]:.6f} | {old_cost[2]:.2f} |",
-        f"| new | {new_cost[0]:.6f} | {new_cost[1]:.6f} | {new_cost[2]:.2f} |",
+        "| Run | $/answer measured | $/answer uncached-equivalent | P50 (s) | P90 (s) |",
+        "|---|---:|---:|---:|---:|",
+        f"| old | {old_cost[0]:.6f} | {old_cost[1]:.6f} | {old_cost[2]:.2f} | {old_p90:.2f} |",
+        f"| new | {new_cost[0]:.6f} | {new_cost[1]:.6f} | {new_cost[2]:.2f} | {new_p90:.2f} |",
         "",
         (
             f"**Track: {track}.** "
@@ -716,6 +721,7 @@ def flips_report(
         if bands.get(band):
             lines.append(_flip_rows(band, bands[band], was, now))
     lines += promotion_gates(shared, by_row, was, now, iterations, seed)
+    lines.append(efficiency_gate(old_cost, new_cost, old_p90, new_p90, row_delta, row_ci[0]))
     consistent = [r for r in shared if abs(now[r] - was[r]) == 1.0]
     lines += [
         "",
@@ -740,6 +746,35 @@ def easy_slice(question: BirdQuestion) -> bool:
     if question.difficulty != "unknown":
         return question.difficulty == "simple"
     return sql_complexity(question.gold_sql) == "low"
+
+
+def efficiency_gate(
+    old_cost: tuple[float, float, float],
+    new_cost: tuple[float, float, float],
+    old_p90: float,
+    new_p90: float,
+    delta: float,
+    ci_low: float,
+) -> str:
+    """Cost/latency gate: extra cost (> COST_TOLERANCE) or latency (P50 > P50_TOLERANCE_S,
+    P90 > P90_TOLERANCE_S) passes only with a measured accuracy gain (paired CI lower bound
+    > 0). Reports the gain per +100% cost so trade-offs stay on the quality/cost/latency
+    frontier."""
+    cost_ratio = new_cost[1] / old_cost[1] if old_cost[1] else 1.0
+    p50_change, p90_change = new_cost[2] - old_cost[2], new_p90 - old_p90
+    over = [name for name, hit in (
+        (f"cost ×{cost_ratio:.2f}", cost_ratio > 1 + COST_TOLERANCE),
+        (f"P50 {p50_change:+.2f}s", p50_change > P50_TOLERANCE_S),
+        (f"P90 {p90_change:+.2f}s", p90_change > P90_TOLERANCE_S),
+    ) if hit]
+    if not over:
+        return (f"- Efficiency: cost ×{cost_ratio:.2f}, P50 {p50_change:+.2f}s, P90 "
+                f"{p90_change:+.2f}s, within tolerance: **pass**.")
+    ok = ci_low > 0
+    price = (f"; {delta * 100 / (cost_ratio - 1):+.2f} pts per +100% cost"
+             if cost_ratio > 1 else "")
+    return (f"- Efficiency: over tolerance ({', '.join(over)}); requires a measured gain (CI lower "
+            f"bound > 0): **{'pass' if ok else 'FAIL'}**{price}.")
 
 
 def promotion_gates(

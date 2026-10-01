@@ -1009,3 +1009,42 @@ Every comparison is paired, with 95% CIs by database.
 - **Stored-value hints adopted by the owner (2026-10-01).** The frozen configuration is now
   the cascade plus `--value-hints`, as in the README. The combination has no Mini-Dev look;
   its evidence is the paired training result above (7 fixes / 0 breaks where it fires).
+
+## 2026-10-01 — R-VES measured; efficiency gate; misreading follow-ups
+- **R-VES** (`benchmark/rves.py`, BIRD's `evaluation_ves.py` method with 10 timing iterations;
+  aggregates only):
+
+  | Run | EX | R-VES |
+  |---|---:|---:|
+  | Cleaned dev (single model) | 66.49 | **59.53** |
+  | Mini-Dev gate 3 (repeat 0) | 65.0 | 57.98 |
+  | Mini-Dev look 4 cascade (repeat 0) | 66.0 | 58.47 |
+
+  - About 70% of correct answers earn reward 0.75: our SQL runs up to 2× slower than gold.
+  - R-VES/EX is 0.89, against about 0.94–0.96 for published leaders. This is secondary,
+    since the leaderboard ranks by EX.
+- **Efficiency gate** (`analyze.efficiency_gate`, part of the P42 gates in the flips
+  report; P90 added to its cost table):
+  - more than +10% uncached $/answer, +0.5 s P50 or +1 s P90 passes only with a measured gain
+    (paired CI lower bound > 0);
+  - the report also states points per +100% cost.
+- **Recoverable misreadings** (cascade fixes only 8 of 80):
+  - *Evidence-coverage trigger* (an evidence literal or column missing from the SQL):
+    wrong 34% when it fires vs 22% otherwise, and it catches 21% of wrong answers. Too
+    imprecise for a retry; not built.
+  - *Projection-aware vote:* when one family's result equals another's minus extra
+    columns, the narrower was right 21 times and the wider 0 times. In the cascade it adds
+    +2 fixes / 0 breaks on 689 questions (+0.29 [0.00, +0.73]) and 8 fewer stage-2 calls.
+    It was designed after seeing both banks, so there is no unused confirmation set.
+    Not adopted yet.
+  - *"Count distinct entities" rule: rejected.* BIRD's own train keys use
+    COUNT(DISTINCT …) in only 14% of "how many" questions with a join (5% without). The
+    rule would fight the official key.
+- **Answer-key conventions and fine-tuning: not now.** The 58 convention or ambiguous cases
+  contradict each other (ids vs names, ties, text ordering) or the evidence, and many are
+  specific to one database. BIRD's hidden test uses different databases, so a model tuned on
+  them would learn habits that don't transfer. Arctic, already trained on BIRD, added only
+  about +0.6 as a fourth voter.
+  - Priced for the record (Fireworks, 2026-10-01): LoRA SFT costs $0.50, $3 or $10 per 1M
+    training tokens for models up to 16B, 16–80B and over 300B. DeepSeek V4 Flash supports
+    LoRA training, but a tuned model needs a dedicated deployment to serve.
