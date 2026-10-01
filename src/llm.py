@@ -48,6 +48,7 @@ ErrorCategory = Literal[
     "network-failed",
     "timed-out",
     "model-unavailable",
+    "provider-error",
 ]
 
 

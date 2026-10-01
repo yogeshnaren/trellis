@@ -534,3 +534,29 @@ def test_projection_cascade_narrows_the_voted_answer(tmp_path: Path) -> None:
 def test_projection_cascade_keeps_unrelated_results(tmp_path: Path) -> None:
     result, _ = _run_cascade_projection(tmp_path, {MODEL_GPT_OSS: _query(FOUND), "m2": _query(OTHER), "m3": _query(FOUND)})
     assert result.sql == FOUND and result.cascade_stage == 2
+
+
+def test_provider_errors_fail_one_answer_and_the_cascade_delivers_another(tmp_path: Path) -> None:
+    import asyncio
+
+    import httpx
+    from openai import APIStatusError
+
+    async def fake_complete(messages: list[dict[str, str]], model: str, *args: Any, **kwargs: Any) -> LLMResult:
+        if model == MODEL_GPT_OSS:
+            response = httpx.Response(412, request=httpx.Request("POST", "https://example.invalid"))
+            raise APIStatusError("account suspended", response=response, body=None)
+        return _query(FOUND)
+
+    async def scenario() -> Any:
+        conn = connect_readonly()
+        try:
+            agent = Agent(MODEL_GPT_OSS, conn, BudgetGuard(1.0, tmp_path / "spend.sqlite"),
+                          complete_fn=fake_complete, cascade_models=("m2", "m3"))
+            return await agent.ask("q", ConversationContext(get_schema()))
+        finally:
+            conn.close()
+
+    result = asyncio.run(scenario())
+    assert result.ok and result.sql == FOUND and result.escalation_model == "m2"
+    assert result.candidates[0]["error_category"] == "provider-error"

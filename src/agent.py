@@ -15,6 +15,7 @@ from typing import Any
 
 from openai import (
     APIConnectionError,
+    APIStatusError,
     APITimeoutError,
     AuthenticationError,
     NotFoundError,
@@ -326,6 +327,10 @@ class Agent:
                 return self._finish(result, str(exc), "timed-out", started)
             except APIConnectionError as exc:
                 return self._finish(result, str(exc), "network-failed", started)
+            except APIStatusError as exc:
+                # Any other provider refusal (e.g. 412 account suspended, 5xx after retries) fails
+                # this answer only; cascade or escalation can still deliver another model's.
+                return self._finish(result, str(exc), "provider-error", started)
 
             try:
                 payload = SQLResponse.model_validate_json(llm_result.text)
@@ -474,7 +479,7 @@ class Agent:
                 timeout_s=self.llm_timeout_s,
             )
         except (BudgetExceeded, AuthenticationError, NotFoundError, PermissionDeniedError,
-                RateLimitError, APITimeoutError, APIConnectionError):
+                RateLimitError, APITimeoutError, APIConnectionError, APIStatusError):
             return None
         result.llm_calls.append(llm_result)
         result.t_llm_ms += llm_result.latency_ms
