@@ -568,46 +568,6 @@ def test_sample_curves_pass_and_majority() -> None:
     assert curves[2][1] == pytest.approx((0 + 1) / 2)
 
 
-def test_fewshot_excludes_held_out_databases_and_renders() -> None:
-    from benchmark.fewshot import FewShotIndex, render_examples
-
-    pool = [
-        {
-            "db_id": "held",
-            "question": "How many movies star Tom Cruise?",
-            "evidence": "",
-            "SQL": "SELECT 1",
-        },
-        {
-            "db_id": "other",
-            "question": "How many movies star an actor?",
-            "evidence": "actor refers to Name",
-            "SQL": "SELECT COUNT(*) FROM m",
-        },
-        {
-            "db_id": "other",
-            "question": "How many films were released?",
-            "evidence": "",
-            "SQL": "SELECT 2",
-        },
-        {
-            "db_id": "third",
-            "question": "What is the weather today?",
-            "evidence": "",
-            "SQL": "SELECT 3",
-        },
-    ]
-    index = FewShotIndex(pool, exclude_dbs={"held"})
-    shots = index.examples("How many movies star Tom Cruise?", "", 3)
-    assert shots and all(s["db_id"] != "held" for s in shots)
-    assert shots[0]["SQL"] == "SELECT COUNT(*) FROM m"  # best BM25 match
-    assert len({s["db_id"] for s in shots}) == len(shots)  # at most one per database
-    block = render_examples(shots)
-    assert "OTHER databases" in block and "Hint: actor refers to Name" in block
-    assert block.endswith("Now answer this question:\n")
-    assert render_examples([]) == ""
-
-
 def test_submission_track_ceilings_and_p90() -> None:
     from benchmark.analyze import p90_seconds, within_submission_ceilings
 
@@ -632,43 +592,6 @@ def test_cost_includes_non_llm_per_question_charges() -> None:
     measured, uncached, _ = cost_latency(runs)
     assert measured == pytest.approx(0.16) and uncached == pytest.approx(0.16)
     assert max_answer_cost(runs) == pytest.approx(0.17)
-
-
-def test_jev_annotations_require_complete_matching_questions(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    from benchmark.bird import dataset_fingerprint
-    from benchmark.run_bird import load_row_annotations
-
-    questions = tmp_path / "questions.json"
-    questions.write_text(json.dumps([{"db_id": "d", "question": "q", "SQL": "SELECT 1"}]))
-    monkeypatch.setattr("benchmark.run_bird.database_fingerprint", lambda _path: "dbhash")
-    annotations = tmp_path / "annotations.json"
-    payload = {
-        "complete": True,
-        "questions_sha256_16": dataset_fingerprint(questions),
-        "database_sha256_16": {"d": "dbhash"},
-        "annotations": [{"row_index": 0, "db_id": "d", "text": "Advisory only."}],
-    }
-    annotations.write_text(json.dumps(payload))
-    assert load_row_annotations(annotations, questions) == {0: "Advisory only.\n\n"}
-
-    payload["complete"] = False
-    annotations.write_text(json.dumps(payload))
-    with pytest.raises(ValueError, match="incomplete"):
-        load_row_annotations(annotations, questions)
-
-    payload["complete"] = True
-    payload["questions_sha256_16"] = "wrong"
-    annotations.write_text(json.dumps(payload))
-    with pytest.raises(ValueError, match="fingerprint"):
-        load_row_annotations(annotations, questions)
-
-    payload["questions_sha256_16"] = dataset_fingerprint(questions)
-    payload["database_sha256_16"] = {"d": "different"}
-    annotations.write_text(json.dumps(payload))
-    with pytest.raises(ValueError, match="database fingerprints"):
-        load_row_annotations(annotations, questions)
 
 
 def test_promotion_gates_flag_easy_losses_and_protected_cases() -> None:

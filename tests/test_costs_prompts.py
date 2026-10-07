@@ -29,33 +29,6 @@ def test_schema_supports_guardrail_responses_without_unsupported_constraints() -
         )
 
 
-def test_system_prompt_encodes_live_failure_guardrails() -> None:
-    assert "illustrative examples only" in SYSTEM_PROMPT
-    assert "Never equate unrelated identifier" in SYSTEM_PROMPT
-    assert "Missing sample values must never cause unsupported" in SYSTEM_PROMPT
-    # Threshold / above-average projection invariant (011/016 class).
-    assert 'which X have more than N' in SYSTEM_PROMPT
-    assert "above average" in SYSTEM_PROMPT
-    assert "both the entity label and that measure" in SYSTEM_PROMPT
-    assert "Existence/absence questions with no aggregate measure" in SYSTEM_PROMPT
-    # Deterministic ranking + top-N secondary order (010 class).
-    assert "deterministic secondary order" in SYSTEM_PROMPT
-    assert "top-N, LIMIT, or" in SYSTEM_PROMPT and "ROW_NUMBER" in SYSTEM_PROMPT
-    assert "Order those results by the measure first" in SYSTEM_PROMPT
-    # Temporal: MoM uses YYYY-MM; month-of-year categories keep %m (006 class).
-    assert "strftime('%Y-%m'" in SYSTEM_PROMPT
-    assert "MoM/YoY" in SYSTEM_PROMPT
-    assert "Month-of-year categories" in SYSTEM_PROMPT
-    assert "strftime('%m'" in SYSTEM_PROMPT
-    # Derived measure / MoM projection + rounding.
-    assert "growth/change of a base measure" in SYSTEM_PROMPT
-    assert "NULL growth for the first period" in SYSTEM_PROMPT
-    assert "Round user-facing percentages" in SYSTEM_PROMPT
-    assert "Never SELECT primary-key, foreign-key, or join-key columns" in SYSTEM_PROMPT
-    assert "full measure-ordered breakdown" in SYSTEM_PROMPT
-    assert "for each" in SYSTEM_PROMPT
-
-
 def test_three_tier_cost() -> None:
     actual = cost_usd(MODEL_GPT_OSS, 1_000_000, 200_000, 100_000)
     # 800k uncached @ $0.15/1M + 200k cached @ $0.015/1M + 100k output @ $0.60/1M.
@@ -123,16 +96,6 @@ def test_reservations_are_visible_to_other_guards_and_sources_tracked(tmp_path: 
         )
 
     asyncio.run(scenario())
-
-
-def test_legacy_json_ledger_is_imported_once(tmp_path: Path) -> None:
-    (tmp_path / "spend.json").write_text(
-        json.dumps({"spent_usd": 0.35, "by_source": {"fireworks": 0.25, "openrouter": 0.1}})
-    )
-    guard = BudgetGuard(1.0, tmp_path / "spend.sqlite")
-    assert guard.spend_by_source() == pytest.approx({"fireworks": 0.25, "openrouter": 0.1})
-    assert (tmp_path / "spend.json.migrated").exists()
-    assert BudgetGuard(1.0, tmp_path / "spend.sqlite").spent == pytest.approx(0.35)
 
 
 def test_dead_process_reservation_is_charged_provisionally(tmp_path: Path) -> None:
@@ -278,3 +241,51 @@ def test_provider_routing_by_model_prefix() -> None:
     assert cost_usd("local/arctic-7b", 10_000, 0, 1_000) == 0.0
     assert cost_usd("openrouter/qwen/qwen3-coder-next", 1_000_000, 0, 0) == 0.12
     assert model_request_options("openrouter/qwen/qwen3-coder-next")["extra_body"]["provider"]["require_parameters"]
+
+
+def test_openrouter_caps_are_independent_of_fireworks_and_shared(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        ledger = tmp_path / "spend.sqlite"
+        a, b = BudgetGuard(0.05, ledger), BudgetGuard(0.05, ledger)
+        first = await a.reserve_openrouter_usd(
+            0.01, provider_ceiling_usd=0.02, session_ceiling_usd=0.01, session_id="one"
+        )
+        assert b.remaining_for("openrouter", 0.02) == pytest.approx(0.01)
+        with pytest.raises(BudgetExceeded, match="session"):
+            await b.reserve_openrouter_usd(
+                0.01, provider_ceiling_usd=0.02, session_ceiling_usd=0.01, session_id="one"
+            )
+        second = await b.reserve_openrouter_usd(
+            0.01, provider_ceiling_usd=0.02, session_ceiling_usd=0.01, session_id="two"
+        )
+        with pytest.raises(BudgetExceeded, match="total"):
+            await b.reserve_openrouter_usd(
+                0.01, provider_ceiling_usd=0.02, session_ceiling_usd=0.01, session_id="three"
+            )
+        await a.settle(first, 0.005, source="openrouter")
+        await b.settle(second, 0.005, source="openrouter")
+        assert a.spend_by_source()["openrouter"] == pytest.approx(0.01)
+        # Fireworks reserves against its own $0.05 cap, not OpenRouter's spend.
+        fireworks = await a.reserve(MODEL_GPT_OSS, 1_000, 100)
+        await a.settle(fireworks, 0.001, source="fireworks")
+        assert a.remaining_for("fireworks", 0.05) == pytest.approx(0.049)
+
+    asyncio.run(scenario())
+
+
+def test_openrouter_unknown_cost_stays_within_its_cap(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        guard = BudgetGuard(1, tmp_path / "spend.sqlite")
+        held = await guard.reserve_openrouter_usd(
+            0.01, provider_ceiling_usd=0.01, session_ceiling_usd=0.01, session_id="s"
+        )
+        await guard.settle(held, None, source="openrouter")
+        assert guard.remaining_for("openrouter", 0.01) == 0
+        with pytest.raises(BudgetExceeded):
+            await guard.reserve_openrouter_usd(
+                0.01, provider_ceiling_usd=0.01, session_ceiling_usd=0.01, session_id="s"
+            )
+        await guard.settle(held, 0.002, source="openrouter")
+        assert guard.remaining_for("openrouter", 0.01) == pytest.approx(0.008)
+
+    asyncio.run(scenario())

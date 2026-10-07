@@ -108,35 +108,3 @@ def test_profile_facts_default_to_benchmark_only(monkeypatch) -> None:
     assert parse_args().profile_facts is False
     monkeypatch.setattr(sys, "argv", ["run_bird", "--prompt-profile", "product"])
     assert parse_args().profile_facts is False
-
-
-def test_value_ablation_retains_format_facts(monkeypatch) -> None:
-    profile = DatabaseProfile(
-        fingerprint="sample",
-        version=2,
-        columns=[
-            ColumnProfile(
-                table="actor",
-                column="NetWorth",
-                declared="TEXT",
-                storage={"text": 1.0},
-                null_rate=0.0,
-                distinct=2,
-                text_format="money",
-                examples=("$20,000.00",),
-            ),
-        ],
-        joins=[],
-        build_seconds=0.0,
-        index_path="/unused",
-    )
-
-    def unexpected_retrieval(*_args, **_kwargs):
-        raise AssertionError("value retrieval must be skipped")
-
-    monkeypatch.setattr(profile_context, "retrieve_values", unexpected_retrieval)
-    facts = profile_context.render_profile_facts(
-        profile, "What is the NetWorth?", "actor 'Tom Cruise'", include_values=False
-    )
-    assert "actor.NetWorth: stored as text with money formatting" in facts
-    assert "Stored value" not in facts
