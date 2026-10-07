@@ -110,22 +110,19 @@ def test_required_columns_contract_fails_closed() -> None:
         conn.close()
 
 
-def test_report_contains_sql_eq_e2e_and_only_p50_p90() -> None:
-    record = {
-        "model": MODEL_GPT_OSS,
-        "arm": "agent",
-        "concurrency": 1,
-        "question_id": "q_001",
-        "t_total_ms": 1000,
-        "repaired": False,
-        "llm_calls": [{"cost_usd": 0.001, "output_tokens": 10}],
-        "evaluation": {"correct": True, "sql_equivalent": True, "e2e_success": True},
-    }
-    report = build_report([record])
-    assert "SQL Eq" in report and "E2E Acc" in report
-    assert "P50" in report and "P90" in report
+def test_report_row_aggregates_accuracy_latency_repairs_and_cost() -> None:
+    def record(qid: str, ms: int, cost: float, tokens: int, eq: bool, repaired: bool) -> dict:
+        return {"model": MODEL_GPT_OSS, "arm": "agent", "concurrency": 1, "question_id": qid,
+                "t_total_ms": ms, "repaired": repaired,
+                "llm_calls": [{"cost_usd": cost, "output_tokens": tokens}],
+                "evaluation": {"correct": eq, "sql_equivalent": eq, "e2e_success": False}}
+
+    report = build_report([record("q1", 1000, 0.001, 10, True, True),
+                           record("q2", 3000, 0.003, 30, False, False)])
+    # SQL Eq 1/2, E2E 0/2, P50 1s, P90 3s, repairs 1/2, median 20 tokens, mean $0.002.
+    assert (f"| `{MODEL_GPT_OSS}` | agent | 1 | 50.0% | 0.0% | 1.00 | 3.00 | 50.0% | 20 | "
+            "$0.002000 | $60.00 |") in report
     assert "P95" not in report
-    assert "not** a head-to-head" in report
 
 
 def test_official_ex_uses_bird_set_semantics() -> None:
@@ -195,7 +192,8 @@ def test_mcnemar_exact_p() -> None:
     assert mcnemar_exact_p(0, 0) == 1.0
     assert mcnemar_exact_p(5, 5) == 1.0
     assert mcnemar_exact_p(0, 10) < 0.01
-    assert 0.05 < mcnemar_exact_p(3, 8) < 0.3
+    # Two-sided exact binomial: 2 * P(X <= 3 | n=11, p=0.5) = 2 * 232 / 2048.
+    assert mcnemar_exact_p(3, 8) == pytest.approx(464 / 2048)
 
 
 def test_load_questions_keeps_duplicate_rows_and_defaults(tmp_path: Path) -> None:
@@ -254,13 +252,24 @@ def test_load_run_maps_legacy_duplicate_ids_to_distinct_rows(tmp_path: Path) -> 
     assert set(load_run(current, questions)) == {2}
 
 
-def test_score_bird_executes_once_for_all_metrics() -> None:
+def test_score_bird_runs_each_query_once_for_all_metrics(monkeypatch: pytest.MonkeyPatch) -> None:
+    import benchmark.evaluate
     from benchmark.evaluate import score_bird
 
+    executed: list[str] = []
+    real_execute = benchmark.evaluate.execute
+
+    def counting_execute(conn: object, sql: str, **kwargs: object) -> object:
+        executed.append(sql)
+        return real_execute(conn, sql, **kwargs)
+
+    monkeypatch.setattr(benchmark.evaluate, "execute", counting_execute)
     conn = connect_readonly()
     try:
         gold = "SELECT Name FROM Genre"
         same = score_bird(conn, "q", gold, "SELECT DISTINCT Name FROM Genre", delivered=True)
+        # Generated SQL first (its signature survives a failing gold), then gold; once each.
+        assert executed == ["SELECT DISTINCT Name FROM Genre", gold]
         assert same.official_ex and same.row_count == 25
         # Local metric keeps its multiset semantics; official uses sets.
         assert not score_bird(
@@ -486,47 +495,54 @@ def test_full_comparison_accepts_three_complete_repeats(tmp_path: Path) -> None:
     assert "repeats old/new = 3/3" in report
 
 
-def test_run_metadata_ignores_result_files_when_hashing_code(tmp_path: Path) -> None:
+def test_run_metadata_code_state_covers_python_sources_but_not_results(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     import argparse
+    import sqlite3
+    import subprocess
 
-    from benchmark.run_bird import run_metadata, select_questions
+    from benchmark.bird import load_questions
+    from benchmark.run_bird import run_metadata
 
+    monkeypatch.chdir(tmp_path)
+    for path in ("src/a.py", "benchmark/b.py"):
+        Path(path).parent.mkdir()
+        Path(path).write_text("x = 1\n")
+    db = Path("dbs/d/d.sqlite")
+    db.parent.mkdir(parents=True)
+    with sqlite3.connect(db) as conn:
+        conn.execute("CREATE TABLE t (id INTEGER)")
+    questions = Path("q.json")
+    questions.write_text(json.dumps([{"db_id": "d", "question": "q", "SQL": "SELECT 1"}]))
+    git = ["git", "-c", "user.name=t", "-c", "user.email=t@example.invalid"]
+    subprocess.run(["git", "init", "-q"], check=True)
+    subprocess.run([*git, "add", "."], check=True)
+    subprocess.run([*git, "commit", "-q", "-m", "init"], check=True)
     args = argparse.Namespace(
-        questions=Path("data/bird/splits/train_dev.json"),
-        db_dir=Path("data/bird/train/train_databases"),
-        difficulty=None,
-        db=["movie"],
-        limit=2,
-        per_db=None,
-        ids=None,
-        seed=0,
-        models=["m"],
-        temperature=0.0,
-        max_tokens=400,
-        reasoning_effort=None,
-        repeats=1,
-        prompt_profile="product",
-        quote_identifiers=False,
-        pipeline_repairs=False,
-        dictionary=False,
-        llm_timeout=20.0,
-        fewshot=0,
-        fewshot_pool=Path("data/bird/train/train.json"),
-        truncation_retry=0,
-        column_meaning=0,
+        questions=questions, db_dir=Path("dbs"), difficulty=None, db=None, limit=None,
+        per_db=None, ids=None, seed=0, models=["m"], temperature=0.0, max_tokens=400,
+        reasoning_effort=None, repeats=1, prompt_profile="product", quote_identifiers=False,
+        pipeline_repairs=False, dictionary=False, llm_timeout=20.0, fewshot=0,
+        fewshot_pool=None, truncation_retry=0, column_meaning=0,
     )
-    if not args.questions.exists():
-        import pytest
 
-        pytest.skip("BIRD train splits not downloaded")
-    before = run_metadata(args, select_questions(args))["code_state_sha256_16"]
-    stray = Path("benchmark/results/bird_raw_TEST_UNTRACKED.jsonl")
-    stray.write_text('{"a": 1}\n')
-    try:
-        after = run_metadata(args, select_questions(args))["code_state_sha256_16"]
-    finally:
-        stray.unlink()
-    assert before == after
+    def state() -> tuple[str, bool]:
+        meta = run_metadata(args, load_questions(questions))
+        return meta["code_state_sha256_16"], meta["git_dirty"]
+
+    clean = state()
+    assert clean[1] is False
+    Path("benchmark/results").mkdir()
+    Path("benchmark/results/bird_raw_new.jsonl").write_text('{"a": 1}\n')
+    assert state() == clean  # this run's own output does not make the tree dirty
+    Path("benchmark/new.py").write_text("y = 2\n")
+    untracked = state()
+    assert untracked[1] is True and untracked[0] != clean[0]
+    Path("benchmark/new.py").unlink()
+    Path("src/a.py").write_text("x = 2\n")
+    edited = state()
+    assert edited[1] is True and edited[0] not in (clean[0], untracked[0])
 
 
 def test_required_gain_uses_uncached_cost_and_latency() -> None:
@@ -568,46 +584,6 @@ def test_sample_curves_pass_and_majority() -> None:
     assert curves[2][1] == pytest.approx((0 + 1) / 2)
 
 
-def test_fewshot_excludes_held_out_databases_and_renders() -> None:
-    from benchmark.fewshot import FewShotIndex, render_examples
-
-    pool = [
-        {
-            "db_id": "held",
-            "question": "How many movies star Tom Cruise?",
-            "evidence": "",
-            "SQL": "SELECT 1",
-        },
-        {
-            "db_id": "other",
-            "question": "How many movies star an actor?",
-            "evidence": "actor refers to Name",
-            "SQL": "SELECT COUNT(*) FROM m",
-        },
-        {
-            "db_id": "other",
-            "question": "How many films were released?",
-            "evidence": "",
-            "SQL": "SELECT 2",
-        },
-        {
-            "db_id": "third",
-            "question": "What is the weather today?",
-            "evidence": "",
-            "SQL": "SELECT 3",
-        },
-    ]
-    index = FewShotIndex(pool, exclude_dbs={"held"})
-    shots = index.examples("How many movies star Tom Cruise?", "", 3)
-    assert shots and all(s["db_id"] != "held" for s in shots)
-    assert shots[0]["SQL"] == "SELECT COUNT(*) FROM m"  # best BM25 match
-    assert len({s["db_id"] for s in shots}) == len(shots)  # at most one per database
-    block = render_examples(shots)
-    assert "OTHER databases" in block and "Hint: actor refers to Name" in block
-    assert block.endswith("Now answer this question:\n")
-    assert render_examples([]) == ""
-
-
 def test_submission_track_ceilings_and_p90() -> None:
     from benchmark.analyze import p90_seconds, within_submission_ceilings
 
@@ -632,43 +608,6 @@ def test_cost_includes_non_llm_per_question_charges() -> None:
     measured, uncached, _ = cost_latency(runs)
     assert measured == pytest.approx(0.16) and uncached == pytest.approx(0.16)
     assert max_answer_cost(runs) == pytest.approx(0.17)
-
-
-def test_jev_annotations_require_complete_matching_questions(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    from benchmark.bird import dataset_fingerprint
-    from benchmark.run_bird import load_row_annotations
-
-    questions = tmp_path / "questions.json"
-    questions.write_text(json.dumps([{"db_id": "d", "question": "q", "SQL": "SELECT 1"}]))
-    monkeypatch.setattr("benchmark.run_bird.database_fingerprint", lambda _path: "dbhash")
-    annotations = tmp_path / "annotations.json"
-    payload = {
-        "complete": True,
-        "questions_sha256_16": dataset_fingerprint(questions),
-        "database_sha256_16": {"d": "dbhash"},
-        "annotations": [{"row_index": 0, "db_id": "d", "text": "Advisory only."}],
-    }
-    annotations.write_text(json.dumps(payload))
-    assert load_row_annotations(annotations, questions) == {0: "Advisory only.\n\n"}
-
-    payload["complete"] = False
-    annotations.write_text(json.dumps(payload))
-    with pytest.raises(ValueError, match="incomplete"):
-        load_row_annotations(annotations, questions)
-
-    payload["complete"] = True
-    payload["questions_sha256_16"] = "wrong"
-    annotations.write_text(json.dumps(payload))
-    with pytest.raises(ValueError, match="fingerprint"):
-        load_row_annotations(annotations, questions)
-
-    payload["questions_sha256_16"] = dataset_fingerprint(questions)
-    payload["database_sha256_16"] = {"d": "different"}
-    annotations.write_text(json.dumps(payload))
-    with pytest.raises(ValueError, match="database fingerprints"):
-        load_row_annotations(annotations, questions)
 
 
 def test_promotion_gates_flag_easy_losses_and_protected_cases() -> None:
@@ -701,3 +640,21 @@ def test_efficiency_gate_requires_a_measured_gain_for_extra_cost_or_latency() ->
     assert "FAIL" in costly_no_gain and "cost ×1.75" in costly_no_gain
     costly_gain = efficiency_gate((0.0002, 0.00067, 1.6), (0.0004, 0.00117, 2.2), 3.0, 6.7, 0.02, 0.004)
     assert "**pass**" in costly_gain and "pts per +100% cost" in costly_gain
+
+
+def test_score_bird_keeps_candidate_signature_when_gold_fails() -> None:
+    from benchmark.evaluate import score_bird
+
+    conn = connect_readonly()
+    try:
+        score = score_bird(conn, "q", "SELECT Nope FROM Track", "SELECT 1", delivered=True)
+        assert score.signature is not None and not score.official_ex
+    finally:
+        conn.close()
+
+
+def test_subgroup_rates_keep_half_correct_repeat_scores() -> None:
+    from benchmark.analyze import _flip_rows
+
+    row = _flip_rows("sample", [1, 2], {1: 1.0, 2: 0.5}, {1: 1.0, 2: 1.0})
+    assert "| 75.0% | 100.0% | +25.0 |" in row

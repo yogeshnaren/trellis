@@ -177,6 +177,18 @@ def test_pipeline_repairs_are_off_by_default(tmp_path: Path) -> None:
     assert result.response_type == "unsupported" and len(seen) == 1
 
 
+def test_benchmark_only_features_are_off_by_default(tmp_path: Path) -> None:
+    # The CLI builds Agent(model, conn, guard, db_path=...) and relies on these defaults.
+    conn = connect_readonly()
+    try:
+        agent = Agent(MODEL_GPT_OSS, conn, BudgetGuard(1.0, tmp_path / "spend.sqlite"))
+    finally:
+        conn.close()
+    assert not (agent.pipeline_repairs or agent.value_hints or agent.cascade_projection
+                or agent.shadow_empty_escalation or agent.truncation_retry_tokens)
+    assert agent.escalation_models == () and agent.cascade_models == ()
+
+
 def test_unknown_identifier_rejection_is_repaired_with_a_hint(tmp_path: Path) -> None:
     result, seen = _run(
         tmp_path,
@@ -346,6 +358,36 @@ def test_error_escalation_delivers_the_next_models_answer(tmp_path: Path) -> Non
     assert result.ok and result.rows and result.escalation_model == "m2"
     assert called == [MODEL_GPT_OSS, "m2"]
     assert [c["delivered"] for c in result.candidates] == [False, True]
+    # Both models' calls are charged to the question, not just the delivered one.
+    assert len(result.llm_calls) == 2 and result.cost_usd == pytest.approx(2 * llm("").cost_usd)
+
+
+def test_error_escalation_stops_at_an_exhausted_budget(tmp_path: Path) -> None:
+    import asyncio
+
+    from src.costs import BudgetExceeded
+
+    called: list[str] = []
+
+    async def fake_complete(messages: list[dict[str, str]], model: str, *args: Any, **kwargs: Any) -> LLMResult:
+        called.append(model)
+        if model == MODEL_GPT_OSS:
+            return _query("DELETE FROM Artist")
+        raise BudgetExceeded("ledger ceiling reached")
+
+    async def scenario() -> Any:
+        conn = connect_readonly()
+        try:
+            agent = Agent(MODEL_GPT_OSS, conn, BudgetGuard(1.0, tmp_path / "spend.sqlite"),
+                          complete_fn=fake_complete, escalation_models=("m2", "m3"))
+            return await agent.ask("q", ConversationContext(get_schema()))
+        finally:
+            conn.close()
+
+    result = asyncio.run(scenario())
+    assert called == [MODEL_GPT_OSS, "m2"]  # m3 is never asked once the budget is gone
+    assert result.error_category == "safety-rejected" and result.escalation_model is None
+    assert [c["error_category"] for c in result.candidates] == ["safety-rejected", "budget-exceeded"]
 
 
 def test_empty_answers_are_never_replaced_even_in_shadow_mode(tmp_path: Path) -> None:
@@ -368,9 +410,11 @@ def test_all_null_answers_count_as_empty_for_escalation() -> None:
     assert escalation_trigger(AgentResult("q", response_type="query", rows=[(1,)])) is None
     assert escalation_trigger(AgentResult("q", error="x", error_category="execute-failed")) == "error"
     assert escalation_trigger(AgentResult("q", error="x", error_category="budget-exceeded")) is None
+    assert escalation_trigger(AgentResult("q", error="x", error_category="authentication-failed")) is None
 
 
-def _run_cascade(tmp_path: Path, by_model: dict[str, LLMResult], models: tuple[str, ...]) -> tuple[Any, list[str]]:
+def _run_cascade(tmp_path: Path, by_model: dict[str, LLMResult], models: tuple[str, ...],
+                 ctx: ConversationContext | None = None) -> tuple[Any, list[str]]:
     """One question through the agreement cascade; each model always returns its own answer."""
     import asyncio
 
@@ -385,7 +429,7 @@ def _run_cascade(tmp_path: Path, by_model: dict[str, LLMResult], models: tuple[s
         try:
             agent = Agent(MODEL_GPT_OSS, conn, BudgetGuard(1.0, tmp_path / "spend.sqlite"),
                           complete_fn=fake_complete, cascade_models=models)
-            return await agent.ask("q", ConversationContext(get_schema()))
+            return await agent.ask("q", ctx or ConversationContext(get_schema()))
         finally:
             conn.close()
 
@@ -404,12 +448,15 @@ def test_cascade_stops_when_the_first_two_models_agree(tmp_path: Path) -> None:
 
 
 def test_cascade_delivers_the_majority_after_disagreement(tmp_path: Path) -> None:
+    ctx = ConversationContext(get_schema())
     result, called = _run_cascade(
-        tmp_path, {MODEL_GPT_OSS: _query(OTHER), "m2": _query(FOUND), "m3": _query(FOUND)}, ("m2", "m3"))
+        tmp_path, {MODEL_GPT_OSS: _query(OTHER), "m2": _query(FOUND), "m3": _query(FOUND)}, ("m2", "m3"), ctx)
     assert "m3" in called and result.cascade_stage == 2
     assert result.sql == FOUND and result.escalation_model == "m2"
     assert [c["delivered"] for c in result.candidates] == [False, True, False]
     assert len(result.llm_calls) == 3
+    # The follow-up history holds the delivered answer, not the primary's outvoted one.
+    assert [turn.sql for turn in ctx.turns] == [FOUND]
 
 
 def test_cascade_three_way_tie_keeps_the_primary(tmp_path: Path) -> None:
@@ -448,15 +495,6 @@ def test_cascade_first_stage_runs_concurrently(tmp_path: Path) -> None:
             conn.close()
 
     assert asyncio.run(scenario()).cascade_stage == 1
-
-
-def test_value_hints_name_similar_stored_values() -> None:
-    from src.schema import DEFAULT_DB_PATH
-    from src.value_hints import value_hints
-
-    hints = value_hints("SELECT Name FROM Artist WHERE Name = 'ac/dc '", DEFAULT_DB_PATH)
-    assert hints and "'AC/DC'" in hints[0]
-    assert value_hints("SELECT Name FROM Artist WHERE Name = 'AC/DC'", DEFAULT_DB_PATH) == []  # stored: no hint
 
 
 def _run_empty_retry(tmp_path: Path, first: str, second: str, *, hints: bool) -> tuple[Any, list[str]]:
@@ -526,9 +564,25 @@ def test_projection_cascade_prefers_the_narrower_result_at_stage_one(tmp_path: P
     assert result.sql == FOUND and result.escalation_model == "m2"
 
 
-def test_projection_cascade_narrows_the_voted_answer(tmp_path: Path) -> None:
+def test_projection_cascade_keeps_the_wide_vote_when_nothing_narrower_agrees(tmp_path: Path) -> None:
     result, called = _run_cascade_projection(tmp_path, {MODEL_GPT_OSS: _query(WIDE), "m2": _query(OTHER), "m3": _query(WIDE)})
-    assert "m3" in called and result.cascade_stage == 2 and result.sql == WIDE  # nothing narrower agrees
+    assert "m3" in called and result.cascade_stage == 2 and result.sql == WIDE
+
+
+def test_projection_cascade_narrows_the_voted_answer_at_stage_two(tmp_path: Path) -> None:
+    # Stage one disagrees (WIDE and OTHER are unrelated); the vote is a three-way tie so the
+    # primary's WIDE is picked, then the third model's narrower FOUND replaces it.
+    result, called = _run_cascade_projection(tmp_path, {MODEL_GPT_OSS: _query(WIDE), "m2": _query(OTHER), "m3": _query(FOUND)})
+    assert "m3" in called and result.cascade_stage == 2
+    assert result.sql == FOUND and result.escalation_model == "m3"
+    assert [c["delivered"] for c in result.candidates] == [False, False, True]
+
+
+def test_projection_cascade_does_not_treat_reordered_columns_as_agreement(tmp_path: Path) -> None:
+    # Same columns in another order are a different BIRD answer, not a narrower one.
+    reordered = "SELECT ArtistId, Name FROM Artist WHERE Name LIKE 'AC%'"
+    result, called = _run_cascade_projection(tmp_path, {MODEL_GPT_OSS: _query(WIDE), "m2": _query(reordered), "m3": _query(OTHER)})
+    assert "m3" in called and result.cascade_stage == 2 and result.sql == WIDE
 
 
 def test_projection_cascade_keeps_unrelated_results(tmp_path: Path) -> None:

@@ -213,7 +213,7 @@ the same answer and the narrower one is delivered (`--cascade-projection`). `--b
 overspending.
 
 ```bash
-uvx --with-editable . pytest && uvx --with-editable . ruff check src benchmark tests
+uv run pytest && uv run ruff check src benchmark tests && uv run mypy src benchmark
 uv run python -m benchmark.preflight --models accounts/fireworks/models/deepseek-v4p1-flash  # is the model callable?
 ./scripts/setup_bird_minidev.sh           # ~800MB download, data/bird/ is gitignored
 

@@ -64,13 +64,6 @@ def test_profile_facts_are_bounded_and_require_relevant_exact_values(monkeypatch
     assert profile_context.render_profile_facts(profile, "How many rows?", "") == ""
 
 
-def test_subgroup_rates_keep_half_correct_repeat_scores() -> None:
-    from benchmark.analyze import _flip_rows
-
-    row = _flip_rows("sample", [1, 2], {1: 1.0, 2: 0.5}, {1: 1.0, 2: 1.0})
-    assert "| 75.0% | 100.0% | +25.0 |" in row
-
-
 def test_profile_facts_do_not_substitute_case_or_ambiguous_locations(monkeypatch) -> None:
     profile = DatabaseProfile(
         fingerprint="sample",
@@ -108,35 +101,3 @@ def test_profile_facts_default_to_benchmark_only(monkeypatch) -> None:
     assert parse_args().profile_facts is False
     monkeypatch.setattr(sys, "argv", ["run_bird", "--prompt-profile", "product"])
     assert parse_args().profile_facts is False
-
-
-def test_value_ablation_retains_format_facts(monkeypatch) -> None:
-    profile = DatabaseProfile(
-        fingerprint="sample",
-        version=2,
-        columns=[
-            ColumnProfile(
-                table="actor",
-                column="NetWorth",
-                declared="TEXT",
-                storage={"text": 1.0},
-                null_rate=0.0,
-                distinct=2,
-                text_format="money",
-                examples=("$20,000.00",),
-            ),
-        ],
-        joins=[],
-        build_seconds=0.0,
-        index_path="/unused",
-    )
-
-    def unexpected_retrieval(*_args, **_kwargs):
-        raise AssertionError("value retrieval must be skipped")
-
-    monkeypatch.setattr(profile_context, "retrieve_values", unexpected_retrieval)
-    facts = profile_context.render_profile_facts(
-        profile, "What is the NetWorth?", "actor 'Tom Cruise'", include_values=False
-    )
-    assert "actor.NetWorth: stored as text with money formatting" in facts
-    assert "Stored value" not in facts

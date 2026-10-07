@@ -68,9 +68,9 @@ Press `Ctrl+C` at any time to quit.
 | I want to... | Run this |
 |---|---|
 | Ask questions interactively | `uv run trellis` |
-| Check the code still works after a change | `uvx --with-editable . pytest` |
-| Check code style | `uvx --with-editable . ruff check src benchmark tests` |
-| Check types | `uvx --with-editable . mypy src benchmark` |
+| Check the code still works after a change | `uv run pytest` |
+| Check code style | `uv run ruff check src benchmark tests` |
+| Check types | `uv run mypy src benchmark` |
 | Verify a model works before benchmarking it | `uv run python -m benchmark.preflight --budget 0.05` |
 | Compare models on Chinook | see the bake-off commands in the [README](../README.md#reproduce) |
 | Benchmark against BIRD Mini-Dev | see the [README](../README.md#reproduce) |
