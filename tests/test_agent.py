@@ -561,6 +561,15 @@ def test_projection_cascade_narrows_the_voted_answer(tmp_path: Path) -> None:
     assert "m3" in called and result.cascade_stage == 2 and result.sql == WIDE  # nothing narrower agrees
 
 
+def test_projection_cascade_narrows_the_voted_answer_at_stage_two(tmp_path: Path) -> None:
+    # Stage one disagrees (WIDE and OTHER are unrelated); the vote is a three-way tie so the
+    # primary's WIDE is picked, then the third model's narrower FOUND replaces it.
+    result, called = _run_cascade_projection(tmp_path, {MODEL_GPT_OSS: _query(WIDE), "m2": _query(OTHER), "m3": _query(FOUND)})
+    assert "m3" in called and result.cascade_stage == 2
+    assert result.sql == FOUND and result.escalation_model == "m3"
+    assert [c["delivered"] for c in result.candidates] == [False, False, True]
+
+
 def test_projection_cascade_keeps_unrelated_results(tmp_path: Path) -> None:
     result, _ = _run_cascade_projection(tmp_path, {MODEL_GPT_OSS: _query(FOUND), "m2": _query(OTHER), "m3": _query(FOUND)})
     assert result.sql == FOUND and result.cascade_stage == 2
