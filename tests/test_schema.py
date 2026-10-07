@@ -1,6 +1,8 @@
 import sqlite3
 from pathlib import Path
 
+import pytest
+
 from src.schema import get_foreign_keys, get_identifier_allowlist, get_schema, table_count
 
 
@@ -58,11 +60,16 @@ def test_implicit_composite_duplicate_and_case_mismatched_foreign_keys(tmp_path:
     _assert_edges_resolve(db_path)
 
 
-def test_every_rendered_foreign_key_resolves_on_real_databases() -> None:
-    databases = [Path("data/Chinook.db"), *sorted(Path("data/bird/dev_databases").glob("*/*.sqlite"))]
+def test_every_rendered_foreign_key_resolves_on_chinook() -> None:
+    _assert_edges_resolve(Path("data/Chinook.db"))
+
+
+@pytest.mark.bird_data
+def test_every_rendered_foreign_key_resolves_on_bird_dev_databases() -> None:
+    databases = sorted(Path("data/bird/dev_databases").glob("*/*.sqlite"))
+    assert databases, "data/bird/dev_databases has no databases"
     for db_path in databases:
-        if db_path.exists():
-            _assert_edges_resolve(db_path)
+        _assert_edges_resolve(db_path)
 
 
 def test_quote_identifiers_backticks_only_unsafe_names(tmp_path: Path) -> None:

@@ -14,6 +14,9 @@ dependencies = [
     "sqlglot",
 ]
 
+[dependency-groups]
+dev = ["mypy", "pytest", "ruff"]
+
 [project.scripts]
 trellis = "src.cli:main"
 
@@ -23,6 +26,11 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src", "benchmark"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers"
+markers = ["bird_data: needs the BIRD data under data/bird (./scripts/setup_bird_minidev.sh)"]
 
 [tool.ruff]
 line-length = 100

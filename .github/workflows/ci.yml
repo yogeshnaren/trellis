@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.11"
+      - run: uv sync --locked
+      - run: uv run ruff check src benchmark tests
+      - run: uv run mypy src benchmark
+      # No API keys and no BIRD data: model calls are faked and bird_data tests skip.
+      - run: uv run pytest -ra
