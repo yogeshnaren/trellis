@@ -346,6 +346,36 @@ def test_error_escalation_delivers_the_next_models_answer(tmp_path: Path) -> Non
     assert result.ok and result.rows and result.escalation_model == "m2"
     assert called == [MODEL_GPT_OSS, "m2"]
     assert [c["delivered"] for c in result.candidates] == [False, True]
+    # Both models' calls are charged to the question, not just the delivered one.
+    assert len(result.llm_calls) == 2 and result.cost_usd == pytest.approx(2 * llm("").cost_usd)
+
+
+def test_error_escalation_stops_at_an_exhausted_budget(tmp_path: Path) -> None:
+    import asyncio
+
+    from src.costs import BudgetExceeded
+
+    called: list[str] = []
+
+    async def fake_complete(messages: list[dict[str, str]], model: str, *args: Any, **kwargs: Any) -> LLMResult:
+        called.append(model)
+        if model == MODEL_GPT_OSS:
+            return _query("DELETE FROM Artist")
+        raise BudgetExceeded("ledger ceiling reached")
+
+    async def scenario() -> Any:
+        conn = connect_readonly()
+        try:
+            agent = Agent(MODEL_GPT_OSS, conn, BudgetGuard(1.0, tmp_path / "spend.sqlite"),
+                          complete_fn=fake_complete, escalation_models=("m2", "m3"))
+            return await agent.ask("q", ConversationContext(get_schema()))
+        finally:
+            conn.close()
+
+    result = asyncio.run(scenario())
+    assert called == [MODEL_GPT_OSS, "m2"]  # m3 is never asked once the budget is gone
+    assert result.error_category == "safety-rejected" and result.escalation_model is None
+    assert [c["error_category"] for c in result.candidates] == ["safety-rejected", "budget-exceeded"]
 
 
 def test_empty_answers_are_never_replaced_even_in_shadow_mode(tmp_path: Path) -> None:
