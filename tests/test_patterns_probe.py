@@ -1,3 +1,8 @@
+import sqlite3
+from pathlib import Path
+
+import pytest
+
 from benchmark.patterns import (
     gold_shape_tags,
     gold_sql_tags,
@@ -37,6 +42,22 @@ def test_shape_and_outcome_tags():
     assert "signal: database facts in prompt" in signal_tags({"t_total_ms": 100}, True)
 
 
-def test_probe_is_read_only_and_training_only():
-    assert probe("no_such_db_x", "SELECT 1")["error"].startswith("no training database")
+def test_probe_reaches_only_training_databases_through_the_safety_gate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    for db_dir, db_id in (("train/train_databases", "practice"), ("dev_databases", "sealed")):
+        path = Path("data/bird", db_dir, db_id, f"{db_id}.sqlite")
+        path.parent.mkdir(parents=True)
+        with sqlite3.connect(path) as conn:
+            conn.execute("CREATE TABLE t (x INTEGER)")
+            conn.executemany("INSERT INTO t VALUES (?)", [(i,) for i in range(30)])
+    ok = probe("practice", "SELECT x FROM t", max_rows=5)
+    assert ok["error"] is None and ok["row_count"] == 30 and len(ok["rows"]) == 5 and ok["truncated"]
+    # An evaluation database is unreachable, by name or by path.
+    assert probe("sealed", "SELECT x FROM t")["error"].startswith("no training database")
+    assert probe("../../dev_databases/sealed", "SELECT x FROM t")["error"] == "invalid database id"
     assert probe("bad id;", "SELECT 1")["error"] == "invalid database id"
+    # Queries go through the same safety gate as the agent's.
+    assert probe("practice", "DELETE FROM t")["error"].startswith("safety-rejected")
+

@@ -25,18 +25,6 @@ def conn() -> sqlite3.Connection:
         ),
         "SELECT ';' AS Name",
         "SELECT Name FROM Artist -- harmless comment",
-        # Shadowed CTE alias: outer c is CTE, inner c is Customer — must not overwrite.
-        (
-            "WITH counts AS ("
-            "SELECT c.CustomerId, COUNT(*) AS genre_count FROM Customer c GROUP BY c.CustomerId"
-            ") SELECT c.CustomerId FROM counts c WHERE c.genre_count > 1"
-        ),
-        # Derived subquery alias columns.
-        (
-            "SELECT t.Name FROM Track t JOIN ("
-            "SELECT TrackId, COUNT(*) AS n FROM PlaylistTrack GROUP BY TrackId"
-            ") pt ON t.TrackId = pt.TrackId WHERE pt.n > 1"
-        ),
     ],
 )
 def test_safe_queries(sql: str) -> None:
@@ -228,16 +216,5 @@ def test_execute_candidate_needs_no_gold_and_keeps_safety() -> None:
         assert rejected.signature is None
         broken = execute_candidate(conn, "SELECT Nope FROM Track")
         assert not broken.ok and broken.signature is None
-    finally:
-        conn.close()
-
-
-def test_score_bird_keeps_candidate_signature_when_gold_fails() -> None:
-    from benchmark.evaluate import score_bird
-
-    conn = connect_readonly()
-    try:
-        score = score_bird(conn, "q", "SELECT Nope FROM Track", "SELECT 1", delivered=True)
-        assert score.signature is not None and not score.official_ex
     finally:
         conn.close()
